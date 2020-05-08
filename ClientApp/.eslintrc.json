@@ -1,0 +1,13 @@
+{
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["@components", "./src/components/"],
+          ["@i18n", "./src/i18n/"],
+          ["@stores", "./src/stores"]
+        ]
+      }
+    }
+  }
+}
