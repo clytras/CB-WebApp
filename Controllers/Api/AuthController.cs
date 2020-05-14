@@ -13,6 +13,15 @@ using Microsoft.Extensions.Logging;
 
 namespace EKETAGreenmindB2B.Controllers.Api
 {
+    public class CustomUnauthorizedResult : JsonResult
+    {
+        public CustomUnauthorizedResult(string errorCode, int statusCode = StatusCodes.Status401Unauthorized)
+            : base(new { errorCode })
+        {
+            StatusCode = statusCode;
+        }
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -71,12 +80,24 @@ namespace EKETAGreenmindB2B.Controllers.Api
                 if (user != null)
                 {
                     await signInManager.SignOutAsync();
-                    Microsoft.AspNetCore.Identity.SignInResult result = await signInManager.PasswordSignInAsync(user, login.Password, false, false);
+                    Microsoft.AspNetCore.Identity.SignInResult result = await signInManager.PasswordSignInAsync(user, login.Password, login.RememberMe, false);
                     // if (result.Succeeded)
                     //     return Redirect(login.ReturnUrl ?? "/");
                     if(result.Succeeded) 
                     {
                         return Ok();
+                    }
+                    if(result.IsLockedOut)
+                    {
+                        return new CustomUnauthorizedResult("AccountLocked");
+                    }
+                    if (result.RequiresTwoFactor)
+                    {
+                        return new CustomUnauthorizedResult("Account2FA");
+                    }
+                    else
+                    {
+                        return new CustomUnauthorizedResult("LoginFail");
                     }
                 }
                 // ModelState.AddModelError(nameof(login.Email), "Login Failed: Invalid Email or password");

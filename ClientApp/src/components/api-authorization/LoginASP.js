@@ -19,6 +19,9 @@ export class Login extends Component {
 
   componentDidMount() {
     const action = this.props.action;
+
+    console.log('LoginASP:componentDidMount', action);
+
     switch (action) {
       case LoginActions.Login:
         this.login(this.getReturnUrl());
@@ -83,13 +86,16 @@ export class Login extends Component {
   async processLoginCallback() {
     const url = window.location.href;
     const result = await authService.completeSignIn(url);
+
+    console.log('LoginASP:processLoginCallback', result);
+
     switch (result.status) {
       case AuthenticationResultStatus.Redirect:
         // There should not be any redirects as the only time completeSignIn finishes
         // is when we are doing a redirect sign in flow.
         throw new Error('Should not redirect.');
       case AuthenticationResultStatus.Success:
-        await this.navigateToReturnUrl(this.getReturnUrl(result.state));
+        // await this.navigateToReturnUrl(this.getReturnUrl(result.state));
         break;
       case AuthenticationResultStatus.Fail:
         this.setState({ message: result.message });

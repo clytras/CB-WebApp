@@ -4,8 +4,9 @@ import * as actions from './actions';
 
 const initialState = {
   appLanguage: null,
+  authUser: null,
   meta: {},
-  counter: 12
+  counter: 12,
 };
 
 const globalHook = useGlobalHook(React, initialState, actions);

@@ -3,9 +3,11 @@
     "import/resolver": {
       "alias": {
         "map": [
-          ["@components", "./src/components/"],
-          ["@i18n", "./src/i18n/"],
-          ["@stores", "./src/stores"]
+          ["@components", "./src/components"],
+          ["@i18n", "./src/i18n"],
+          ["@stores", "./src/stores"],
+          ["@utils", "./src/utils"],
+          ["@api-auth", "./src/components/api-authorization"]
         ]
       }
     }

@@ -4,7 +4,9 @@
     "paths": {
       "@components": ["./components"],
       "@i18n": ["./i18n"],
-      "@stores": ["./stores"]
+      "@stores": ["./stores"],
+      "@utils": ["./utils"],
+      "@api-auth": ["./components/api-authorization"]
     }
   },
   "exclude": ["node_modules", "**/node_modules/*"]

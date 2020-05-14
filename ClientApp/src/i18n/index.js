@@ -18,9 +18,25 @@ LocalizedStrings.prototype.getInterfaceLocale = protoGetInterfaceLocale;
 LocalizedStrings.prototype.setSafeLanguage = protoSetSafeLanguage;
 LocalizedStrings.prototype.autoSetLanguage = protoAutoSetLanguage;
 
-const Strings = new LocalizedStrings(Languages);
+export const Strings = new LocalizedStrings(Languages);
+
+export function translateCodeMessage(code, defCode) {
+  switch(code || defCode) {
+    case 'AccountLocked': return Strings.messages.Auth.AccountLocked;
+    case 'Account2FA': return Strings.messages.Auth.Account2FA;
+    case 'LoginFail': return Strings.messages.Auth.LoginFail;
+    default: return code || defCode;
+  }
+}
+
+export function translateRequestError(error) {
+  if(error) {
+    return Strings.formatString(Strings.messages.RequestError, { error });
+  }
+
+  return Strings.messages.UnexpectedError;
+}
 
 export {
-  Strings,
   supportedLanguageDefs
 }

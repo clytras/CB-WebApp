@@ -12,3 +12,7 @@ export const addCounter = (store, value = 1) => {
 export const setAppMeta = (store, meta) => {
   store.setState({ meta });
 }
+
+export const setAuthUser = (store, authUser) => {
+  store.setState({ authUser });
+}

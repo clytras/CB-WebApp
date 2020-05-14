@@ -1,6 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Identity;
 using EKETAGreenmindB2B.Models;
+using EKETAGreenmindB2B.Utils;
 
 namespace EKETAGreenmindB2B.Data.Seeds
 {
@@ -15,26 +16,26 @@ namespace EKETAGreenmindB2B.Data.Seeds
 
         public static void SeedRoles(RoleManager<IdentityRole> roleManager)
         {
-            if (!roleManager.RoleExistsAsync("Admin").Result)
+            if (!roleManager.RoleExistsAsync(Constants.IdentityRoleAdminName).Result)
             {
                 IdentityRole role = new IdentityRole();
-                role.Name = "Admin";
+                role.Name = Constants.IdentityRoleAdminName;
                 IdentityResult roleResult = roleManager.
                 CreateAsync(role).Result;
             }
 
-            if (!roleManager.RoleExistsAsync("Editor").Result)
+            if (!roleManager.RoleExistsAsync(Constants.IdentityRoleEditorName).Result)
             {
                 IdentityRole role = new IdentityRole();
-                role.Name = "Editor";
+                role.Name = Constants.IdentityRoleEditorName;
                 IdentityResult roleResult = roleManager.
                 CreateAsync(role).Result;
             }
 
-            if (!roleManager.RoleExistsAsync("User").Result)
+            if (!roleManager.RoleExistsAsync(Constants.IdentityRoleUserName).Result)
             {
                 IdentityRole role = new IdentityRole();
-                role.Name = "User";
+                role.Name = Constants.IdentityRoleUserName;
                 IdentityResult roleResult = roleManager.
                 CreateAsync(role).Result;
             }
