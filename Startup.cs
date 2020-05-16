@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using EKETAGreenmindB2B.Services;
 using IdentityServer4.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace EKETAGreenmindB2B
 {
@@ -67,6 +68,9 @@ namespace EKETAGreenmindB2B
                                             "https://localhost:5001");
                     });
             });
+
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.AddTransient<IProfileService, ProfileService>();
             services.AddControllersWithViews();

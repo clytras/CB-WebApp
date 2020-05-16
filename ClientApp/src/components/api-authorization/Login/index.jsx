@@ -104,7 +104,6 @@ export default function Login() {
             errorCode = 'LoginFail';
           }
         } else {
-          // const { state: { from: { pathname = '/' } = {}} = {}} = location || {};
           setRedirectTo(location?.state?.from?.pathname || '/');
         }
       } else {
@@ -190,13 +189,13 @@ export default function Login() {
 
           <FormGroup>
             <p>
-                <Link to={"/forgot-password"}>Forgot your password?</Link>
+                <Link to={"/account/forgot-password"}>Forgot your password?</Link>
             </p>
             <p>
-                <Link to={"/register"}>Register as a new user</Link>
+                <Link to={"/account/register"}>Register as a new user</Link>
             </p>
             <p>
-                <Link to={"/resend-email-confirmation"}>Resend email confirmation</Link>
+                <Link to={"/account/resend-email-confirmation"}>Resend email confirmation</Link>
             </p>
           </FormGroup>
 

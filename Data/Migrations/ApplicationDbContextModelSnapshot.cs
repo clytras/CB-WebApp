@@ -94,7 +94,7 @@ namespace EKETAGreenmindB2B.Data.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MenuBind")
+                    b.Property<string>("BindTo")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BlockId");

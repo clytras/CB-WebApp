@@ -13,7 +13,8 @@ namespace EKETAGreenmindB2B.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long BlockId { get; set; }
-        public string MenuBind { get; set; }
+        [Column("BindToContent")]
+        public string BindTo { get; set; }
         public string Content { get; set; }
     }
 }

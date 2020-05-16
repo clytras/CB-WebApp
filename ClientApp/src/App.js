@@ -14,6 +14,7 @@ import AuthRoute from '@api-auth/AuthRoute';
 import AdminIndex from '@components/Admin';
 import AdminContent from '@components/Admin/Content';
 import Login from '@api-auth/Login';
+import Register from '@api-auth/Register';
 import { IdentityRoles } from '@api-auth';
 import authService from '@api-auth/AuthorizeService';
 
@@ -47,12 +48,21 @@ export default function App() {
           <Route path="/admin" component={AdminIndex} />
           <Route path="/admin/content" component={AdminContent} />
         </AuthRoute>
-        <Route path={['/', '/counter', '/ajax-auth']}>
+        <Route path={[
+          '/', 
+          '/counter', 
+          '/ajax-auth', 
+          '/account/login', 
+          '/account/logout',
+          '/account/confirm-email',
+          '/account/resend-email-confirmation'
+        ]}>
           <Layout>
             <Route exact path="/" component={Home} />
             <Route path="/counter" component={Counter} />
             <Route path="/ajax-auth" component={AjaxAuth} />
             <Route path="/account/login" component={Login} />
+            <Route path="/account/register" component={Register} />
           </Layout>
         </Route>
 

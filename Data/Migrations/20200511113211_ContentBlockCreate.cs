@@ -12,7 +12,7 @@ namespace EKETAGreenmindB2B.Data.Migrations
                 {
                     BlockId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MenuBind = table.Column<string>(nullable: true),
+                    BindTo = table.Column<string>(nullable: true),
                     Content = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
