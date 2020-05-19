@@ -1,4 +1,5 @@
 const path = require('path');
+const reactHotReloadPlugin = require('craco-plugin-react-hot-reload');
 
 module.exports = {
   webpack: {
@@ -24,5 +25,8 @@ module.exports = {
         '@api-auth': '<rootDir>/src/components/api-authorization',
       }
     }
-  }
+  },
+  plugins: [{
+    plugin: reactHotReloadPlugin
+  }]
 }

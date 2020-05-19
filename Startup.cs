@@ -15,6 +15,8 @@ using Microsoft.Extensions.Hosting;
 using EKETAGreenmindB2B.Services;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Http;
 
 namespace EKETAGreenmindB2B
 {
@@ -70,15 +72,22 @@ namespace EKETAGreenmindB2B
             });
 
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IAppEmailSender, AppEmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.AddTransient<IProfileService, ProfileService>();
+            services.AddTransient<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
+            
             services.AddControllersWithViews();
-            services.AddRazorPages();
+            services.AddRazorPages()
+                .AddRazorOptions(options => {
+                    options.ViewLocationFormats.Add("/Pages/Templates/Shared/{0}.cshtml");
+                    options.ViewLocationFormats.Add("/Pages/Templates/Email/Shared/{0}.cshtml");
+                    options.PageViewLocationFormats.Add("/Pages/Templates/{0}.cshtml");
+                });
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
+            services.AddSpaStaticFiles(configuration => {
                 configuration.RootPath = "ClientApp/build";
             });
 
@@ -90,6 +99,7 @@ namespace EKETAGreenmindB2B
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, 
                               IWebHostEnvironment env,
+                              IAntiforgery antiforgery,
                               UserManager<ApplicationUser> userManager, 
                               RoleManager<IdentityRole> roleManager)
         {
@@ -127,6 +137,18 @@ namespace EKETAGreenmindB2B
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+            });
+
+            app.Use(next => context =>
+            {
+                // if (context.Request.Path == "/")
+                // {
+                    //var tokens = antiforgery.GetTokens(context);
+                    var tokens = antiforgery.GetAndStoreTokens(context);
+                    // context.Response.Cookies.Append("X-CSRF-TOKEN", tokens.CookieToken, new CookieOptions { HttpOnly = false });
+                    context.Response.Cookies.Append("CSRF-TOKEN", tokens.RequestToken, new CookieOptions { HttpOnly = false });
+                // }
+                return next(context);
             });
 
             app.UseSpa(spa =>

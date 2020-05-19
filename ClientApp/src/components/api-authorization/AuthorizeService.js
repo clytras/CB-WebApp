@@ -1,10 +1,13 @@
 import { UserManager, WebStorageStateStore } from 'oidc-client';
 import { ApplicationPaths, ApplicationName } from './ApiAuthorizationConstants';
+import { translateBool } from 'lyxlib/utils/str';
+import { IdentityRoles } from '.';
 
 export class AuthorizeService {
   _callbacks = [];
   _nextSubscriptionId = 0;
   _user = null;
+  _userProfile = null;
   _isAuthenticated = false;
 
   // By default pop ups are disabled because they don't work properly on Edge.
@@ -26,9 +29,38 @@ export class AuthorizeService {
     return user && user.profile;
   }
 
+  async getFullUser() {
+    if (this._user) {
+      return this._user;
+    }
+
+    await this.ensureUserManagerInitialized();
+    const user = await this.userManager.getUser();
+    return user;
+  }
+
+  async getUserProfile() {
+    if(this._user && this._userProfile) {
+      return this._userProfile;
+    }
+
+    const user = await this.getFullUser();
+    return new UserProfile(user);
+  }
+
   async getAccessToken() {
     await this.ensureUserManagerInitialized();
     const user = await this.userManager.getUser();
+
+    const tokenExpiresAt = new Date(user.expires_at * 1000);
+    const now = new Date;
+
+    if(tokenExpiresAt <= now) {
+      const silentUser = await this.userManager.signinSilent(this.createArguments());
+      this.updateState(silentUser);
+      return silentUser && silentUser.access_token;
+    }
+
     return user && user.access_token;
   }
 
@@ -149,6 +181,7 @@ export class AuthorizeService {
 
   updateState(user) {
     this._user = user;
+    this._userProfile = new UserProfile(user);
     this._isAuthenticated = !!this._user;
     this.notifySubscribers();
   }
@@ -218,6 +251,110 @@ export class AuthorizeService {
   }
 
   static get instance() { return authService }
+}
+
+export class UserProfile  {
+  constructor(user) {
+    this._user = user;
+    this._profile = user && user.profile;
+    this._roles = this._parseRoles();
+  }
+
+  _parseRoles() {
+    if(this._profile && this._profile.role && this._profile.role.length) {
+      return Array.isArray(this._profile.role) ? this._profile.role : [this._profile.role];
+    }
+
+    return [];
+  }
+
+  get hasUser() {
+    return !!this._user;
+  }
+
+  get authenticationMethodsReferences() {
+    return this._profile && this._profile.amr;
+  }
+
+  get authTime() {
+    return this._profile && new Date(this._profile.auth_time * 1000);
+  }
+
+  get emailVerified() {
+    return this._profile && translateBool(this._profile.email_verified);
+  }
+
+  get identityProvider() {
+    return this._profile && this._profile.idp;
+  }
+
+  get userName() {
+    return this._profile && this._profile.name;
+  }
+
+  get userId() {
+    return this._profile && this._profile.sub;
+  }
+
+  get roles() {
+    return this._roles;
+  }
+
+  get isUserRole() {
+    return this._roles.indexOf(IdentityRoles.User) !== -1;
+  }
+
+  get isEditorRole() {
+    return this._roles.indexOf(IdentityRoles.Editor) !== -1;
+  }
+
+  get isAdminRole() {
+    return this._roles.indexOf(IdentityRoles.Admin) !== -1;
+  }
+
+  isOneOfRoles(roles) {
+    if(roles && roles.length) {
+      if(!Array.isArray(roles)) {
+        roles = [roles];
+      }
+
+      const userRoles = this._roles;
+
+      if(userRoles.length) {
+        for(const role of roles) {
+          if(userRoles.indexOf(role) !== -1) {
+            return true;
+          }
+        }
+      }
+    }
+    
+    return false;
+  }
+
+  isAllOfRoles(roles) {
+    if(roles && roles.length) {
+      if(!Array.isArray(roles)) {
+        roles = [roles];
+      }
+
+      const userRoles = this._roles;
+
+      if(userRoles.length) {
+        let rolesMatched = 0;
+
+        for(const role of roles) {
+          if(userRoles.indexOf(role) !== -1) {
+            rolesMatched++;
+          }
+        }
+
+        return rolesMatched.length === roles.length;
+      }
+    }
+    
+    return false;
+  }
 }
 
 const authService = new AuthorizeService();

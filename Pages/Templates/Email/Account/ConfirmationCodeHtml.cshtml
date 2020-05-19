@@ -1,0 +1,18 @@
+@using ViewModels
+@using ViewModels.Account
+@model ConfirmationCodeViewModel
+
+@{
+  Layout = "_LayoutHtml";
+  ViewContext.ViewData["EmailTitle"] = "Email Confirmation";
+}
+
+<h3>Welcome to CERTH Greenmind B2B</h3>
+
+<p>Click the button bellow to open the email confirmation link</p>
+
+@await Html.PartialAsync("_Button", new ButtonViewModel("Confirm Account", Model.ConfirmationUrl))
+
+<p>If you can't open the above link, copy and paste to your browser the following URL link</p>
+
+<pre>@Model.ConfirmationUrl</pre>

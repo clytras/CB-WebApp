@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import authService from './AuthorizeService'
-import { IdentityRoles } from '.';
 
 
 export default function AuthRoute({
-  ofRoles = '*',
   children,
   ...rest
 }) {
   const [ready, setReady] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
-  const [authUser, setAuthUser] = useState();
 
   useEffect(() => {
     const authSubscription = authService.subscribe(authCheck);
@@ -34,12 +31,11 @@ export default function AuthRoute({
     }
 
     setAuthenticated(isAuth);
-    setAuthUser(user);
     setReady(true);
   }
 
   if(!ready) {
-    return <div>Not ready</div>;
+    return null;
   }
 
   console.log('AuthRoute', authenticated);
@@ -53,20 +49,4 @@ export default function AuthRoute({
       }}/>
     )}
   />;
-
-  // if(!authenticated) {
-  //   // return <div>Need Login</div>
-  //   return <Route 
-  //     {...rest}
-  //     render(({ location }) => )
-  //   />;
-  // }
-
-  return (
-    <div>
-      <h3>Authenticated</h3>
-      <pre>{JSON.stringify(authUser, null, 2)}</pre>
-    </div>
-  );
-  
 }

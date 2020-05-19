@@ -1,0 +1,111 @@
+
+.admin-panel {
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+
+  .sidebar {
+    background-color: #234361;
+    padding: 10px;
+
+    .sidebar-header {
+      background-color: white;
+      padding: 5px;
+      border-radius: 5px;
+
+      .logo {
+        width: 130px;
+      }
+    }
+
+    .side-menu {
+      p {
+        color: gainsboro;
+        margin: 1rem 0;
+        border-bottom: 1px solid #526580;
+      }
+
+      .nav-item {
+        > a.nav-link {
+          color: white;
+        }
+
+        &.selected {
+          > a.nav-link {
+            color: cyan;
+          }
+        }
+      }
+
+    }
+  }
+
+  .section-cotainer {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+
+    section {
+      &.content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding: 20px 12px 0;
+        overflow-y: auto;
+      }
+    }
+  
+    .section-bar {
+      padding: 6px;
+      display: flex;
+      flex-direction: row;
+      z-index: 100;
+      border-bottom: 1px solid lightgrey;
+      box-shadow: 0px 3px 5px rgba(0,0,0,.1);
+
+      .info {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        font-size: 1.5em;
+
+        .sections {
+          line-height: 100%;
+        }
+      }
+
+      h2 {
+        margin: 0;
+        color: #4c4c4c;
+      }
+    }
+  }
+
+  .profile-button {
+    border: 1px solid lightgray;
+    padding: 5px;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:#7b7b7b;
+    cursor: pointer;
+  }
+
+
+}
+
+.datatable-actions {
+  overflow: visible !important;
+
+  button:not(:last-child) {
+    margin-right: 6px;
+  }
+
+  &.disabled {
+    opacity: .5;
+    pointer-events: none;
+  }
+}

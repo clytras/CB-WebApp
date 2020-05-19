@@ -30,9 +30,10 @@ namespace EKETAGreenmindB2B.Services
             {
                 roleClaims.Add(new Claim(JwtClaimTypes.Role, role));
             }
+
             context.IssuedClaims.Add(new Claim(JwtClaimTypes.Name, user.UserName));
             context.IssuedClaims.AddRange(roleClaims);
-            //Add more claims as you need
+            context.IssuedClaims.Add(new Claim(JwtClaimTypes.EmailVerified, user.EmailConfirmed.ToString()));
         }
 
         public Task IsActiveAsync(IsActiveContext context)

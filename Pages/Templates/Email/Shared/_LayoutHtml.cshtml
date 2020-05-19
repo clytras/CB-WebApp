@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <style type="text/css">
+    /* FONTS */
+    @@media screen {
+      @@font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+      }
+      @@font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 700;
+        src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+      }
+      @@font-face {
+        font-family: 'Lato';
+        font-style: italic;
+        font-weight: 400;
+        src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+      }
+      @@font-face {
+        font-family: 'Lato';
+        font-style: italic;
+        font-weight: 700;
+        src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+      }
+    }
+    /* CLIENT-SPECIFIC STYLES */
+    body, table, td, a {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    table, td {
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+    img {
+      -ms-interpolation-mode: bicubic;
+    }
+    /* RESET STYLES */
+    img {
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+    }
+    table {
+      border-collapse: collapse !important;
+    }
+    body {
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+    }
+    /* iOS BLUE LINKS */
+    a[x-apple-data-detectors] {
+      color: inherit !important;
+      text-decoration: none !important;
+      font-size: inherit !important;
+      font-family: inherit !important;
+      font-weight: inherit !important;
+      line-height: inherit !important;
+    }
+    /* MOBILE STYLES */
+    @@media screen and (max-width:600px) {
+      h1 {
+        font-size: 32px !important;
+        line-height: 32px !important;
+      }
+    }
+    /* ANDROID CENTER FIX */
+    div[style*="margin: 16px 0;"] {
+      margin: 0 !important;
+    }
+  </style>
+</head>
+<body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <!-- LOGO -->
+    <tr>
+      <td bgcolor="#0088f3" align="center">
+        <!--[if (gte mso 9)|(IE)]>
+        <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
+        <tr>
+        <td align="center" valign="top" width="600">
+        <![endif]-->
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+          <tr>
+            <td align="center" valign="top" style="padding: 40px 10px 40px 10px;">
+              <a href="https://www.certh.gr" target="_blank" style="background-color: white; padding: 20px; border-radious: 10px">
+                <img alt="Logo"
+                  src="data:image/png;base64,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"
+                  width="300" height="71" style="display: block; width: 300px; max-width: 300px; min-width: 300px; font-family: 'Lato', Helvetica, Arial, sans-serif; color: #ffffff; font-size: 18px;" border="0">
+              </a>
+            </td>
+          </tr>
+        </table>
+        <!--[if (gte mso 9)|(IE)]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+      </td>
+    </tr>
+    <!-- HERO -->
+    <tr>
+      <td bgcolor="#0088f3" align="center" style="padding: 0px 10px 0px 10px;">
+        <!--[if (gte mso 9)|(IE)]>
+        <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
+        <tr>
+        <td align="center" valign="top" width="600">
+        <![endif]-->
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+          <tr>
+            <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+              <h1 style="font-size: 48px; font-weight: 400; margin: 0;">@ViewData["EmailTitle"]</h1>
+            </td>
+          </tr>
+        </table>
+        <!--[if (gte mso 9)|(IE)]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+      </td>
+    </tr>
+    <!-- COPY BLOCK -->
+    <tr>
+      <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
+        <!--[if (gte mso 9)|(IE)]>
+        <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
+        <tr>
+        <td align="center" valign="top" width="600">
+        <![endif]-->
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+          <!-- COPY -->
+          <tr>
+            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+              @RenderBody()
+            </td>
+          </tr>
+        </table>
+        <!--[if (gte mso 9)|(IE)]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+      </td>
+    </tr>
+    <!-- FOOTER -->
+    <tr>
+      <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
+        <!--[if (gte mso 9)|(IE)]>
+        <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
+        <tr>
+        <td align="center" valign="top" width="600">
+        <![endif]-->
+        <table border="0" cellpadding="10" cellspacing="0" width="100%" style="max-width: 600px;">
+          <!-- NAVIGATION -->
+          <!-- Use this for helpful navigation links -->
+          <!-- UNSUBSCRIBE -->
+          <!-- tr>
+            <td bgcolor="#f4f4f4" style="padding: 20px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px; text-align: center">
+              <p style="margin: 0;">If these emails get annoying, please feel free to <a href="https://greenmind.com/unsubscribe" target="_blank" style="color: #111111; font-weight: 700;">unsubscribe</a>.</p>
+            </td>
+          </tr -->
+          <!-- ADDRESS -->
+          <tr>
+            <td bgcolor="#f4f4f4" style="padding: 0px 20px 20px 20px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px; text-align: center">
+              <p style="margin: 0;">6th km Charilaou-Thermi Rd - GR 57001 Thermi, Thessaloniki, Greece</p>
+            </td>
+          </tr>
+        </table>
+        <!--[if (gte mso 9)|(IE)]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

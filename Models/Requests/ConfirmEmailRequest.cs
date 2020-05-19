@@ -5,12 +5,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EKETAGreenmindB2B.Models
+namespace EKETAGreenmindB2B.Models.Requests
 {
-    public class EmailRequest
+    public class ConfirmEmailRequest
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        public string UserId { get; set; }
+        [Required]
+        public string ConfirmationCode { get; set; }
     }
 }

@@ -5,15 +5,31 @@ import { useStoreOf } from '@stores';
 
 
 export default function LoginMenu() {
-  const [authUser] = useStoreOf('authUser');
+  const [authUserProfile] = useStoreOf('authUserProfile');
 
-  if(authUser) {
-    const { name } = authUser;
+  console.log('LoginMenu');
+
+  function renderAdminPanelLink() {
+    const { isEditorRole, isAdminRole } = authUserProfile;
+
+    if(isEditorRole || isAdminRole) {
+      return (
+        <NavItem>
+          <NavLink tag={Link} className="text-dark" to="/admin">Admin Panel</NavLink>
+        </NavItem>
+      );
+    }
+  }
+
+  const { hasUser, userName } = authUserProfile;
+
+  if(hasUser) {
     return (
       <>
         <NavItem>
-          <NavLink tag={Link} className="text-dark" to="/account">Hello {name}</NavLink>
+          <NavLink tag={Link} className="text-dark" to="/account">Hello {userName}</NavLink>
         </NavItem>
+        {renderAdminPanelLink()}
         <NavItem>
           <NavLink tag={Link} className="text-dark" to="/account/logout">Logout</NavLink>
         </NavItem>

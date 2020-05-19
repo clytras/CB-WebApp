@@ -7,7 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.AspNetCore.Authorization;
 using EKETAGreenmindB2B.Models;
+using EKETAGreenmindB2B.Models.Requests;
 using EKETAGreenmindB2B.CustomResults;
+using EKETAGreenmindB2B.ViewModels;
+using EKETAGreenmindB2B.ViewModels.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -17,6 +20,7 @@ using Devolutions.Zxcvbn;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using EKETAGreenmindB2B.Data;
+using EKETAGreenmindB2B.Services;
 
 namespace EKETAGreenmindB2B.Controllers.Api
 {
@@ -38,7 +42,7 @@ namespace EKETAGreenmindB2B.Controllers.Api
     //     }
     // }
 
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]/{action=Index}")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -46,17 +50,23 @@ namespace EKETAGreenmindB2B.Controllers.Api
         private SignInManager<ApplicationUser> signInManager;
         private readonly ApplicationDbContext context;
         private readonly IEmailSender emailSender;
+        private readonly IRazorViewToStringRenderer razorRenderer;
+        private readonly EKETAGreenmindB2B.Services.IAppEmailSender appEmailSender;
 
         public AuthController(
             UserManager<ApplicationUser> userMgr, 
             SignInManager<ApplicationUser> signinMgr, 
             ApplicationDbContext dbContext,
-            IEmailSender emailSndr)
+            IEmailSender emailSndr,
+            EKETAGreenmindB2B.Services.IAppEmailSender appEmailSndr,
+            IRazorViewToStringRenderer razorRndr)
         {
             userManager = userMgr;
             signInManager = signinMgr;
             context = dbContext;
             emailSender = emailSndr;
+            appEmailSender = appEmailSndr;
+            razorRenderer = razorRndr;
         }
 
         public ActionResult Index()
@@ -78,15 +88,27 @@ namespace EKETAGreenmindB2B.Controllers.Api
             // return Ok(new[] { "Testing 1!!!", "Test 2" });
             return Ok(context.ContentBlock.Select(b => b.Content).ToArray());
 
-            // return Ok((from b in context.ContentBlock where b.BindTo == "RegisterSuccess" select b).ToArray());
-            // return Ok((from b in context.ContentBlock where b.BindTo == "RegisterSuccess" select b.Content).ToList().ToArray());
+            // return Ok((from b in context.ContentBlock where b.BindToContent == "RegisterSuccess" select b).ToArray());
+            // return Ok((from b in context.ContentBlock where b.BindToContent == "RegisterSuccess" select b.Content).ToList().ToArray());
         }
 
         [HttpGet]
         public string[] TestModelStr()
         {
             // return Ok(new { Test = "Testing!!!" });
-            return new[] { "Testing 3!!!", "Test 4" };
+
+            string uid = "12345465";
+            string code = "abcdefg";
+
+            return new[] {
+                Request.Host.Value,
+                Request.Path.Value,
+                Request.PathBase.Value,
+                Request.Protocol,
+                Request.Scheme,
+                Url.ActionLink($"/confirm-email/{uid}/{code}", "account"),
+                Url.RouteUrl($"account/confirm-email/{uid}/{code}")
+            };
         }
 
         // [HttpGetAttribute("TestEmail")]
@@ -98,18 +120,19 @@ namespace EKETAGreenmindB2B.Controllers.Api
         //     return Ok();
         // }
 
-        [HttpPost("TestParams")]
-        public IActionResult TestPostParams(LoginRequest login)
+        [HttpGet]
+        public async Task<IActionResult> TestRazorTamplate()
         {
-            if (ModelState.IsValid)
-            {
-                return Ok(new {
-                    TheUser = login.Email,
-                    login.Password
-                });
-            }
+            const string view = "/Pages/Templates/Email/Account/ConfirmationCode";
 
-            return BadRequest(ModelState);
+            var model = new ConfirmationCodeViewModel("1234", "Code!", "https://myconfiormation");
+
+            var htmlBody = await razorRenderer.RenderViewToStringAsync($"{view}Html.cshtml", model);
+            var textBody = await razorRenderer.RenderViewToStringAsync($"{view}Text.cshtml", model);
+
+            await appEmailSender.SendEmailAsync("christos.lytras@gmail.com", "Welcome and Confirm", htmlBody, textBody);
+
+            return Ok();
         }
 
         // [AllowAnonymous]
@@ -122,6 +145,7 @@ namespace EKETAGreenmindB2B.Controllers.Api
 
         [HttpPost]
         [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterRequest registerRequest)
         {
             if (ModelState.IsValid)
@@ -149,7 +173,8 @@ namespace EKETAGreenmindB2B.Controllers.Api
                     Email = registerRequest.Email,
                     EmailConfirmed = false,
                     LockoutEnabled = true,
-                    TwoFactorEnabled = false
+                    TwoFactorEnabled = false,
+                    RegistrationDate = DateTime.UtcNow
                 };
 
                 var result = await userManager.CreateAsync(user, registerRequest.Password);
@@ -157,19 +182,31 @@ namespace EKETAGreenmindB2B.Controllers.Api
                 {
                     await userManager.AddToRoleAsync(user, "User");
 
-                    var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code },
-                        protocol: Request.Scheme);
+                    await sendConfirmationMail(user, registerRequest.Email);
 
-                    await emailSender.SendEmailAsync(registerRequest.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    // var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    // // var callbackUrl = Url.Page(
+                    // //     "/Account/ConfirmEmail",
+                    // //     pageHandler: null,
+                    // //     values: new { area = "Identity", userId = user.Id, code = code },
+                    // //     protocol: Request.Scheme);
+
+                    // // await emailSender.SendEmailAsync(registerRequest.Email, "Confirm your email",
+                    // //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    // const string view = "/Pages/Templates/Email/Account/ConfirmationCode";
+                    // string callbackUrl = $"{Request.Scheme}://{Request.Host.Value}/account/confirm-email/{user.Id}/{code}";
+
+                    // var model = new ConfirmationCodeViewModel(user.Id, code, callbackUrl);
+
+                    // var htmlBody = await razorRenderer.RenderViewToStringAsync($"{view}Html.cshtml", model);
+                    // var textBody = await razorRenderer.RenderViewToStringAsync($"{view}Text.cshtml", model);
+
+                    // await appEmailSender.SendEmailAsync(registerRequest.Email, "Confirm your email", htmlBody, textBody);
                     
                     var content = context.ContentBlock
-                        .Where(b => b.BindTo == "RegisterSuccess")
+                        .Where(b => b.BindToContent == "RegisterSuccess")
                         .Select(b => b.Content)
                         .ToArray();
 
@@ -195,8 +232,35 @@ namespace EKETAGreenmindB2B.Controllers.Api
             return BadRequest(ModelState);
         }
 
-        [HttpPost("ResendEmailConfirmation")]
+        [HttpPost]
         [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequest confirmEmailRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByIdAsync(confirmEmailRequest.UserId);
+
+                if(user != null)
+                {
+                    var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(confirmEmailRequest.ConfirmationCode));
+                    var result = await userManager.ConfirmEmailAsync(user, code);
+
+                    if(result.Succeeded)
+                        return Ok();
+                    else
+                        return StatusCode(StatusCodes.Status410Gone);
+                }
+
+                return NotFound();
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResendEmailConfirmation(EmailRequest emailRequest)
         {
             if (ModelState.IsValid)
@@ -204,17 +268,18 @@ namespace EKETAGreenmindB2B.Controllers.Api
                 var user = await userManager.FindByEmailAsync(emailRequest.Email);
                 if (user != null)
                 {
-                    var userId = await userManager.GetUserIdAsync(user);
-                    var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { userId = userId, code = code },
-                        protocol: Request.Scheme);
-                    await emailSender.SendEmailAsync(
-                        emailRequest.Email,
-                        "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await sendConfirmationMail(user, emailRequest.Email);
+                    // var userId = await userManager.GetUserIdAsync(user);
+                    // var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    // var callbackUrl = Url.Page(
+                    //     "/Account/ConfirmEmail",
+                    //     pageHandler: null,
+                    //     values: new { userId = userId, code = code },
+                    //     protocol: Request.Scheme);
+                    // await emailSender.SendEmailAsync(
+                    //     emailRequest.Email,
+                    //     "Confirm your email",
+                    //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
                 }
 
                 return Ok();
@@ -225,7 +290,7 @@ namespace EKETAGreenmindB2B.Controllers.Api
 
         [HttpPost]
         [AllowAnonymous]
-        // [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequest loginRequest)
         {
             if (ModelState.IsValid)
@@ -239,6 +304,8 @@ namespace EKETAGreenmindB2B.Controllers.Api
                     //     return Redirect(login.ReturnUrl ?? "/");
                     if(result.Succeeded) 
                     {
+                        user.LastLoginTime = DateTime.UtcNow;
+                        await userManager.UpdateAsync(user);
                         return Ok();
                     }
                     if(result.IsLockedOut)
@@ -268,6 +335,32 @@ namespace EKETAGreenmindB2B.Controllers.Api
         {
             await signInManager.SignOutAsync();
             return Ok();
+        }
+
+        private async Task sendConfirmationMail(ApplicationUser user, string email)
+        {
+            var userId = await userManager.GetUserIdAsync(user);
+            var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            // var callbackUrl = Url.Page(
+            //     "/Account/ConfirmEmail",
+            //     pageHandler: null,
+            //     values: new { area = "Identity", userId = user.Id, code = code },
+            //     protocol: Request.Scheme);
+
+            // await emailSender.SendEmailAsync(registerRequest.Email, "Confirm your email",
+            //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            const string view = "/Pages/Templates/Email/Account/ConfirmationCode";
+            string callbackUrl = $"{Request.Scheme}://{Request.Host.Value}/account/confirm-email/{user.Id}/{code}";
+
+            var model = new ConfirmationCodeViewModel(user.Id, code, callbackUrl);
+
+            var htmlBody = await razorRenderer.RenderViewToStringAsync($"{view}Html.cshtml", model);
+            var textBody = await razorRenderer.RenderViewToStringAsync($"{view}Text.cshtml", model);
+
+            await appEmailSender.SendEmailAsync(email, "Confirm your email", htmlBody, textBody);
         }
 
         [HttpGet]

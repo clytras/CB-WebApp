@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
-import { Link, Redirect, useLocation } from 'react-router-dom';
-import authService, { AuthenticationResultStatus } from '../AuthorizeService';
+import { Link } from 'react-router-dom';
+import authService from '../AuthorizeService';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import PasswordValidator from 'password-validator';
 import Markdown from '@components/common/Markdown';
@@ -12,12 +12,10 @@ import { Strings } from '@i18n';
 import LoadingButton from '@components/common/LoadingButton';
 import LoadingOverlay from '@components/common/LoadingOverlay';
 import InlineMessage from '@components/common/InlineMessage';
-import { StyleSheet, css } from 'aphrodite';
-import clsx from 'clsx';
+import FrontContentBase from '@components/common/FrontContentBase';
 import { translateCodeMessage, translateRequestError } from '@i18n';
 
 export default function Register() {
-  // const location = useLocation();
   const [authUser] = useStoreOf('authUser');
 
   const [inputEmail, setInputEmail] = useState('');
@@ -28,10 +26,8 @@ export default function Register() {
   const [isFetching, setIsFetching] = useState(true);
   const [registerError, setRegisterError] = useState();
   const [requestError, setRequestError] = useState();
-  const [redirectTo, setRedirectTo] = useState();
   const [accountCreated, setAccountCreated] = useState(false);
   const [successContent, setSuccessContent] = useState();
-  const [initAt] = useState(new Date);
   const [preventAutoComplete, setPreventAutoComplete] = useState(true);
 
   console.log('Register', authUser, isFetching);
@@ -79,19 +75,6 @@ export default function Register() {
       let errorCode;
 
       if(resp.ok) {
-        // const { status, message } = await authService.ajaxSignIn();
-        // console.log('ajaxRegister', status, message);
-
-        // if(status === AuthenticationResultStatus.Fail) {
-        //   if(message) {
-        //     setRegisterError(JSON.stringify(message, null, 2));
-        //   } else {
-        //     errorCode = 'LoginFail';
-        //   }
-        // } else {
-        //   setRedirectTo(location?.state?.from?.pathname || '/');
-        // }
-
         let content;
 
         try {
@@ -156,16 +139,12 @@ export default function Register() {
   }
 
   function renderBase(content) {
-    return <div className={clsx('col-md-4 col-md-offset-4', css(styles.container))}>{content}</div>
+    return <FrontContentBase columnSize="4">{content}</FrontContentBase>
   }
 
   if(isFetching) {
     return <LoadingOverlay/>;
   }
-
-  // if(redirectTo) {
-  //   return <Redirect to={redirectTo} />;
-  // }
 
   if(authUser) {
     const { name } = authUser;
@@ -255,12 +234,3 @@ export default function Register() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    margin: 'auto'
-  },
-  hiddenField: {
-    display: 'none'
-  }
-});

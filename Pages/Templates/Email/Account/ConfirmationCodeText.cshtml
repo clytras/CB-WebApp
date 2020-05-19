@@ -1,0 +1,13 @@
+@using ViewModels.Account
+@model ConfirmationCodeViewModel
+
+@{
+  Layout = "_LayoutText";
+  ViewContext.ViewData["EmailTitle"] = "Email Confirmation";
+}
+
+Welcome to CERTH Greenmind B2B.
+
+Copy and paste to your browser the following URL link so to complete your registration:
+
+@Model.ConfirmationUrl

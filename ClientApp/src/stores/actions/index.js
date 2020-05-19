@@ -16,3 +16,7 @@ export const setAppMeta = (store, meta) => {
 export const setAuthUser = (store, authUser) => {
   store.setState({ authUser });
 }
+
+export const setAuthUserProfile = (store, authUserProfile) => {
+  store.setState({ authUserProfile });
+}

@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import { Link, Redirect, useLocation } from 'react-router-dom';
 import authService, { AuthenticationResultStatus } from '../AuthorizeService';
+import FrontContentBase from '@components/common/FrontContentBase';
 import { RProgressApi } from 'rprogress';
 import { useStoreOf } from '@stores';
 import LoadingButton from '@components/common/LoadingButton';
 import LoadingOverlay from '@components/common/LoadingOverlay';
 import InlineMessage from '@components/common/InlineMessage';
+import Delayed from '@components/common/Delayed';
 import { StyleSheet, css } from 'aphrodite';
 import clsx from 'clsx';
 import { translateCodeMessage, translateRequestError } from '@i18n';
+import { apiPost } from '@utils/net';
 
 
 export default function Login() {
@@ -45,16 +48,14 @@ export default function Login() {
     setIsProcessing(true);
     setLoginError(null);
     setRequestError(null);
+    RProgressApi.start();
 
-    fetch('/api/Auth/Logout', {
-      method: 'POST',
-      mode: 'cors',
-      credentials: 'same-origin'
+    apiPost('/api/Auth/Logout', {
+      addCsrf: true
     }).then(async resp => {
-      console.log('logout resp', resp);
+      console.log('Ajax logout resp', resp);
 
       if(resp.ok) {
-        console.log('calling ajaxSignOut');
         await authService.ajaxSignOut();
       }
     }).catch(err => {
@@ -68,26 +69,20 @@ export default function Login() {
   const handleLoginFormSubmit = event => {
     event.preventDefault();
 
-    console.log("Submitting Login");
+    console.log("Submitting Login:addCsrf");
 
     setIsProcessing(true);
     setLoginError(null);
     setRequestError(null);
-
     RProgressApi.start();
 
-    fetch('/api/Auth/Login', {
-      method: 'POST',
-      mode: 'cors',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+    apiPost('/api/Auth/Login', {
+      addCsrf: true,
+      params: {
         Email: inputEmail,
         Password: inputPassword,
         RememberMe: inputRememberMe
-      })
+      }
     }).then(async resp => {
       console.log('Ajax login resp', resp);
 
@@ -122,16 +117,14 @@ export default function Login() {
     });
   }
 
-  function renderBase(content) {
-    return <div className={clsx('col-md-4 col-md-offset-4', css(styles.container))}>{content}</div>
+  const renderBase = content => <FrontContentBase columnSize="4" centered>{content}</FrontContentBase>;
+
+  if(redirectTo) {
+    return <Delayed><Redirect to={redirectTo} /></Delayed>;
   }
 
   if(isFetching) {
     return <LoadingOverlay/>;
-  }
-
-  if(redirectTo) {
-    return <Redirect to={redirectTo} />;
   }
 
   if(authUser) {

@@ -1,8 +1,13 @@
+using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace EKETAGreenmindB2B.Models
+namespace EKETAGreenmindB2B.Models.Requests
 {
-    public class RegisterRequest
+    public class LoginRequest
     {
         [Required]
         [EmailAddress]
@@ -11,8 +16,6 @@ namespace EKETAGreenmindB2B.Models
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-
-        [DataType(DataType.Password)]
-        public string ConfirmPassword { get; set; }
+        public bool RememberMe { get; set; }
     }
 }

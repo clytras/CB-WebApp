@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 
 
 export default function Markdown(props) {
-  return <ReactMarkdown {...props} renderers={{ Link: MarkdownLink }} />;
+  return <ReactMarkdown {...props} renderers={{ link: MarkdownLink }} />;
 }
 
 function MarkdownLink({ href, children}) {

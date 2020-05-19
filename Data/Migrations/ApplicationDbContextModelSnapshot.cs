@@ -38,6 +38,9 @@ namespace EKETAGreenmindB2B.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("LastLoginTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -60,6 +63,9 @@ namespace EKETAGreenmindB2B.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("RegistrationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -91,10 +97,10 @@ namespace EKETAGreenmindB2B.Data.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Content")
+                    b.Property<string>("BindToContent")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("BindTo")
+                    b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BlockId");

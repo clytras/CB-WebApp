@@ -1,5 +1,6 @@
 import LocalizedStrings from 'react-localization';
 import Languages, { supportedLanguageDefs } from './languages';
+import HttpStatus from 'http-status-codes';
 import {
   protoFormatPlural,
   protoSelectString,
@@ -35,6 +36,10 @@ export function translateRequestError(error) {
   }
 
   return Strings.messages.UnexpectedError;
+}
+
+export function httpRejectedError(statusCode, message = Strings.messages.RequestRejected) {
+  return `${message}.\n\n${Strings.titles.RejectionReason}: ${statusCode} ${HttpStatus.getStatusText(statusCode)}`;
 }
 
 export {
