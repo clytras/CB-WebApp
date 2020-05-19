@@ -53,6 +53,7 @@ namespace EKETAGreenmindB2B.Data.Seeds
                 user.EmailConfirmed = true;
                 user.LockoutEnabled = false;
                 user.TwoFactorEnabled = false;
+                user.RegistrationDate = DateTime.UtcNow;
 
                 IdentityResult result = userManager.CreateAsync(user, "Christos2020$").Result;
 
@@ -71,6 +72,7 @@ namespace EKETAGreenmindB2B.Data.Seeds
                 user.Email = userEmail;
                 user.EmailConfirmed = true;
                 user.TwoFactorEnabled = false;
+                user.RegistrationDate = DateTime.UtcNow;
 
                 IdentityResult result = userManager.CreateAsync(user, "Christos2020$").Result;
 
@@ -89,6 +91,7 @@ namespace EKETAGreenmindB2B.Data.Seeds
                 user.Email = userEmail;
                 user.EmailConfirmed = true;
                 user.TwoFactorEnabled = false;
+                user.RegistrationDate = DateTime.UtcNow;
 
                 IdentityResult result = userManager.CreateAsync(user, "Christos2020$").Result;
 

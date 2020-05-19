@@ -29,7 +29,6 @@ export default function Content() {
     const { id } = target.dataset;
 
     if(id) {
-
       msgboxRef.current.show({
         title: `Delete Content Block Id#${id}?`,
         message: `${Strings.messages.DeleteEntry}`,
@@ -74,6 +73,7 @@ export default function Content() {
       name: 'Id',
       selector: 'id',
       sortable: true,
+      width: '60px'
     },
     {
       name: 'Bind To',
