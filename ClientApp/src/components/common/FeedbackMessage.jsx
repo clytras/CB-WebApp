@@ -7,7 +7,7 @@ import FrontContentBase from '@components/common/FrontContentBase';
 export default function FeedbackMessage({ message, color, onRetry }) {
   return (
     <FrontContentBase centered>
-      <InlineMessage color={color}>{message}</InlineMessage>
+      <InlineMessage text={message} color={color} />
       {onRetry && <Button onClick={onRetry}>Retry</Button>}
     </FrontContentBase>
   );

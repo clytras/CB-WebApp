@@ -4,7 +4,7 @@ import NavMenu from './NavMenu';
 
 export default function Layout({ children }) {
   return (
-    <div>
+    <div className="front">
       <NavMenu />
       <Container>
         {children}

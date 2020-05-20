@@ -136,6 +136,19 @@ namespace EKETAGreenmindB2B.Controllers.Api
             return NotFound();
         }
 
+        [HttpGet("BindTo/{bindToContent}")]
+        public async Task<IActionResult> GetBintTo(string bindToContent)
+        {
+            var binds = bindToContent.Split(',');
+            var contentBlocks = await context.ContentBlock.Where(b => binds.Contains(b.BindToContent)).ToListAsync();
+
+            if(contentBlocks.Count > 0) {
+                return Ok(contentBlocks);
+            }
+
+            return NotFound();
+        }
+
         private bool ItemExists(long id)
         {
             return context.ContentBlock.Any(e => e.BlockId == id);

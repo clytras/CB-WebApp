@@ -15,13 +15,13 @@ import { translateCodeMessage, translateRequestError } from '@i18n';
 
 
 export default function Logout() {
-  const [authUser] = useStoreOf('authUser');
+  const [authUserProfile] = useStoreOf('authUserProfile');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [requestError, setRequestError] = useState();
 
 
-  console.log('Logout', authUser, isFetching);
+  console.log('Logout', authUserProfile, isFetching);
 
   useEffect(() => {
     (async () => {
@@ -61,13 +61,13 @@ export default function Logout() {
     return <Delayed><LoadingOverlay/></Delayed>;
   }
 
-  if(authUser) {
-    const { name } = authUser;
+  if(authUserProfile.hasUser) {
+    const { userName } = authUserProfile;
     return renderBase(
       <>
         <InlineMessage text={requestError} color="danger"/>
         <h4>You are logged in as:</h4>
-        <p>{name}</p>
+        <p>{userName}</p>
         <LoadingButton onClick={handleLogoutClick} loading={isProcessing}>Log out</LoadingButton>
       </>
     );

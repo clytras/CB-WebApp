@@ -38,6 +38,7 @@ export default {
     DeleteEntry: 'Are you sure you want to delete this entry?',
     EntryUpdated: 'Entry updated successfully',
     EntryCreated: 'Entry created successfully',
-    EntryDeleted: 'Entry deleted successfully'
+    EntryDeleted: 'Entry deleted successfully',
+    
   }
 }

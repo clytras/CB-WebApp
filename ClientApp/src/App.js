@@ -7,13 +7,13 @@ import { RProgress } from 'rprogress';
 import { ToastContainer } from 'react-toastify';
 import { FetchData } from '@components/FetchData';
 import { useStoreOf } from '@stores';
-import { Counter } from '@components/Counter';
 import AuthorizeRoute from '@components/api-authorization/AuthorizeRoute';
 import ApiAuthorizationRoutes from '@components/api-authorization/ApiAuthorizationRoutes';
 import { ApplicationPaths } from '@components/api-authorization/ApiAuthorizationConstants';
 import AuthRoute from '@api-auth/AuthRoute';
 import AuthRoleRoute from '@api-auth/AuthRoleRoute';
 import AdminIndex from '@components/Admin';
+import AccountIndex from '@components/Account';
 import AdminContent from '@components/Admin/Content';
 import Login from '@api-auth/Login';
 import Logout from '@api-auth/Logout';
@@ -64,29 +64,31 @@ function App() {
         <AuthRoute path="/admin">
           <AuthRoleRoute path="/admin" ofRoles={[IdentityRoles.Admin, IdentityRoles.Editor]} component={AdminIndex} />
         </AuthRoute>
-        <Route exact path={[
+        {/* <Route exact path={[
           '/', 
-          '/counter', 
           '/ajax-auth', 
-          '/account/login', 
-          '/account/logout',
-          '/account/confirm-email',
-          '/account/resend-email-confirmation',
+          '/account',
+          // '/account/login', 
+          // '/account/logout',
+          // '/account/confirm-email',
+          // '/account/resend-email-confirmation',
 
           '/debug/csrf-post'
-        ]}>
+        ]}> */}
           <Layout>
+            <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/counter" component={Counter} />
             <Route path="/account/login" component={Login} />
             <Route path="/account/logout" component={Logout} />
             <Route path="/account/register" component={Register} />
             <Route path="/account/confirm-email/:userId?/:confirmationCode?" component={ConfirmEmail} />
+            <Route path="/account*" component={AccountIndex} />
 
             <Route path="/debug/ajax-auth" component={AjaxAuth} />
             <Route path="/debug/csrf-post" component={CSRFPost} />
+            </Switch>
           </Layout>
-        </Route>
+        {/* </Route> */}
 
         {/* <Layout>
           <Route exact path='/' component={Home} />

@@ -114,42 +114,9 @@ export default function Content() {
     });
   }
 
-  // function renderError(error, color) {
-  //   return (
-  //     <FrontContentBase centered>
-  //       <InlineMessage color={color}>{error}</InlineMessage>
-  //       <Button onClick={fetchData}>Retry</Button>
-  //     </FrontContentBase>
-  //   );
-  // }
-
   if(doEditId) {
     return <Redirect to={`/admin/content/edit/${doEditId}`}/>
   }
-
-  // if(requestError) {
-  //   renderError(requestError, 'danger');
-  // }
-
-  // if(fetchError) {
-  //   renderError(fetchError, 'warning');
-  // }
-
-  // return (
-  //   <>
-  //     <Button onClick={() => {
-  //       msgboxRef.current.show({
-  //         title: 'Test',
-  //         message: 'Testing this messagebox!',
-  //         buttons: "ok,yes,no,delete,cancel, close",
-  //         color: 'danger',
-  //         onDismiss: () => console.log('msgbox dismiss'),
-  //         onConfirm: (param) => console.log('msgbox confirm', param)
-  //       })
-  //     }}>Open MsgBox</Button>
-  //     <MsgBox ref={msgboxRef}/>
-  //   </>
-  // );
 
   return (
     <>
@@ -169,15 +136,7 @@ export default function Content() {
         actions={<Button color="primary" tag={Link} to="/admin/content/add">Add new Content Block</Button>}
         data={rows}
         progressPending={pending}
-        pagination
-        customStyles={{
-          tableWrapper: {
-            style: {
-              height: 'auto'
-            }
-          }
-        }}
-      />
+        pagination />
       <MsgBox ref={msgboxRef} />
     </>
   );

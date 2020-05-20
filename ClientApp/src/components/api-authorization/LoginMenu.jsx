@@ -4,10 +4,8 @@ import { Link } from 'react-router-dom';
 import { useStoreOf } from '@stores';
 
 
-export default function LoginMenu() {
+export default function LoginMenu({ pathname }) {
   const [authUserProfile] = useStoreOf('authUserProfile');
-
-  console.log('LoginMenu');
 
   function renderAdminPanelLink() {
     const { isEditorRole, isAdminRole } = authUserProfile;
@@ -15,23 +13,26 @@ export default function LoginMenu() {
     if(isEditorRole || isAdminRole) {
       return (
         <NavItem>
-          <NavLink tag={Link} className="text-dark" to="/admin">Admin Panel</NavLink>
+          <NavLink tag={Link} to="/admin">Admin Panel</NavLink>
         </NavItem>
       );
     }
   }
 
+  const [, controller, action] = pathname.split('/');
+  const isAccount = controller === 'account';
+  const irRootAccount = isAccount && !/login|logout|register|confirm-email/i.test(action);
   const { hasUser, userName } = authUserProfile;
 
   if(hasUser) {
     return (
       <>
-        <NavItem>
-          <NavLink tag={Link} className="text-dark" to="/account">Hello {userName}</NavLink>
+        <NavItem active={irRootAccount}>
+          <NavLink tag={Link} to="/account">Hello {userName}</NavLink>
         </NavItem>
         {renderAdminPanelLink()}
-        <NavItem>
-          <NavLink tag={Link} className="text-dark" to="/account/logout">Logout</NavLink>
+        <NavItem active={action === 'logout'}>
+          <NavLink tag={Link} to="/account/logout">Logout</NavLink>
         </NavItem>
       </>
     );
@@ -39,11 +40,11 @@ export default function LoginMenu() {
 
   return (
     <>
-      <NavItem>
-        <NavLink tag={Link} className="text-dark" to="/account/register">Register</NavLink>
+      <NavItem active={action === 'register'}>
+        <NavLink tag={Link} to="/account/register">Register</NavLink>
       </NavItem>
-      <NavItem>
-        <NavLink tag={Link} className="text-dark" to="/account/login">Login</NavLink>
+      <NavItem active={action === 'login'}>
+        <NavLink tag={Link} to="/account/login">Login</NavLink>
       </NavItem>
     </>
   ); 

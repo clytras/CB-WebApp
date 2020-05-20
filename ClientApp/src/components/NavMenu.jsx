@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import LoginMenu from '@api-auth/LoginMenu';
-import './NavMenu.css';
 
 
 const Logo = styled.img`
@@ -11,7 +10,16 @@ const Logo = styled.img`
 `;
 
 export default function NavMenu() {
+  const { pathname } = useLocation();
   const [collapsed, setCollapsed] = useState(true);
+  const [routeId, setRouteId] = useState();
+
+
+  // useEffect(() => {
+  //   console.log('location.pathname', location.pathname);
+  //   const [, routeIdSegment] = location.pathname.match(/\/([a-z0-9-]+)/i) || [];
+  //   setRouteId(routeIdSegment);
+  // }, [location]);
 
   const toggleNavbar = () => setCollapsed(!collapsed);
 
@@ -26,10 +34,10 @@ export default function NavMenu() {
           <NavbarToggler onClick={toggleNavbar} className="mr-2" />
           <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!collapsed} navbar>
             <ul className="navbar-nav flex-grow">
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
+              <NavItem active={pathname === '/'}>
+                <NavLink tag={Link} to="/">Home</NavLink>
               </NavItem>
-              <NavItem>
+              {/* <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/counter">Counter</NavLink>
               </NavItem>
               <NavItem>
@@ -37,9 +45,8 @@ export default function NavMenu() {
               </NavItem>
               <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/ajax-auth">Ajax Auth</NavLink>
-              </NavItem>
-              <LoginMenu>
-              </LoginMenu>
+              </NavItem> */}
+              <LoginMenu pathname={pathname} />
             </ul>
           </Collapse>
         </Container>

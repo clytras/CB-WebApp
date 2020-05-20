@@ -10,7 +10,7 @@ export default function FrontContentBase({
   centered = false
 }) {
 
-  let className = `col-md-${columnSize} `;
+  let className = `col-sm-12 col-md-${columnSize} `;
 
   if(offsetSize) {
     className += `col-md-offset-${offsetSize === 'col' ? columnSize : offsetSize} `;

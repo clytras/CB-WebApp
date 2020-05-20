@@ -1,9 +1,11 @@
 import React from 'react';
+import FrontContent from '@components/FrontContent';
 import { Strings } from '@i18n';
 
 
 export function Home() {
 
+  return <FrontContent contentBlocks="Welcome" />;
 
   return (
     <div>
