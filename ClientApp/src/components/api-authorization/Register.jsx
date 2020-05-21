@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import authService from '../AuthorizeService';
+import authService from './AuthorizeService';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import PasswordValidator from 'password-validator';
 import Markdown from '@components/common/Markdown';
@@ -13,6 +13,8 @@ import LoadingButton from '@components/common/LoadingButton';
 import LoadingOverlay from '@components/common/LoadingOverlay';
 import InlineMessage from '@components/common/InlineMessage';
 import FrontContentBase from '@components/common/FrontContentBase';
+import { apiPost } from '@utils/net';
+import HttpStatus from 'http-status-codes';
 import { translateCodeMessage, translateRequestError } from '@i18n';
 
 export default function Register() {
@@ -49,58 +51,51 @@ export default function Register() {
   const handleRegisterFormSubmit = event => {
     event.preventDefault();
 
-    console.log("Submitting Register");
-
-    if(!validateForm()) return;
-
-    setIsProcessing(true);
-
-    RProgressApi.start();
-
-    fetch('/api/Auth/Register', {
-      method: 'POST',
-      mode: 'cors',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        Email: inputEmail,
-        Password: inputPassword,
-        ConfirmPassword: inputConfirmPassword
-      })
-    }).then(async resp => {
-      console.log('Ajax register resp', resp);
-
-      let errorCode;
-
-      if(resp.ok) {
-        let content;
-
-        try {
-          ({ content } = await resp.json());
-        } catch(err) {}
-
-        if(content && !Array.isArray(content)) {
-          content = [content];
+    if(validateForm()) {
+      setIsProcessing(true);
+      RProgressApi.start();
+  
+      apiPost('/api/Auth/Register', {
+        addCsrf: true,
+        params: {
+          Email: inputEmail,
+          Password: inputPassword,
+          ConfirmPassword: inputConfirmPassword
         }
-
-        setAccountCreated(true);
-        setSuccessContent(content);
-      } else {
-        
-        try {
-          ({ errorCode } = await resp.json());
-        } catch(err) {}
-
-        setRegisterError(translateCodeMessage(errorCode, 'LoginFail'));
-      }
-    }).catch(err => {
-      setRequestError(translateRequestError(err));
-    }).finally(() => {
-      RProgressApi.complete();
-      setIsProcessing(false);
-    });
+      }).then(async resp => {
+        console.log('Ajax register resp', resp);
+  
+        let errorCode;
+  
+        if(resp.ok) {
+          let content;
+  
+          try {
+            ({ content } = await resp.json());
+          } catch(err) {}
+  
+          if(content && !Array.isArray(content)) {
+            content = [content];
+          }
+  
+          setAccountCreated(true);
+          setSuccessContent(content);
+        } else if(resp.status === HttpStatus.CONFLICT) {
+          setRegisterError(Strings.messages.Auth.AccountExists);
+        } else {
+          try {
+            ({ errorCode } = await resp.json());
+          } catch(err) {}
+  
+          setRegisterError(translateCodeMessage(errorCode, 'RegistrationError'));
+        }
+      }).catch(err => {
+        setRequestError(translateRequestError(err));
+      }).finally(() => {
+        RProgressApi.complete();
+        setIsProcessing(false);
+      });
+    }
   }
 
   function validateForm() {
@@ -138,9 +133,7 @@ export default function Register() {
     return errors.length === 0;
   }
 
-  function renderBase(content) {
-    return <FrontContentBase columnSize="4">{content}</FrontContentBase>
-  }
+  const renderBase = content => <FrontContentBase columnSize="4" centered>{content}</FrontContentBase>;
 
   if(isFetching) {
     return <LoadingOverlay/>;

@@ -26,6 +26,9 @@ export function translateCodeMessage(code, defCode) {
     case 'AccountLocked': return Strings.messages.Auth.AccountLocked;
     case 'Account2FA': return Strings.messages.Auth.Account2FA;
     case 'LoginFail': return Strings.messages.Auth.LoginFail;
+    case 'AccountExists': return Strings.messages.Auth.AccountExists;
+    case 'RegistrationError': return Strings.messages.Auth.RegistrationError;
+    case 'EmailNotMatchRequest': return Strings.messages.Auth.EmailNotMatchRequest;
     default: return code || defCode;
   }
 }

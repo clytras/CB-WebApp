@@ -37,6 +37,9 @@ export default function NavMenu() {
               <NavItem active={pathname === '/'}>
                 <NavLink tag={Link} to="/">Home</NavLink>
               </NavItem>
+              <NavItem active={/\/contact\/?/i.test(pathname)}>
+                <NavLink tag={Link} to="/contact">Contact</NavLink>
+              </NavItem>
               {/* <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/counter">Counter</NavLink>
               </NavItem>

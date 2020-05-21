@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import { Link, Redirect, useLocation } from 'react-router-dom';
-import authService, { AuthenticationResultStatus } from '../AuthorizeService';
+import authService, { AuthenticationResultStatus } from './AuthorizeService';
 import FrontContentBase from '@components/common/FrontContentBase';
 import { RProgressApi } from 'rprogress';
 import { useStoreOf } from '@stores';
@@ -28,8 +28,6 @@ export default function Login() {
   const [requestError, setRequestError] = useState();
   const [redirectTo, setRedirectTo] = useState();
 
-  console.log('Login', location, authUser, isFetching);
-
   useEffect(() => {
     setIsFetching(true);
     (async () => {
@@ -43,8 +41,6 @@ export default function Login() {
   const handleRememberMeChange = ({ currentTarget: { checked }}) => setInputRememberMe(checked);
 
   const handleLogoutClick = () => {
-    console.log("Logging out");
-
     setIsProcessing(true);
     setLoginError(null);
     setRequestError(null);
@@ -68,8 +64,6 @@ export default function Login() {
 
   const handleLoginFormSubmit = event => {
     event.preventDefault();
-
-    console.log("Submitting Login:addCsrf");
 
     setIsProcessing(true);
     setLoginError(null);
@@ -186,9 +180,6 @@ export default function Login() {
             </p>
             <p>
                 <Link to={"/account/register"}>Register as a new user</Link>
-            </p>
-            <p>
-                <Link to={"/account/resend-email-confirmation"}>Resend email confirmation</Link>
             </p>
           </FormGroup>
 

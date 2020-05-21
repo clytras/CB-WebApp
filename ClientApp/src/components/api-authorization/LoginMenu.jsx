@@ -21,7 +21,7 @@ export default function LoginMenu({ pathname }) {
 
   const [, controller, action] = pathname.split('/');
   const isAccount = controller === 'account';
-  const irRootAccount = isAccount && !/login|logout|register|confirm-email/i.test(action);
+  const irRootAccount = isAccount && !/login|logout|register|reset-password|confirm-email/i.test(action);
   const { hasUser, userName } = authUserProfile;
 
   if(hasUser) {

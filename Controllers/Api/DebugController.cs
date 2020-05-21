@@ -138,14 +138,15 @@ namespace EKETAGreenmindB2B.Controllers.Api
         [HttpPost]
         // [AllowAnonymous]
         [Authorize]
-        [ValidateAntiForgeryToken]
+        // [ValidateAntiForgeryToken]
         public IActionResult TestPostParamsAntiForgery(LoginRequest login)
         {
             if (ModelState.IsValid)
             {
                 return Ok(new {
                     TheUser = login.Email,
-                    login.Password
+                    login.Password,
+                    SessionUser = HttpContext.User.Identity.Name
                 });
             }
 

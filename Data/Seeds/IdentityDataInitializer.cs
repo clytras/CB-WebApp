@@ -75,6 +75,8 @@ namespace EKETAGreenmindB2B.Data.Seeds
                 user.RegistrationDate = DateTime.UtcNow;
 
                 IdentityResult result = userManager.CreateAsync(user, "Christos2020$").Result;
+                // Christos2020!!
+                // Christos2020@@
 
                 if (result.Succeeded)
                 {

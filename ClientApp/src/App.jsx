@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { Route, Switch } from 'react-router';
 import Layout from '@components/Layout';
-import { Home } from '@components/Home';
 import { RProgress } from 'rprogress';
 import { ToastContainer } from 'react-toastify';
 import { FetchData } from '@components/FetchData';
@@ -12,9 +11,12 @@ import ApiAuthorizationRoutes from '@components/api-authorization/ApiAuthorizati
 import { ApplicationPaths } from '@components/api-authorization/ApiAuthorizationConstants';
 import AuthRoute from '@api-auth/AuthRoute';
 import AuthRoleRoute from '@api-auth/AuthRoleRoute';
+import Home from '@components/Home';
+import Contact from '@components/Contact';
 import AdminIndex from '@components/Admin';
 import AccountIndex from '@components/Account';
-import AdminContent from '@components/Admin/Content';
+import ForgotPassword from '@api-auth/ForgotPassword';
+import ResetPassword from '@api-auth/ResetPassword';
 import Login from '@api-auth/Login';
 import Logout from '@api-auth/Logout';
 import Register from '@api-auth/Register';
@@ -82,7 +84,10 @@ function App() {
             <Route path="/account/logout" component={Logout} />
             <Route path="/account/register" component={Register} />
             <Route path="/account/confirm-email/:userId?/:confirmationCode?" component={ConfirmEmail} />
+            <Route path="/account/forgot-password" component={ForgotPassword} />
+            <Route path="/account/reset-password/:userId?/:resetPasswordCode?" component={ResetPassword} />
             <Route path="/account*" component={AccountIndex} />
+            <Route path="/contact" component={Contact} />
 
             <Route path="/debug/ajax-auth" component={AjaxAuth} />
             <Route path="/debug/csrf-post" component={CSRFPost} />
@@ -100,7 +105,7 @@ function App() {
       </Switch>
       <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
       <RProgress color={'red'} type="incremental" />
-      <ToastContainer />
+      <ToastContainer position="bottom-right" />
     </>
   );
 }

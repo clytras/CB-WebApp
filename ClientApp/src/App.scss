@@ -129,11 +129,24 @@ html {
 
   .content {
     font-size: 1.3em;
+
+    h2 {
+      margin-bottom: 1.5rem;
+    }
   }
 
   .account {
     flex-direction: row;
     display: flex;
+
+    > .navbar {
+      align-items: flex-start;
+      border-right: 1px solid #fafafa;
+    }
+
+    > .container {
+      padding-top: .5em;
+    }
   }
 
   .http-status {
@@ -152,7 +165,18 @@ html {
   }
 }
 
+.action-form {
+  &.collapsed {
+    .card-title {
+      margin-bottom: 0;
+    }
+  }
 
+  .card-title {
+    line-height: 1em;
+    cursor: pointer;
+  }
+}
 
 .datatable-actions {
   overflow: visible !important;
@@ -167,3 +191,15 @@ html {
   }
 }
 
+.button-group {
+  &.horizontal {
+
+    button:not(:last-child) {
+      margin-right: 6px;
+    }
+  }
+
+  &.fluid {
+    flex: 1;
+  }
+}

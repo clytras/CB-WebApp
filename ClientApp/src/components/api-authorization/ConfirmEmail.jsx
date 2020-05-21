@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Alert } from 'reactstrap';
 import FrontContentBase from '@components/common/FrontContentBase';
 import LoadingOverlay from '@components/common/LoadingOverlay';
+import AuthorizeService from '@api-auth/AuthorizeService';
 import { Link, Redirect } from 'react-router-dom';
 import { RProgressApi } from 'rprogress';
 // import { useStoreOf } from '@stores';
@@ -40,36 +41,26 @@ export default function ConfirmEmail({
           UserId: userId,
           ConfirmationCode: confirmationCode
         }
-      }).then(async resp => {
-        console.log('Ajax confirm email resp', resp);
-        setEmailConfirmed(resp.ok);
+      }).then(async ({ ok }) => {
+        console.log('Ajax confirm email resp', ok);
+
+        if(ok) {
+          try {
+            const userProfile = await AuthorizeService.getUserProfile();
+
+            if(userProfile.hasUser) {
+              await AuthorizeService.ajaxSignIn();
+            }
+          } catch(err) {}
+        }
+        
+        setEmailConfirmed(ok);
       }).catch(err => {
         setRequestError(translateRequestError(err));
       }).finally(() => {
         RProgressApi.complete();
         setIsLoading(false);
       });
-
-      // fetch('/api/Auth/ConfirmEmail', {
-      //   method: 'POST',
-      //   mode: 'cors',
-      //   credentials: 'same-origin',
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: JSON.stringify({
-      //     UserId: userId,
-      //     ConfirmationCode: confirmationCode
-      //   })
-      // }).then(async resp => {
-      //   console.log('Ajax confirm email resp', resp);
-      //   setEmailConfirmed(resp.ok);
-      // }).catch(err => {
-      //   setRequestError(translateRequestError(err));
-      // }).finally(() => {
-      //   RProgressApi.complete();
-      //   setIsLoading(false);
-      // });
     }
   }
 
@@ -103,7 +94,7 @@ export default function ConfirmEmail({
       <>
         <Alert color="warning">This email confirmation request is invalid or the validation code is expired</Alert>
         <p>
-          <Link to={"/account/forgot-password"}>Resend confirmation email</Link>
+          <Link to={"/account/settings"}>Resend confirmation email</Link>
         </p>
       </>
     );

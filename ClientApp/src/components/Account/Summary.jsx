@@ -1,5 +1,12 @@
 import React, { useEffect } from 'react';
+import EmailVerificationNotice from './EmailVerificationNotice';
+
 
 export default function Summary() {
-  return <div>Summary</div>;
+  return (
+    <>
+      <EmailVerificationNotice/>
+      <div>Summary</div>
+    </>
+  );
 }

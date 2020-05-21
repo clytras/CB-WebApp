@@ -3,7 +3,7 @@ import FrontContent from '@components/FrontContent';
 import { Strings } from '@i18n';
 
 
-export function Home() {
+export default function Home() {
 
   return <FrontContent contentBlocks="Welcome" />;
 

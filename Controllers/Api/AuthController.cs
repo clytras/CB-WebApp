@@ -259,8 +259,65 @@ namespace EKETAGreenmindB2B.Controllers.Api
         }
 
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendResetPasswordRequest(EmailRequest emailRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(emailRequest.Email);
+                if (user != null)
+                {
+                    await sendPasswordResetMail(user, emailRequest.Email);
+                }
+
+                return Ok();
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest resetPasswordRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByIdAsync(resetPasswordRequest.UserId);
+
+                if(user != null)
+                {
+                    if(!user.Email.Equals(resetPasswordRequest.Email.Trim(), StringComparison.CurrentCultureIgnoreCase)) {
+                        return new BadRequestJsonResult("EmailNotMatchRequest");
+                    }
+
+                    if(!resetPasswordRequest.NewPassword.Equals(resetPasswordRequest.ConfirmPassword)) {
+                        return new BadRequestJsonResult("PasswordNotMatch");
+                    }
+
+                    ZxcvbnResult passwordStrength = Zxcvbn.Evaluate(resetPasswordRequest.NewPassword);
+
+                    if(passwordStrength.Score < 3)
+                    {
+                        return new BadRequestJsonResult("PasswordLowStrength");
+                    }
+
+                    var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequest.ConfirmationCode));
+                    var result = await userManager.ResetPasswordAsync(user, code, resetPasswordRequest.NewPassword);
+
+                    if(result.Succeeded)
+                        return Ok();
+                    else
+                        return StatusCode(StatusCodes.Status410Gone);
+                }
+
+                return NotFound();
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        [HttpPost]
+        [Authorize]
         public async Task<IActionResult> ResendEmailConfirmation(EmailRequest emailRequest)
         {
             if (ModelState.IsValid)
@@ -299,7 +356,7 @@ namespace EKETAGreenmindB2B.Controllers.Api
                 if (user != null)
                 {
                     await signInManager.SignOutAsync();
-                    Microsoft.AspNetCore.Identity.SignInResult result = await signInManager.PasswordSignInAsync(user, loginRequest.Password, loginRequest.RememberMe, false);
+                    var result = await signInManager.PasswordSignInAsync(user, loginRequest.Password, loginRequest.RememberMe, false);
                     // if (result.Succeeded)
                     //     return Redirect(login.ReturnUrl ?? "/");
                     if(result.Succeeded) 
@@ -335,6 +392,59 @@ namespace EKETAGreenmindB2B.Controllers.Api
         {
             await signInManager.SignOutAsync();
             return Ok();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest changePasswordRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
+
+                if(user != null)
+                {
+                    if(!changePasswordRequest.NewPassword.Equals(changePasswordRequest.ConfirmPassword)) {
+                        return new BadRequestJsonResult("PasswordNotMatch");
+                    }
+
+                    ZxcvbnResult passwordStrength = Zxcvbn.Evaluate(changePasswordRequest.NewPassword);
+
+                    if(passwordStrength.Score < 3)
+                    {
+                        return new BadRequestJsonResult("PasswordLowStrength");
+                    }
+
+                    var result = await userManager.ChangePasswordAsync(user, changePasswordRequest.CurrentPassword, changePasswordRequest.NewPassword);
+
+                    if(result.Succeeded)
+                    {
+                        return Ok();
+                    }
+                }
+
+                return Unauthorized();
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        private async Task sendPasswordResetMail(ApplicationUser user, string email)
+        {
+            var userId = await userManager.GetUserIdAsync(user);
+            var code = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            const string view = "/Pages/Templates/Email/Account/ResetPassword";
+            string callbackUrl = $"{Request.Scheme}://{Request.Host.Value}/account/reset-password/{user.Id}/{code}";
+
+            var model = new ResetPasswordViewModel(user.Id, code, callbackUrl);
+
+            var htmlBody = await razorRenderer.RenderViewToStringAsync($"{view}Html.cshtml", model);
+            var textBody = await razorRenderer.RenderViewToStringAsync($"{view}Text.cshtml", model);
+
+            await appEmailSender.SendEmailAsync(email, "Reset your password", htmlBody, textBody);
         }
 
         private async Task sendConfirmationMail(ApplicationUser user, string email)
