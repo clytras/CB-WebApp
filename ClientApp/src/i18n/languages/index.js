@@ -1,5 +1,5 @@
 import en from './en-US';
-import el from './el-GR';
+// import el from './el-GR';
 
 const supportedLanguageDefs = {
   en: {
@@ -8,21 +8,21 @@ const supportedLanguageDefs = {
     title: 'English',
     flagISO: 'us'
   },
-  el: {
-    locale: 'el-GR',
-    language: 'el',
-    title: 'Ελληνικά',
-    flagISO: 'gr'
-  }
+  // el: {
+  //   locale: 'el-GR',
+  //   language: 'el',
+  //   title: 'Ελληνικά',
+  //   flagISO: 'gr'
+  // }
 }
 
 export {
   en,
-  el,
+  // el,
   supportedLanguageDefs
 }
 
 export default {
   en,
-  el
+  // el
 }

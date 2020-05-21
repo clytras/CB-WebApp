@@ -11,6 +11,8 @@
     "http-status-codes": "^1.4.0",
     "jquery": "^3.5.1",
     "js-cookie": "^2.2.1",
+    "lodash.get": "^4.4.2",
+    "lodash.startcase": "^4.4.0",
     "luxon": "^1.24.1",
     "lyxlib": "git+https://github.com/clytras/lyxlib.git",
     "markdown-it": "^10.0.0",
