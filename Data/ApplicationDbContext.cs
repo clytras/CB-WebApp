@@ -20,6 +20,24 @@ namespace EKETAGreenmindB2B.Data
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<BusinessProfileActivities>()
+                .HasKey(t => new { t.ProfileId, t.ActivityId });
+
+            modelBuilder.Entity<BusinessActivitiesOptions>()
+                .HasAlternateKey(a => a.ActivityOptionAlias);
+        }
+
+
         public DbSet<ContentBlock> ContentBlock { get; set; }
+        public DbSet<BusinessProfile> BusinessProfiles { get; set; }
+        public DbSet<BusinessActivitiesOptions> BusinessActivitiesOptions { get; set; }
+        public DbSet<BusinessContact> BusinessContact { get; set; }
+        public DbSet<BusinessAddress> BusinessAddress { get; set; }
+        public DbSet<BusinessProfileOtherActivities> BusinessProfileOtherActivities { get; set; }
+        public DbSet<BusinessProfileActivities> BusinessProfileActivities { get; set; }
     }
 }

@@ -1,112 +1,17 @@
 import startCase from 'lodash.startcase';
+import get from 'lodash.get';
 import { Strings } from '@i18n';
+import BusinessActivities from './Activities';
 
-/**
- * Dollar sign ($) is for list options collection or for a single option item
- */
 
-export default BusinessLists = {
-  TopicsOfInterest: {
-    CleanPowerTransport: {
-      $: [
-        'Electromobility',
-        'MicroMobility',
-        'Biofuels',
-        'HydrogenMobility'
-      ]
-    },
-    AirMobility: {
-      $: [
-        'DronesManufacturing',
-        'DronesTrading'
-      ]
-    },
-    Logistics: {
-      $: [
-        'LastmileLogistics',
-        'DronesApplicationsForLogistics'
-      ]
-    },
-    UrbanMobility: {
-      $: [
-        'SharedMobility',
-        'TrafficManagementSystems'
-      ]
-    },
-    TransportInfrastructure: {
-      $: [
-        'RailInfrastructure',
-        'RoadInfrastructure',
-        'MaritimeInfrastructure',
-        'AirTransportInfrastructure'
-      ]
-    },
-    Automotive: {
-      $: [
-        'ElectricVehiclesManufacturing',
-        'ElectricVehiclesTrading',
-        'AutonomousVehiclesManufacturing',
-        'AutonomousVehiclesTrading'
-      ]
-    },
-    ICTTransport: {
-      $: [
-        'ITSSystems',
-        'CITSSystems',
-        'DataAnalyticsTransport'
-      ]
-    },
-    TransportPolicy: '$',
-    ConsultingServices: '$'
-  },
-  Offer: {
-    Collaboration: {
-      $: [
-        'ForFundingCall',
-        'DevelopNewProduct',
-        'DevelopNewService'
-      ]
-    },
-    TechnicalCooperation: '$',
-    ConsultingServices: {
-      $: [
-        'BusinessConsultingServices',
-        'TransportRelatedConsultingServices',
-      ]
-    }
-  },
-  Request: {
-    Collaboration: {
-      $: [
-        'ForFundingCall',
-        'DevelopNewProduct',
-        'DevelopNewService'
-      ]
-    },
-    Supplier: {
-      $: [
-        'ForComponents',
-        'ForServices',
-        'ForData'
-      ]
-    },
-    ConsultingServices: {
-      $: [
-        'BusinessConsultingServices',
-        'TransportRelatedConsultingServices',
-      ]
-    }
-  }
-}
-
-export function getFlatList(path, {
+export function getActivitiesFlatList(path, {
   options = true,
   onlyOptions = false
 } = {}) {
-  const list = path ? get(BusinessLists, path) : BusinessLists;
+  const list = path ? get(BusinessActivities, path) : BusinessActivities;
   const prepend = (path || '').split('.')[0];
   const recurse = (items, prepend) => {
-    const result = [];
+    let result = [];
     const entries = Object.entries(items);
 
     for (const [alias, children] of entries) {    
@@ -124,9 +29,13 @@ export function getFlatList(path, {
           const item = prepend ? [prepend, $option].join('.') : $option;
           result.push(item);
         }
-      } else if (!onlyOptions) {
+      } else {
         const item = prepend ? [prepend, alias].join('.') : alias;
-        result.push(item);
+
+        if (!onlyOptions) {
+          result.push(item);
+        }
+
         result = result.concat(recurse(children, item));
       }
       
@@ -140,15 +49,15 @@ export function getFlatList(path, {
   }
 }
 
-export function getListItemName(item, removeOptionSign = false) {
+export function getActivitiesListItemName(item, removeOptionSign = false) {
   if (item) {
     const [, name] = item.match(removeOptionSign ? /\.?\$(\w+)$/ : /\.?(\$?\w+)$/);
     return name;
   }
 }
 
-export function getListItemText(item) {
-  const name = getListItemName(item, true);
+export function getActivitiesListItemText(item) {
+  const name = getActivitiesListItemName(item, true);
 
   if (name) {
     if (name in Strings.Business.Lists) {
@@ -161,7 +70,7 @@ export function getListItemText(item) {
   return `[${item}:text]`;
 }
 
-export function getAllEntryNames() {
+export function getAllActivitiesEntryNames() {
   const names = [];
   const recurse = (items) => {
     const entries = Object.entries(items);
@@ -188,6 +97,6 @@ export function getAllEntryNames() {
     }
   }
 
-  recurse(BusinessLists);
+  recurse(BusinessActivities);
   return names;
 }
