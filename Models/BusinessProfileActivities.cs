@@ -19,11 +19,6 @@ namespace EKETAGreenmindB2B.Models
         [JsonIgnore]
         public BusinessProfile Profile { get; set; }
 
-        // [ForeignKey("BusinessActivitiesOptions")]
         public long ActivityId { get; set; }
-
-        // [JsonIgnore]
-        // // [ForeignKey("BusinessActivitiesOptions")]
-        // public BusinessActivitiesOptions Activity { get; }
     }
 }

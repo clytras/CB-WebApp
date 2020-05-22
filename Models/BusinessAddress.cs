@@ -37,12 +37,7 @@ namespace EKETAGreenmindB2B.Models
         [MaxLength(3)]
         public string Country { get; set; }
 
-        // [ForeignKey("BusinessProfile")]
-        // [JsonIgnore]
         public long ProfileId { get; set; }
-
-        // [JsonIgnore]
-        // public ICollection<BusinessProfile> Profiles { get; set; }
 
         [JsonIgnore]
         public BusinessProfile Profile { get; set; }

@@ -27,6 +27,7 @@ namespace EKETAGreenmindB2B.Data.Migrations
                 {
                     ProfileId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    IsProfileVisible = table.Column<bool>(nullable: true, defaultValue: true),
                     CompanyName = table.Column<string>(nullable: false),
                     Email = table.Column<string>(nullable: true),
                     Telephone = table.Column<string>(nullable: false),

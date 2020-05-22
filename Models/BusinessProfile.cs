@@ -15,6 +15,8 @@ namespace EKETAGreenmindB2B.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ProfileId { get; set; }
 
+        public bool? IsProfileVisible { get; set; }
+
         [Required]
         public string CompanyName { get; set; }
 
@@ -25,35 +27,15 @@ namespace EKETAGreenmindB2B.Models
         [Required]
         public string Telephone { get; set; }
 
-        // [Required]
-        // [ForeignKey("ApplicationUser")]
-        // public string UserId { get; set; }
-
-        // [Required]
         [JsonIgnore]
         public ApplicationUser User { get; set; }
 
-        // [Required]
         public BusinessAddress CompanyLocation { get; set; }
 
-        // [ForeignKey("BusinessContact")]
-        // public long ContactId { get; set; }
-
-        // [ForeignKey("BusinessAddress")]
-        // public long AddressId { get; set; }
-
-        // [ForeignKey("BusinessContact")]
-        // [Required]
         public BusinessContact ContactPerson { get; set; }
 
-        // [ForeignKey("BusinessProfileActivities")]
-        // public long ActivityId { get; set; }
-        // public ICollection<BusinessProfileActivities> Activities { get; set; }
-
-        // public ICollection<BusinessProfileActivities> Activities { get; } = new List<BusinessProfileActivities>();
         public ICollection<BusinessProfileActivities> Activities { get; set; }
 
-        // public long OtherActivityId { get; set; }
         public ICollection<BusinessProfileOtherActivities> OtherActivities { get; set; }
     }
 }

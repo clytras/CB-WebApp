@@ -23,12 +23,9 @@ namespace EKETAGreenmindB2B.Models
 
         public string Telephone { get; set; }
 
-        // [ForeignKey("BusinessProfile")]
-        // [JsonIgnore]
         public long ProfileId { get; set; }
 
         [JsonIgnore]
-        // public ICollection<BusinessProfile> Profiles { get; set; }
         public BusinessProfile Profile { get; set; }
     }
 }

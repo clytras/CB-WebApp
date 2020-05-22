@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EKETAGreenmindB2B.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200522122051_CreateBusinessProfileModel")]
+    [Migration("20200522133314_CreateBusinessProfileModel")]
     partial class CreateBusinessProfileModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -198,6 +198,11 @@ namespace EKETAGreenmindB2B.Data.Migrations
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsProfileVisible")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Telephone")
                         .IsRequired()

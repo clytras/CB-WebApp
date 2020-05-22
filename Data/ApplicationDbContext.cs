@@ -29,6 +29,10 @@ namespace EKETAGreenmindB2B.Data
 
             modelBuilder.Entity<BusinessActivitiesOptions>()
                 .HasAlternateKey(a => a.ActivityOptionAlias);
+
+            modelBuilder.Entity<BusinessProfile>()
+                .Property(p => p.IsProfileVisible)
+                .HasDefaultValue(true);
         }
 
 
