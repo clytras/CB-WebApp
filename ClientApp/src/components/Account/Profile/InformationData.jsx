@@ -64,7 +64,6 @@ export default function InformationData() {
 
   useEffect(() => {
     if (!useAccountEmail) {
-      // setTimeout(() => inputEmailRef.current.focus(), 300);
       inputEmailRef.current.focus()
     }
   }, [useAccountEmail]);
@@ -83,48 +82,48 @@ export default function InformationData() {
 
     setProcessing(true);
     setTimeout(() => setProcessing(false), 2000);
-    return;
+    // return;
 
 
-    setActionError();
-    setError();
+    // setActionError();
+    // setError();
 
-    if(validate()) {
-      RProgressApi.start();
-      setProcessing(true);
-      apiPost(`/api/Auth/ChangePassword`, {
-        addAuth: true,
-        params: {
-          CurrentPassword: inputCurrentPassword,
-          NewPassword: inputNewPassword,
-          ConfirmPassword: inputConfirmPassword
-        }
-      }).then(async resp => {
-        if(resp.ok) {
-          setInputCurrentPassword('');
-          setInputNewPassword('');
-          setInputConfirmPassword('');
-          setInputPasswordScore(0);
-          toast.success(Strings.messages.Auth.PasswordChangedSuccessfully);
-        } else if(resp.status === HttpStatus.UNAUTHORIZED) {
-          setInputCurrentPassword('');
-          setActionError(Strings.messages.Auth.CheckCurrentPasswordRetry);
-        } else {
-          let errorCode;
+    // if(validate()) {
+    //   RProgressApi.start();
+    //   setProcessing(true);
+    //   apiPost(`/api/Auth/ChangePassword`, {
+    //     addAuth: true,
+    //     params: {
+    //       CurrentPassword: inputCurrentPassword,
+    //       NewPassword: inputNewPassword,
+    //       ConfirmPassword: inputConfirmPassword
+    //     }
+    //   }).then(async resp => {
+    //     if(resp.ok) {
+    //       setInputCurrentPassword('');
+    //       setInputNewPassword('');
+    //       setInputConfirmPassword('');
+    //       setInputPasswordScore(0);
+    //       toast.success(Strings.messages.Auth.PasswordChangedSuccessfully);
+    //     } else if(resp.status === HttpStatus.UNAUTHORIZED) {
+    //       setInputCurrentPassword('');
+    //       setActionError(Strings.messages.Auth.CheckCurrentPasswordRetry);
+    //     } else {
+    //       let errorCode;
 
-          try {
-            ({ errorCode } = await resp.json());
-          } catch(err) {}
+    //       try {
+    //         ({ errorCode } = await resp.json());
+    //       } catch(err) {}
   
-          setActionError(translateCodeMessage(errorCode, `${HttpStatus.getStatusText(resp.status)} (${resp.status})`));
-        }
-      }).catch(err => {
-        setError(translateRequestError(err));
-      }).finally(() => {
-        RProgressApi.complete();
-        setProcessing(false);
-      });
-    }
+    //       setActionError(translateCodeMessage(errorCode, `${HttpStatus.getStatusText(resp.status)} (${resp.status})`));
+    //     }
+    //   }).catch(err => {
+    //     setError(translateRequestError(err));
+    //   }).finally(() => {
+    //     RProgressApi.complete();
+    //     setProcessing(false);
+    //   });
+    // }
   }
 
   function validate() {
