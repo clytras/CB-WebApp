@@ -1,14 +1,16 @@
 import React from 'react';
 import useGlobalHook from 'use-global-hook';
 import { UserProfile } from '@api-auth/AuthorizeService';
+import { BusinessProfile } from '@data/BusinessProfile';
 import * as actions from './actions';
 
 const initialState = {
   appLanguage: null,
+  authReady: false,
   authUser: null,
-  authUserProfile: new UserProfile,
-  meta: {},
-  counter: 12,
+  authUserProfile: new UserProfile(),
+  userBusinessProfile: new BusinessProfile(),
+  meta: {}
 }
 
 const globalHook = useGlobalHook(React, initialState, actions);

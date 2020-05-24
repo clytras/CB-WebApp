@@ -1,21 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import authService from './AuthorizeService';
-import PasswordStrengthBar from 'react-password-strength-bar';
-import PasswordValidator from 'password-validator';
-import Markdown from '@components/common/Markdown';
 import isEmail from 'validator/lib/isEmail';
 import { RProgressApi } from 'rprogress';
-import { useStoreOf } from '@stores';
 import { apiPost } from '@utils/net';
-import Delayed from '@components/common/Delayed';
 import LoadingButton from '@components/common/LoadingButton';
-import LoadingOverlay from '@components/common/LoadingOverlay';
 import InlineMessage from '@components/common/InlineMessage';
 import FrontContentBase from '@components/common/FrontContentBase';
-import HttpStatus from 'http-status-codes';
-import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
+import { Strings, translateRequestError } from '@i18n';
 
 export default function ForgotPassword() {
   const [inputEmail, setInputEmail] = useState('');
@@ -102,7 +93,6 @@ export default function ForgotPassword() {
               <LoadingButton loading={processing}>Send reset email</LoadingButton>
             </FormGroup>
           )}
-
         </Form>
       </section>
     </>

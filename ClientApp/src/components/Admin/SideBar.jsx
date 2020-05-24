@@ -26,7 +26,7 @@ export default function SideBar() {
         {/* <span color="info" style={{color: '#fff'}}>&times;</span> */}
         {/* <h3>Bootstrap Sidebar</h3> */}
         <Link to="/">
-          <img className="logo" src="/assets/Interreg-Greenmind-Logo_alpha.png"/>
+          <img alt="Admin Logo" className="logo" src="/assets/Interreg-Greenmind-Logo_alpha.png"/>
         </Link>
       </div>
       <div className="side-menu">

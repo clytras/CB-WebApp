@@ -5,7 +5,6 @@ import MarkdownIt from 'markdown-it'
 import MdEditor from 'react-markdown-editor-lite'
 import LoadingOverlay from '@components/common/LoadingOverlay';
 import LoadingButton from '@components/common/LoadingButton';
-import FeedbackMessage from '@components/common/FeedbackMessage';
 import Delayed from '@components/common/Delayed';
 import InlineMessage from '@components/common/InlineMessage';
 import { RProgressApi } from 'rprogress';
@@ -35,7 +34,7 @@ export default function CU({
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if(itemId) {
+    if (itemId) {
       RProgressApi.start();
 
       apiGet(`/api/Content/${itemId}`).then(async resp => {
@@ -58,6 +57,7 @@ export default function CU({
       setShowForm(true);
       setIsLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCancelClick = () => setRedirectTo('/admin/content');

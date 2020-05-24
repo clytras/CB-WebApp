@@ -7,7 +7,8 @@
           ["@i18n", "./src/i18n"],
           ["@stores", "./src/stores"],
           ["@utils", "./src/utils"],
-          ["@api-auth", "./src/components/api-authorization"]
+          ["@api-auth", "./src/components/api-authorization"],
+          ["@data", "./src/data"]
         ]
       }
     }

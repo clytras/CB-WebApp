@@ -1,73 +1,73 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import DateTime from 'luxon/src/datetime.js'
-import { Link, Redirect } from 'react-router-dom';
-import { Container, Row, Col, Button } from 'reactstrap';
-import DataTable, { Actions } from '@components/common/DataTable';
+// import { Link, Redirect } from 'react-router-dom';
+import { Container, Row, Col /*, Button*/ } from 'reactstrap';
+import DataTable /*, { Actions }*/ from '@components/common/DataTable';
 import InlineMessage from '@components/common/InlineMessage';
 import { RProgressApi } from 'rprogress';
-import { apiGet, apiDelete } from '@utils/net';
+import { apiGet /*, apiDelete*/ } from '@utils/net';
 import { translateRequestError, httpRejectedError } from '@i18n';
 import MsgBox from '@components/common/MsgBox';
-import { toast } from 'react-toastify';
-import { Strings } from '@i18n';
+// import { toast } from 'react-toastify';
+// import { Strings } from '@i18n';
 
 
 export default function Users() {
   const [rows, setRows] = useState([]);
-  const [doEditId, setDoEditId] = useState();
+  // const [doEditId, setDoEditId] = useState();
   const [pending, setPending] = useState(true);
   const [fetchError, setFetchError] = useState();
   const [requestError, setRequestError] = useState();
   const msgboxRef = useRef();
 
-  const handleEditClick = ({ target }) => {
-    console.log('Edit', target.dataset.id);
-    setDoEditId(target.dataset.id);
-  }
-  const handleDeleteClick = ({ target }) => {
-    console.log('Delete', target.dataset.id, target.parentNode);
+  // const handleEditClick = ({ target }) => {
+  //   console.log('Edit', target.dataset.id);
+  //   setDoEditId(target.dataset.id);
+  // }
+  // const handleDeleteClick = ({ target }) => {
+  //   console.log('Delete', target.dataset.id, target.parentNode);
 
-    const { id } = target.dataset;
+  //   const { id } = target.dataset;
 
-    if(id) {
-      msgboxRef.current.show({
-        title: `Delete Content Block Id#${id}?`,
-        message: `${Strings.messages.DeleteEntry}`,
-        color: 'danger',
-        buttons: 'delete,cancel',
-        onConfirm: async () => {
-          console.log('deleting', id);
+  //   if(id) {
+  //     msgboxRef.current.show({
+  //       title: `Delete Content Block Id#${id}?`,
+  //       message: `${Strings.messages.DeleteEntry}`,
+  //       color: 'danger',
+  //       buttons: 'delete,cancel',
+  //       onConfirm: async () => {
+  //         console.log('deleting', id);
 
-          target.parentNode.classList.add('disabled');
+  //         target.parentNode.classList.add('disabled');
 
-          try {
-            const resp = await apiDelete(`/api/Content/${id}`, { addAuth: true });
+  //         try {
+  //           const resp = await apiDelete(`/api/Content/${id}`, { addAuth: true });
 
-            if(resp.ok) {
-              toast.success(Strings.messages.EntryDeleted);
+  //           if(resp.ok) {
+  //             toast.success(Strings.messages.EntryDeleted);
 
-              setRows(prevRows => {
-                const rowIndex = prevRows.findIndex(item => item.id == id);
+  //             setRows(prevRows => {
+  //               const rowIndex = prevRows.findIndex(item => item.id == id);
       
-                if(rowIndex !== -1) {
-                  prevRows.splice(rowIndex, 1);
-                  return [...prevRows];
-                }
+  //               if(rowIndex !== -1) {
+  //                 prevRows.splice(rowIndex, 1);
+  //                 return [...prevRows];
+  //               }
     
-                return prevRows;
-              });
-            } else {
-              target.parentNode.classList.remove('disabled');
-              setFetchError(httpRejectedError(resp.status));
-            }
-          } catch(err) {
-            target.parentNode.classList.remove('disabled');
-            setRequestError(translateRequestError(err && err.message));
-          }
-        }
-      });
-    }
-  }
+  //               return prevRows;
+  //             });
+  //           } else {
+  //             target.parentNode.classList.remove('disabled');
+  //             setFetchError(httpRejectedError(resp.status));
+  //           }
+  //         } catch(err) {
+  //           target.parentNode.classList.remove('disabled');
+  //           setRequestError(translateRequestError(err && err.message));
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
 
   const columns = useMemo(() => [
     {

@@ -9,8 +9,6 @@ import LoadingButton from '@components/common/LoadingButton';
 import LoadingOverlay from '@components/common/LoadingOverlay';
 import InlineMessage from '@components/common/InlineMessage';
 import Delayed from '@components/common/Delayed';
-import { StyleSheet, css } from 'aphrodite';
-import clsx from 'clsx';
 import { translateCodeMessage, translateRequestError } from '@i18n';
 import { apiPost } from '@utils/net';
 
@@ -188,9 +186,3 @@ export default function Login() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    margin: 'auto'
-  }
-});

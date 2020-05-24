@@ -5,12 +5,6 @@ import LoadingOverlay from '@components/common/LoadingOverlay';
 import AuthorizeService from '@api-auth/AuthorizeService';
 import { Link, Redirect } from 'react-router-dom';
 import { RProgressApi } from 'rprogress';
-// import { useStoreOf } from '@stores';
-// import { Strings } from '@i18n';
-
-// import InlineMessage from '@components/common/InlineMessage';
-// import { StyleSheet, css } from 'aphrodite';
-// import clsx from 'clsx';
 import { translateRequestError } from '@i18n';
 import { apiPost } from '@utils/net';
 
@@ -26,6 +20,7 @@ export default function ConfirmEmail({
   const [requestError, setRequestError] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => confirmEmail(), []);
 
   const renderBase = content => <FrontContentBase columnSize="6" centered>{content}</FrontContentBase>;

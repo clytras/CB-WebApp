@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Label, Input, Row, Col } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import authService from './AuthorizeService';
+import { Redirect } from 'react-router-dom';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import PasswordValidator from 'password-validator';
-import Markdown from '@components/common/Markdown';
 import isEmail from 'validator/lib/isEmail';
 import { RProgressApi } from 'rprogress';
-import { useStoreOf } from '@stores';
-import Delayed from '@components/common/Delayed';
 import LoadingButton from '@components/common/LoadingButton';
-import LoadingOverlay from '@components/common/LoadingOverlay';
 import InlineMessage from '@components/common/InlineMessage';
 import FrontContentBase from '@components/common/FrontContentBase';
 import { apiPost } from '@utils/net';
 import HttpStatus from 'http-status-codes';
 import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
+
 
 export default function ResetPassword({
   match: {
@@ -24,7 +20,6 @@ export default function ResetPassword({
     }
   }
 }) {
-  // const [authUserProfile] = useStoreOf('authUserProfile');
   const [inputEmail, setInputEmail] = useState('');
   const [inputNewPassword, setInputNewPassword] = useState('');
   const [inputConfirmPassword, setInputConfirmPassword] = useState('');
@@ -113,20 +108,6 @@ export default function ResetPassword({
     setActionError(errors);
     return errors.length === 0;
   }
-
-  // const { hasUser = false, emailVerified = false } = authUserProfile || {};
-
-  // if(!hasUser) {
-  //   return renderBase(
-  //     <Delayed>
-  //       <InlineMessage text={Strings.messages.Auth.ActionOnlyForAuth} color="warning" />
-  //     </Delayed>
-  //   );
-  // }
-
-  // if(emailVerified) {
-  //   return renderBase(<InlineMessage text={Strings.messages.Auth.EmailIsVerified} color="success" />);
-  // }
 
   if(!userId || !resetPasswordCode) {
     return <Redirect to="/"/>;

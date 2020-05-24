@@ -1,48 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import authService from './AuthorizeService'
+import { useStoreOf } from '@stores';
 
 
 export default function AuthRoute({
   children,
   ...rest
 }) {
-  const [ready, setReady] = useState(false);
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authReady] = useStoreOf('authReady');
+  const [authUserProfile] = useStoreOf('authUserProfile');
+  const { hasUser = false } = authUserProfile || {};
 
-  useEffect(() => {
-    const authSubscription = authService.subscribe(authCheck);
+  console.log('AuthRoute', authReady, hasUser);
 
-    authCheck();
-
-    return () => {
-      authSubscription && authService.unsubscribe(authSubscription);
-    }
-  }, []);
-
-  const authCheck = async () => {
-    setReady(false);
-
-    const isAuth = await authService.isAuthenticated();
-    let user;
-
-    if(isAuth) {
-      user = await authService.getUser();
-    }
-
-    setAuthenticated(isAuth);
-    setReady(true);
-  }
-
-  if(!ready) {
+  if (!authReady) {
     return null;
   }
 
-  console.log('AuthRoute', authenticated);
-
   return <Route 
     {...rest}
-    render={({ location }) => authenticated ? children : (
+    render={({ location }) => hasUser ? children : (
       <Redirect to={{
         pathname: '/account/login',
         state: { from: location }

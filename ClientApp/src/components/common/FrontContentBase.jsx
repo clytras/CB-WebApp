@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
-import clsx from 'clsx';
 
 
 export default function FrontContentBase({

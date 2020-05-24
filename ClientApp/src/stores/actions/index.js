@@ -13,6 +13,10 @@ export const setAppMeta = (store, meta) => {
   store.setState({ meta });
 }
 
+export const setAuthReady = (store, authReady) => {
+  store.setState({ authReady });
+}
+
 export const setAuthUser = (store, authUser) => {
   store.setState({ authUser });
 }
@@ -20,3 +24,8 @@ export const setAuthUser = (store, authUser) => {
 export const setAuthUserProfile = (store, authUserProfile) => {
   store.setState({ authUserProfile });
 }
+
+export const setUserBusinessProfile = (store, userBusinessProfile) => {
+  store.setState({ userBusinessProfile });
+}
+

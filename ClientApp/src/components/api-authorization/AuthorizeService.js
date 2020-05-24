@@ -53,7 +53,7 @@ export class AuthorizeService {
     const user = await this.userManager.getUser();
 
     const tokenExpiresAt = new Date(user.expires_at * 1000);
-    const now = new Date;
+    const now = new Date();
 
     if(tokenExpiresAt <= now) {
       const silentUser = await this.userManager.signinSilent(this.createArguments());

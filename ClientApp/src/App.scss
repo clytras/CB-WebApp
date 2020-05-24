@@ -1,7 +1,17 @@
+// Predifined media query sizes
+$break-small: 320px;
+$break-mobile: 576px;
+$break-medium: 768px;
+$break-large: 1200px;
+
+html, body, #root {
+  height: 100%;
+}
+
 html {
   font-size: 14px;
 }
-@media (min-width: 768px) {
+@media (min-width: $break-medium) {
   html {
     font-size: 16px;
   }
@@ -44,7 +54,6 @@ html {
           }
         }
       }
-
     }
   }
 
@@ -104,6 +113,10 @@ html {
 }
 
 .front {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
   header {
     nav {
       background-color: lawngreen;
@@ -123,6 +136,25 @@ html {
     }
   }
 
+  > .container {
+    flex: 1;
+    margin-bottom: 10rem;
+  }
+
+  footer {
+    background-color: #f4f4f4;
+    box-shadow: 0 0 0.75rem rgba(0, 0, 0, 0.23);
+    border-top: 1px solid #dee2e6 !important;
+
+    .copyright {
+      color: grey;
+
+      p {
+        margin: 0;
+      }
+    }
+  }
+
   .box-shadow {
     box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
   }
@@ -138,6 +170,18 @@ html {
   .account {
     flex-direction: row;
     display: flex;
+
+    @media (max-width: $break-mobile) {
+      flex-direction: column;
+
+      > .navbar {
+        border: none !important;
+
+        .nav {
+          flex: 1;
+        }
+      }
+    }
 
     > .navbar {
       align-items: flex-start;
@@ -172,9 +216,17 @@ html {
     }
   }
 
+  // .collapse {
+  //   padding-top: 1em;
+  // }
+
   .card-title {
+    margin-bottom: 0;
     line-height: 1em;
-    cursor: pointer;
+
+    &.toggle {
+      cursor: pointer;
+    }
   }
 }
 

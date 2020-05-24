@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, FormGroup, Form, Label, Input, Card, Button, CardTitle, CardText, CardBody, Collapse  } from 'reactstrap';
+import React from 'react';
+import { Row, Col, FormGroup, Form, Label, Input } from 'reactstrap';
 import { useStoreOf } from '@stores';
 import ChangePassword from './ChangePassword';
 import ResendEmailConfirmation from './ResendEmailConfirmation';
-import clsx from 'clsx';
 import EmailVerificationNotice from '../EmailVerificationNotice';
-import Delayed from '@components/common/Delayed';
 
 
 export default function Settings() {
   const [authUserProfile] = useStoreOf('authUserProfile');
-
   const { hasUser = false, userName = '', emailVerified = false } = authUserProfile || {};
 
   return hasUser && (

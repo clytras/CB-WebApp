@@ -13,7 +13,12 @@ export default function AuthRoleRoute({
   children,
   ...rest
 }) {
+  const [authReady] = useStoreOf('authReady');
   const [authUserProfile] = useStoreOf('authUserProfile');
+
+  if (!authReady) {
+    return null;
+  }
 
   if(ofRoles === '*' || authUserProfile.isOneOfRoles(ofRoles)) {
     return <Route {...rest}>{children}</Route>;

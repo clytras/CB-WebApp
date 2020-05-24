@@ -1,6 +1,8 @@
 import React from 'react';
 import { Container } from 'reactstrap';
 import NavMenu from './NavMenu';
+import Footer from './Footer';
+
 
 export default function Layout({ children }) {
   return (
@@ -9,6 +11,7 @@ export default function Layout({ children }) {
       <Container>
         {children}
       </Container>
+      <Footer/>
     </div>
   );
 }

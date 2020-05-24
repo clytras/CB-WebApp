@@ -6,7 +6,6 @@ import { Strings } from '@i18n';
 
 export default function EmailVerificationNotice() {
   const [authUserProfile] = useStoreOf('authUserProfile');
-
   const { hasUser = false, emailVerified = false } = authUserProfile || {};
 
   return hasUser && !emailVerified && (

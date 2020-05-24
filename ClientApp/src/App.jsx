@@ -4,9 +4,7 @@ import { Route, Switch } from 'react-router';
 import Layout from '@components/Layout';
 import { RProgress } from 'rprogress';
 import { ToastContainer } from 'react-toastify';
-import { FetchData } from '@components/FetchData';
 import { useStoreOf } from '@stores';
-import AuthorizeRoute from '@components/api-authorization/AuthorizeRoute';
 import ApiAuthorizationRoutes from '@components/api-authorization/ApiAuthorizationRoutes';
 import { ApplicationPaths } from '@components/api-authorization/ApiAuthorizationConstants';
 import AuthRoute from '@api-auth/AuthRoute';
@@ -22,12 +20,14 @@ import Logout from '@api-auth/Logout';
 import Register from '@api-auth/Register';
 import ConfirmEmail from '@api-auth/ConfirmEmail';
 import { IdentityRoles } from '@api-auth';
-import authService from '@api-auth/AuthorizeService';
+import AuthService from '@api-auth/AuthorizeService';
+import { BusinessProfile } from '@data/BusinessProfile';
 
 import 'rprogress/lib/components/overlay/overlay-styles.css';
 import 'rprogress/lib/components/rprogress/rprogress-styles.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-markdown-editor-lite/lib/index.css';
+import 'pretty-checkbox';
 import './App.scss';
 import './custom.css';
 
@@ -37,28 +37,40 @@ import AjaxAuth from '@components/debug/AjaxAuth';
 
 
 function App() {
+  const [, setAuthReady] = useStoreOf('authReady', 'setAuthReady');
   const [, setAuthUser] = useStoreOf('authUser', 'setAuthUser');
   const [, setAuthUserProfile] = useStoreOf('authUserProfile', 'setAuthUserProfile');
+  const [, setUserBusinessProfile] = useStoreOf('userBusinessProfile', 'setUserBusinessProfile');
 
   useEffect(() => {
-    const authSubscription = authService.subscribe(authCheck);
+    const authCheck = async () => {
+      try {
+        const user = await AuthService.getFullUser();
+        setAuthUser(user);
+
+        const userProfile = await AuthService.getUserProfile();
+        setAuthUserProfile(userProfile);
+
+        const userBusinessProfile = await BusinessProfile.GetProfileOfUser();
+        setUserBusinessProfile(userBusinessProfile);
+
+        console.log('App:authCheck', user, userProfile, userBusinessProfile);
+      } catch(err) {
+        console.warn('App:authCheck FAIL', err);
+      } finally {
+        setAuthReady(true);
+      }
+    }
+
+    const authSubscription = AuthService.subscribe(authCheck);
 
     authCheck();
 
     return () => {
-      authSubscription && authService.unsubscribe(authSubscription);
+      authSubscription && AuthService.unsubscribe(authSubscription);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const authCheck = async () => {
-    const user = await authService.getFullUser();
-    const userProfile = await authService.getUserProfile();
-
-    console.log('App:authCheck', user, userProfile);
-
-    setAuthUser(user);
-    setAuthUserProfile(userProfile);
-  }
 
   return (
     <>

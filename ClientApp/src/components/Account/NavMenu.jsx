@@ -1,20 +1,10 @@
 import React from 'react';
-import { Row, Col, Collapse, Container, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { Nav, Navbar, NavItem, NavLink } from 'reactstrap';
 import { Link, useLocation } from 'react-router-dom';
 
 
 export default function NavMenu() {
   const { pathname } = useLocation();
-  // const [routeId, setRouteId] = useState();
-
-
-  // useEffect(() => {
-  //   console.log('location.pathname', location.pathname);
-  //   const [, routeIdSegment] = location.pathname.match(/\/([a-z0-9-]+)/i) || [];
-  //   setRouteId(routeIdSegment);
-  // }, [location]);
-
-  // const toggleNavbar = () => setCollapsed(!collapsed);
 
   return (
     <Navbar light>

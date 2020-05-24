@@ -46,6 +46,7 @@ export default function Content() {
               toast.success(Strings.messages.EntryDeleted);
 
               setRows(prevRows => {
+                // eslint-disable-next-line eqeqeq
                 const rowIndex = prevRows.findIndex(item => item.id == id);
       
                 if(rowIndex !== -1) {

@@ -1,31 +1,32 @@
 import React, { useState } from 'react';
-import { Row, Col, FormGroup, Label, Input } from 'reactstrap';
+import { Row, Col, FormGroup, Form, Label, Input } from 'reactstrap';
 import InlineMessage from '@components/common/InlineMessage';
 import LoadingButton from '@components/common/LoadingButton';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import PasswordValidator from 'password-validator';
+import { useStoreOf } from '@stores';
 import { apiPost } from '@utils/net';
 import { RProgressApi } from 'rprogress';
 import { toast } from 'react-toastify';
 import HttpStatus from 'http-status-codes';
 import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
 import SectionCard from '@components/common/SectionCard';
+import clsx from 'clsx';
 
 
-export default function ChangePassword() {
-  const [inputCurrentPassword, setInputCurrentPassword] = useState('');
-  const [inputNewPassword, setInputNewPassword] = useState('');
-  const [inputConfirmPassword, setInputConfirmPassword] = useState('');
-  const [inputPasswordScore, setInputPasswordScore] = useState(0);
+export default function ActivitiesData({ authUserProfile }) {
+  const [userBusinessProfile] = useStoreOf('userBusinessProfile');
   const [validation, setValidation] = useState();
   const [actionError, setActionError] = useState();
   const [error, setError] = useState();
   const [processing, setProcessing] = useState(false);
+  const { hasProfile = false } = userBusinessProfile || {};
+
+  console.log('Activities', hasProfile, userBusinessProfile);
 
   const handleCurrentPasswordChange = ({ currentTarget: { value }}) => setInputCurrentPassword(value);
   const handleNewPasswordChange = ({ currentTarget: { value }}) => setInputNewPassword(value);
   const handleConfirmPasswordChange = ({ currentTarget: { value }}) => setInputConfirmPassword(value);
-  const handlePasswordScoreChange = score => setInputPasswordScore(score);
   const handlePasswordChangeClick = () => {
     setActionError();
     setError();
@@ -98,8 +99,12 @@ export default function ChangePassword() {
   }
 
   return (
-    <SectionCard title="Change your password" opened={false} color="warning" allowToggle={true}>
-      <InlineMessage text={error} color="danger" />
+    <SectionCard title="Activities" subtitle={!hasProfile && Strings.messages.Business.SaveBasicInformationBeforeActivities}
+      allowToggle={hasProfile}
+      color={hasProfile ? 'primary' : 'light'}
+      opened={hasProfile}
+      outline={hasProfile}>
+      {/* <InlineMessage text={error} color="danger" />
       <InlineMessage text={validation || actionError} color="warning" />
       <Row form>
         <Col md={4}>
@@ -132,7 +137,7 @@ export default function ChangePassword() {
       </Row>
       <Row noGutters className="button-group horizontal fluid">
         <LoadingButton loading={processing} color="primary" onClick={handlePasswordChangeClick}>Change password</LoadingButton>
-      </Row>
+      </Row> */}
     </SectionCard>
   );
 }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, FormGroup, Label, Input } from 'reactstrap';
-import { Link, Redirect, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import AuthService from '@api-auth/AuthorizeService';
 import FrontContentBase from '@components/common/FrontContentBase';
 import { RProgressApi } from 'rprogress';
@@ -9,9 +8,7 @@ import LoadingButton from '@components/common/LoadingButton';
 import LoadingOverlay from '@components/common/LoadingOverlay';
 import InlineMessage from '@components/common/InlineMessage';
 import Delayed from '@components/common/Delayed';
-import { StyleSheet, css } from 'aphrodite';
-import clsx from 'clsx';
-import { translateCodeMessage, translateRequestError } from '@i18n';
+import { translateRequestError } from '@i18n';
 
 
 export default function Logout() {
