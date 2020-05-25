@@ -17,6 +17,7 @@ using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Logging;
 
 namespace EKETAGreenmindB2B
 {
@@ -56,6 +57,7 @@ namespace EKETAGreenmindB2B
             //     .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
+                .GetCertFromServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             services.AddAuthentication()
@@ -67,7 +69,8 @@ namespace EKETAGreenmindB2B
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:5000",
-                                            "https://localhost:5001");
+                                            "https://localhost:5001",
+                                            "https://certhb2b.ddns.net");
                     });
             });
 
@@ -146,7 +149,8 @@ namespace EKETAGreenmindB2B
                     //var tokens = antiforgery.GetTokens(context);
                     var tokens = antiforgery.GetAndStoreTokens(context);
                     // context.Response.Cookies.Append("X-CSRF-TOKEN", tokens.CookieToken, new CookieOptions { HttpOnly = false });
-                    context.Response.Cookies.Append("CSRF-TOKEN", tokens.RequestToken, new CookieOptions { HttpOnly = false });
+                    context.Response.Cookies.Append("CSRF-TOKEN", tokens.RequestToken, 
+                        new CookieOptions { HttpOnly = false, SameSite = SameSiteMode.Lax });
                 // }
                 return next(context);
             });

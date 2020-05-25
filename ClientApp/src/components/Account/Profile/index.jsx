@@ -15,11 +15,13 @@ export default function Profile() {
     <>
       <EmailVerificationNotice/>
       <BusinessProfileNotice/>
+
       <Row>
         <Col className="mb-3">
           <InformationData/>
         </Col>
       </Row>      
+
       {(
         <Row>
           <Col className="mb-3">
@@ -27,6 +29,7 @@ export default function Profile() {
           </Col>
         </Row>
       )}
+
     </>
   );
 }

@@ -1,5 +1,5 @@
 import isEmpty from 'lodash.isempty';
-import { apiGet } from '@utils/net';
+import { apiGet, apiPut } from '@utils/net';
 
 
 export class BusinessProfile  {
@@ -51,6 +51,10 @@ export class BusinessProfile  {
     return apiGet(`/api/BusinessProfile/${profileId}`, { addAuth: true });
   }
 
+  static SaveProfileInformation(params) {
+    return apiPut('/api/BusinessProfile/Information', { addAuth: true, params });
+  }
+
   static FetchProfileOfUser(userId) {
     return apiGet(`/api/BusinessProfile/OfAccount${userId ? `/${userId}` : ''}`, { addAuth: true });
   }
@@ -59,12 +63,16 @@ export class BusinessProfile  {
     let result;
 
     try {
-      const { ok, json } = await BusinessProfile.FetchProfileOfUser(userId);
+      const resp = await BusinessProfile.FetchProfileOfUser(userId);
 
-      if (ok) {
-        result = await json();
+      console.log('GetProfileOfUser:resp', resp);
+
+      if (resp.ok) {
+        result = await resp.json();
       }
     } catch(err) {}
+
+    console.log('GetProfileOfUser:result', result);
 
     return new BusinessProfile(result);
   }

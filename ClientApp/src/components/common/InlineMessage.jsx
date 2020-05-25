@@ -11,7 +11,7 @@ export default function InlineMessage({
 }) {
   const [keyPrefix] = useState(utsj());
 
-  if(markdown) {
+  if (markdown) {
     return (
       <Alert {...rest}>
         <Markdown source={markdown} />

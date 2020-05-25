@@ -1,5 +1,7 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
+import LoadingOverlay from '@components/common/LoadingOverlay';
+import Delayed from '@components/common/Delayed';
 import { useStoreOf } from '@stores';
 
 
@@ -14,7 +16,11 @@ export default function AuthRoute({
   console.log('AuthRoute', authReady, hasUser);
 
   if (!authReady) {
-    return null;
+    return (
+      <Delayed waitBeforeShow={1000}>
+        <LoadingOverlay/>
+      </Delayed>
+    );
   }
 
   return <Route 

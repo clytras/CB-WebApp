@@ -26,8 +26,10 @@ export default {
     StateRegionProvince: 'State / Region / Province',
     PostalCode: 'Postal code',
     Country: 'Country',
+    OtherText: 'Other',
     RejectionReason: 'Rejection reason',
     SaveProfileInformation: 'Save profile information',
+    SaveProfileActivities: 'Save profile activities',
     UseAccountEmailAddress: 'Use account email address',
     ContactPerson: 'Contact person',
     Nav: {
@@ -49,7 +51,10 @@ export default {
       MustBeLengthOf: 'The field {field} must be at least {len} characters',
       MustBeAtLeastLengthOf: 'Must be at least {len} characters',
       IsInvalid: 'The field {field} is invalid',
-      PasswordNotMatch: 'Passwords do not match'
+      PasswordNotMatch: 'Passwords do not match',
+      NotValidEmail: 'Not a valid email address',
+      InvalidTelephone: 'Must contain {min}-{max} numeric digits',
+      NotValidPostalCode: 'Not a valid postal code'
     }
   },
   placeholders: {
@@ -85,6 +90,8 @@ export default {
       BusinessProfileNotComplete: 'Your profile is not complete.  \nPeople cannot discover you unless you complete your profile.\n\nPlease visit your [account profile page](/account/profile) and provide your data to complete your profile.',
       SaveBasicInformationBeforeActivities: 'Save profile information above to select your activities'
     },
+    InvalidFieldsDataTryAgain: 'There are some missing fields or fields with wrong information.  \nInput valid data to fix the errors and try again.',
+    ProfileInformationSaved: 'Your profile information is now saved.  \nAlso review and update your related activities below.',
     RequestError: 'Request error ({error})',
     ContactSupport: 'Please contact support',
     UnexpectedError: 'There was an unexpected error',

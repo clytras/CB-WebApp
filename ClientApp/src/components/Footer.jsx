@@ -1,8 +1,4 @@
-import React, { useState } from 'react';
-import { Collapse, Container, Navbar, NavbarToggler, NavItem, NavLink, Row, Col } from 'reactstrap';
-import styled from 'styled-components';
-import { Link, useLocation } from 'react-router-dom';
-import LoginMenu from '@api-auth/LoginMenu';
+import React from 'react';
 import Markdown from '@components/common/Markdown';
 import { getStaticContent } from '@data/StaticContent';
 

@@ -255,3 +255,23 @@ html {
     flex: 1;
   }
 }
+
+.options-list {
+  button {
+    display: flex;
+    line-height: 100%;
+    align-items: center;
+
+    svg {
+      margin-right: 1em;
+      color: #e8f1f9 !important;
+    }
+
+    &.selected {
+      background-color: #f1fff1;
+      svg {
+        color: #81d779 !important;
+      }
+    }
+  }
+}

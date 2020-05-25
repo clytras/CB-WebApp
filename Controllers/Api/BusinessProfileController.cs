@@ -52,7 +52,8 @@ namespace EKETAGreenmindB2B.Controllers.Api
 
             if (String.IsNullOrEmpty(userId))
             {
-                var user = await userManager.GetUserAsync(User);
+                // var user = await userManager.GetUserAsync(User);
+                var user = await userManager.FindByEmailAsync(User.Identity.Name);
 
                 if (user != null)
                     result = GetProfileData(user.Id);
@@ -69,21 +70,23 @@ namespace EKETAGreenmindB2B.Controllers.Api
         }
 
 
-        [HttpPut]
-        // [Authorize]
-        public async Task<IActionResult> OnPutProfile(BusinessProfilePutRequest businessProfilePutRequest)
+        [HttpPut("Information")]
+        [Authorize]
+        public async Task<IActionResult> OnPutProfile(BusinessProfile businessProfile)
         {
             if (ModelState.IsValid)
             {
-                ICollection<BusinessProfileActivities> activities = (from p in context.BusinessActivitiesOptions
-                                 where businessProfilePutRequest.ActivitiesOptions.Any(v => p.ActivityOptionAlias.Equals(v))
-                                 select new BusinessProfileActivities() {
-                                     ActivityId = p.ActivityId
-                                 }).ToList();
+                // ICollection<BusinessProfileActivities> activities = (from p in context.BusinessActivitiesOptions
+                //                  where businessProfilePutRequest.ActivitiesOptions.Any(v => p.ActivityOptionAlias.Equals(v))
+                //                  select new BusinessProfileActivities() {
+                //                      ActivityId = p.ActivityId
+                //                  }).ToList();
 
-                businessProfilePutRequest.Profile.Activities = activities;
+                // businessProfilePutRequest.Profile.Activities = activities;
                 
-                var user = await userManager.FindByIdAsync("16dad1b9-55a4-4eb6-bda7-d2c020776962");
+                // var user = await userManager.FindByIdAsync("16dad1b9-55a4-4eb6-bda7-d2c020776962");
+                // var user = await userManager.GetUserAsync(User);
+                var user = await userManager.FindByEmailAsync(User.Identity.Name);
 
                 if (user != null)
                 {
@@ -96,29 +99,28 @@ namespace EKETAGreenmindB2B.Controllers.Api
 
                     if (profile != null)
                     {
-                        profile.CompanyName = businessProfilePutRequest.Profile.CompanyName;
-                        profile.Email = businessProfilePutRequest.Profile.Email;
-                        profile.Telephone = businessProfilePutRequest.Profile.Telephone;
-                        profile.CompanyLocation = businessProfilePutRequest.Profile.CompanyLocation;
-                        profile.ContactPerson = businessProfilePutRequest.Profile.ContactPerson;
-                        profile.Activities.Clear();
-                        profile.Activities = businessProfilePutRequest.Profile.Activities;
-                        profile.OtherActivities.Clear();
-                        profile.OtherActivities = businessProfilePutRequest.Profile.OtherActivities;
+                        profile.CompanyName = businessProfile.CompanyName;
+                        profile.Email = businessProfile.Email;
+                        profile.Telephone = businessProfile.Telephone;
+                        profile.CompanyLocation = businessProfile.CompanyLocation;
+                        profile.ContactPerson = businessProfile.ContactPerson;
+                        // profile.Activities.Clear();
+                        // profile.Activities = businessProfilePutRequest.Profile.Activities;
+                        // profile.OtherActivities.Clear();
+                        // profile.OtherActivities = businessProfilePutRequest.Profile.OtherActivities;
                         context.Update(profile);
                     }
                     else
                     {
-                        Console.WriteLine("Profile adding");
-                        businessProfilePutRequest.Profile.User = user;
-                        businessProfilePutRequest.Profile.ProfileId = 0;
-                        context.Add(businessProfilePutRequest.Profile);
+                        businessProfile.User = user;
+                        businessProfile.ProfileId = 0;
+                        context.Add(businessProfile);
                     }
 
                     try
                     {
                         await context.SaveChangesAsync();
-                        return Ok(businessProfilePutRequest.Profile);
+                        return Ok(businessProfile);
                     }
                     catch (Exception e)
                     {
@@ -145,6 +147,7 @@ namespace EKETAGreenmindB2B.Controllers.Api
                 // }
 
                 return NotFound(new { userNotFound = User.Identity.Name });
+                // return NotFound();
 
                 
                 // context.AddRange(businessActivitiesOptions);
@@ -162,7 +165,6 @@ namespace EKETAGreenmindB2B.Controllers.Api
 
             return BadRequest(ModelState);
         }
-
 
         private IQueryable<dynamic> GetProfileData(string userId = null, long profileId = 0)
         {

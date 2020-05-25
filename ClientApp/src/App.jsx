@@ -43,7 +43,11 @@ function App() {
   const [, setUserBusinessProfile] = useStoreOf('userBusinessProfile', 'setUserBusinessProfile');
 
   useEffect(() => {
+    let initialAuthTimerId;
+
     const authCheck = async () => {
+      clearTimeout(initialAuthTimerId);
+
       try {
         const user = await AuthService.getFullUser();
         setAuthUser(user);
@@ -64,7 +68,7 @@ function App() {
 
     const authSubscription = AuthService.subscribe(authCheck);
 
-    authCheck();
+    initialAuthTimerId = setTimeout(authCheck, 1000);
 
     return () => {
       authSubscription && AuthService.unsubscribe(authSubscription);

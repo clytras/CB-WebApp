@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Row, Col, FormGroup, Form, FormFeedback, FormText, Label, Input } from 'reactstrap';
+import { Row, Col, FormGroup, FormFeedback, FormText, Label, Input } from 'reactstrap';
 import InlineMessage from '@components/common/InlineMessage';
 import LoadingButton from '@components/common/LoadingButton';
 import isEmpty from 'validator/es/lib/isEmpty';
 import isEmail from 'validator/es/lib/isEmail';
 import isLength from 'validator/es/lib/isLength';
 import isPostalCode from 'validator/es/lib/isPostalCode';
-import { isPhoneNumber, ifString } from '@utils/validators';
+import { isPhoneNumber, ifString, isString } from '@utils/validators';
 import CheckBox, { OptionsGroup } from '@components/common/CheckBox';
 import { useStoreOf } from '@stores';
 import { apiPost } from '@utils/net';
@@ -14,6 +14,7 @@ import { RProgressApi } from 'rprogress';
 import { toast } from 'react-toastify';
 import HttpStatus from 'http-status-codes';
 import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
+import { BusinessProfile }  from '@data/BusinessProfile';
 import SectionCard from '@components/common/SectionCard';
 import Select from '@components/common/Select';
 import { getCountriesForSelect } from '@data/Countries';
@@ -24,7 +25,7 @@ const countriesOptions = getCountriesForSelect();
 
 export default function InformationData() {
   const [authUserProfile] = useStoreOf('authUserProfile');
-  const [userBusinessProfile] = useStoreOf('userBusinessProfile');
+  const [userBusinessProfile, setUserBusinessProfile] = useStoreOf('userBusinessProfile', 'setUserBusinessProfile');
   const inputEmailRef = useRef();
   const [isDirty, setIsDirty] = useState(false);
   const [useAccountEmail, setUseEmailAccount] = useState(true);
@@ -36,6 +37,7 @@ export default function InformationData() {
     AddressLine2: '',
     City: '',
     Region: '',
+    Country: '',
     PostalCode: '',
     ContactName: '',
     ContactEmail: '',
@@ -46,108 +48,233 @@ export default function InformationData() {
     // Telephone: 'Wrong number',
     // Email: true
   });
+  const [validationError, setValidationError] = useState();
   const [actionError, setActionError] = useState();
+  const [success, setSuccess] = useState();
   const [error, setError] = useState();
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     console.log('InfoData', authUserProfile, userBusinessProfile);
-    const {
-      CompanyName = '',
-      Email = null,
-      Telephone,
-      StreetAddress
-    } = userBusinessProfile || {};
 
-    // setProfileCompanyName(CompanyName)
-  }, []);
+    if (userBusinessProfile.hasProfile) {
+      let {
+        companyName: CompanyName = '',
+        email: Email,
+        telephone: Telephone = '',
+        companyLocation: {
+          streetAddress: StreetAddress = '',
+          addressLine2: AddressLine2 = '',
+          city: City = '',
+          region: Region = '',
+          postalCode: PostalCode = '',
+          country: Country = '',
+        } = {},
+        contactPerson: {
+          name: ContactName = '',
+          email: ContactEmail = '',
+          telephone: ContactPhone = ''
+        } = {}
+      } = userBusinessProfile || {};
+
+      if (!Boolean(Email)) {
+        setUseEmailAccount(true);
+        Email = '';
+      }
+
+      setProfile({
+        CompanyName, Email, Telephone,
+        StreetAddress, AddressLine2, City, Region, PostalCode, Country,
+        ContactName, ContactEmail, ContactPhone
+      });
+    }
+  }, [userBusinessProfile]);
 
   useEffect(() => {
     if (!useAccountEmail) {
-      inputEmailRef.current.focus()
+      inputEmailRef.current.focus();
+    } else {
+      setProfile(p => ({ ...p, Email: '' }));
     }
-  }, [useAccountEmail]);
+  }, [useAccountEmail, setProfile]);
 
   const handleUseAccountEmailChange = useCallback(() => {
     setUseEmailAccount(prev => !prev);
-  }, [setUseEmailAccount]);
-
-  const handleInputChange = field => ({ currentTarget: { value }}) => {
     setIsDirty(true);
-    setProfile(p => ({ ...p, [field]: value }));
+  }, [setUseEmailAccount, setIsDirty]);
+
+  const handleInputChange = field => data => {
+    const { value } = 'value' in data ? data : data.currentTarget;
+    setIsDirty(true);
+    setValidationError();
+    const v = value !== undefined ? value : '';
+    setValidation(p => ({ ...p, [field]: false }));
+    setProfile(p => ({ ...p, [field]: v }));
   }
 
+  const handleSaveProfileClick = event => {
+    event.preventDefault();
 
-  const handlePasswordChangeClick = () => {
+    setActionError();
+    setError();
+    setSuccess();
 
-    setProcessing(true);
-    setTimeout(() => setProcessing(false), 2000);
-    // return;
+    if (validate()) {
+      RProgressApi.start();
+      setValidationError();
+      setProcessing(true);
 
+      const {
+        CompanyName, Email, Telephone,
+        StreetAddress, AddressLine2, City, Region, PostalCode, Country,
+        ContactName, ContactEmail, ContactPhone
+      } = profile;
+      
+      BusinessProfile.SaveProfileInformation({
+        CompanyName,
+        Email: useAccountEmail ? null : Email,
+        Telephone,
+        CompanyLocation: {
+          StreetAddress,
+          AddressLine2,
+          City,
+          Region,
+          PostalCode,
+          Country
+        },
+        ContactPerson: {
+          Name: ContactName,
+          Email: ContactEmail,
+          Telephone: ContactPhone
+        }
+      }).then(async resp => {
+        if (resp.ok) {
+          setSuccess(Strings.messages.ProfileInformationSaved);
 
-    // setActionError();
-    // setError();
+          const newProfile = await resp.json();
+          setUserBusinessProfile(new BusinessProfile(newProfile));
+        } else {
+          let errorCode;
 
-    // if(validate()) {
-    //   RProgressApi.start();
-    //   setProcessing(true);
-    //   apiPost(`/api/Auth/ChangePassword`, {
-    //     addAuth: true,
-    //     params: {
-    //       CurrentPassword: inputCurrentPassword,
-    //       NewPassword: inputNewPassword,
-    //       ConfirmPassword: inputConfirmPassword
-    //     }
-    //   }).then(async resp => {
-    //     if(resp.ok) {
-    //       setInputCurrentPassword('');
-    //       setInputNewPassword('');
-    //       setInputConfirmPassword('');
-    //       setInputPasswordScore(0);
-    //       toast.success(Strings.messages.Auth.PasswordChangedSuccessfully);
-    //     } else if(resp.status === HttpStatus.UNAUTHORIZED) {
-    //       setInputCurrentPassword('');
-    //       setActionError(Strings.messages.Auth.CheckCurrentPasswordRetry);
-    //     } else {
-    //       let errorCode;
-
-    //       try {
-    //         ({ errorCode } = await resp.json());
-    //       } catch(err) {}
+          try {
+            ({ errorCode } = await resp.json());
+          } catch(err) {}
   
-    //       setActionError(translateCodeMessage(errorCode, `${HttpStatus.getStatusText(resp.status)} (${resp.status})`));
-    //     }
-    //   }).catch(err => {
-    //     setError(translateRequestError(err));
-    //   }).finally(() => {
-    //     RProgressApi.complete();
-    //     setProcessing(false);
-    //   });
-    // }
+          setActionError(translateCodeMessage(errorCode, `${HttpStatus.getStatusText(resp.status)} (${resp.status})`));
+        }
+      }).catch(err => {
+        setError(translateRequestError(err));
+      }).finally(() => {
+        RProgressApi.complete();
+        setProcessing(false);
+      });
+    } else {
+      setValidationError(Strings.messages.InvalidFieldsDataTryAgain);
+    }
   }
 
-  function validate() {
+  const validate = useCallback((field, value) => {
     const errors = {};
-
-    if (isEmpty(profile.CompanyName)) {
-      errors.CompanyName = true;
+    const only = (name, f) => {
+      const v = value === undefined ? profile[name] : value;
+      if (field === name) {
+        errors[field] = false;
+        f(v);
+        setValidation(p => ({ ...p, ...errors }));
+        return true;
+      } else if(field === undefined) {
+        f(v);
+      }
     }
 
+    if (only('CompanyName', v => {
+      if (isEmpty(v)) {
+        errors.CompanyName = true;
+      }
+    })) return;
+
+    if (only('Email', v => {
+      if (!useAccountEmail) {
+        if (isEmpty(v)) {
+          errors.Email = true;
+        } else if (!isEmail(v)) {
+          errors.Email = Strings.validation.Fields.NotValidEmail;
+        }
+      }
+    })) return;
+
+    if (only('Telephone', v => {
+      if (isEmpty(v)) {
+        errors.Telephone = true;
+      } else if(!isPhoneNumber(v)) {
+        errors.Telephone = Strings.formatString(
+          Strings.validation.Fields.InvalidTelephone, { min: 10, max: 15 });
+      }
+    })) return;
+
+    if (only('StreetAddress', v => {
+      if (isEmpty(v)) {
+        errors.StreetAddress = true;
+      }
+    })) return;
+
+    if (only('City', v => {
+      if (isEmpty(v)) {
+        errors.City = true;
+      }
+    })) return;
+
+    if (only('PostalCode', v => {
+      if (isEmpty(v)) {
+        errors.PostalCode = true;
+      } else if (!isPostalCode(v, 'any')) {
+        errors.PostalCode = Strings.validation.Fields.NotValidPostalCode;
+      }
+    })) return;
+
+    if (only('Country', v => {
+      if (isEmpty(v)) {
+        errors.Country = true;
+      }
+    })) return;
+
+    if (only('ContactName', v => {
+      if (isEmpty(v)) {
+        errors.ContactName = true;
+      }
+    })) return;
+
+    if (only('ContactEmail', v => {
+      if (isEmpty(v)) {
+        errors.ContactEmail = true;
+      } else if (!isEmail(v)) {
+        errors.ContactEmail = Strings.validation.Fields.NotValidEmail;
+      }
+    })) return;
+
+    if (only('ContactPhone', v => {
+      if (isEmpty(v)) {
+        errors.ContactPhone = true;
+      } else if(!isPhoneNumber(v)) {
+        errors.ContactPhone = Strings.formatString(
+          Strings.validation.Fields.InvalidTelephone, { min: 10, max: 15 });
+      }
+    })) return;
 
     setValidation(errors);
-    return errors.length === 0;
-  }
+    return Object.keys(errors).length === 0;
+  }, [profile, useAccountEmail, setValidation]);
 
   return (
     <SectionCard title={Strings.titles.Information} allowToggle={true}>
       <InlineMessage text={error} color="danger" />
-      <InlineMessage text={validation || actionError} color="warning" />
 
       <Row form>
         <Col md={8}>
           <FormGroup>
             <Label for="Profile.CompanyName">{Strings.titles.CompanyName}</Label>
             <Input name="Profile.CompanyName" id="Profile.CompanyName" required
+              invalid={!!validation.CompanyName}
               placeholder={Strings.placeholders.ThisFieldIsRequired}
               value={profile.CompanyName}
               onChange={handleInputChange('CompanyName')} />
@@ -162,9 +289,10 @@ export default function InformationData() {
             <Input innerRef={inputEmailRef} name="Profile.Email" id="Profile.Email" required type="email"
               invalid={!!validation.Email}
               disabled={useAccountEmail}
-              value={useAccountEmail ? authUserProfile.userName : profile.ContactEmail}
+              placeholder={Strings.placeholders.ThisFieldIsRequired}
+              value={useAccountEmail ? authUserProfile.userName : profile.Email}
               onChange={handleInputChange('Email')} />
-            {ifString(validation.Email, <FormFeedback>{validation.Email}</FormFeedback>)}
+            {isString(validation.Email) && <FormFeedback>{validation.Email}</FormFeedback>}
             <CheckBox className="mt-2" label={Strings.titles.UseAccountEmailAddress}
               checked={useAccountEmail} onChange={handleUseAccountEmailChange} />
           </FormGroup>
@@ -177,7 +305,7 @@ export default function InformationData() {
               placeholder={Strings.placeholders.ThisFieldIsRequired}
               value={profile.Telephone}
               onChange={handleInputChange('Telephone')} />
-            {ifString(validation.Telephone, <FormFeedback>{validation.Telephone}</FormFeedback>)}
+            {isString(validation.Telephone) && <FormFeedback>{validation.Telephone}</FormFeedback>}
           </FormGroup>
         </Col>
       </Row>
@@ -192,6 +320,7 @@ export default function InformationData() {
         <Label for="Profile.CompanyLocation.StreetAddress">{Strings.titles.StreenAddress}</Label>
         <Input name="Profile.CompanyLocation.StreetAddress" id="Profile.CompanyLocation.StreetAddress" required
           placeholder={Strings.placeholders.ThisFieldIsRequired}
+          invalid={!!validation.StreetAddress}
           value={profile.StreetAddress}
           onChange={handleInputChange('StreetAddress')} />
       </FormGroup>
@@ -209,6 +338,7 @@ export default function InformationData() {
             <Label for="Profile.CompanyLocation.City">{Strings.titles.City}</Label>
             <Input name="Profile.CompanyLocation.City" id="Profile.CompanyLocation.City" required
               placeholder={Strings.placeholders.ThisFieldIsRequired}
+              invalid={!!validation.City}
               value={profile.City}
               onChange={handleInputChange('City')} />
           </FormGroup>
@@ -221,13 +351,15 @@ export default function InformationData() {
               onChange={handleInputChange('Region')} />
           </FormGroup>
         </Col>
-        <Col md={'auto'}>
+        <Col lg={4} md={6}>
           <FormGroup>
             <Label for="Profile.CompanyLocation.PostalCode">{Strings.titles.PostalCode}</Label>
             <Input name="Profile.CompanyLocation.PostalCode" id="Profile.CompanyLocation.PostalCode" required
               placeholder={Strings.placeholders.ThisFieldIsRequired}
+              invalid={!!validation.PostalCode}
               value={profile.PostalCode}
               onChange={handleInputChange('PostalCode')} />
+            {isString(validation.PostalCode) && <FormFeedback>{validation.PostalCode}</FormFeedback>}
           </FormGroup>
         </Col>
       </Row>
@@ -237,9 +369,11 @@ export default function InformationData() {
           <FormGroup>
             <Label for="Profile.CompanyLocation.Country">{Strings.titles.Country}</Label>
             <Select name="Profile.CompanyLocation.Country" inputId="Profile.CompanyLocation.Country"
-              value={profile.Country}
+              invalid={!!validation.Country}
+              defaultInputValue={profile.Country in countriesOptions ? countriesOptions[profile.Country] : ''}
+              defaultValue={profile.Country}
               placeholder={Strings.placeholders.ThisFieldIsRequired}
-              onChange={() => {}}
+              onChange={handleInputChange('Country')}
               options={countriesOptions} />
           </FormGroup>
         </Col>
@@ -260,7 +394,7 @@ export default function InformationData() {
               placeholder={Strings.placeholders.ThisFieldIsRequired}
               value={profile.ContactName}
               onChange={handleInputChange('ContactName')} />
-            {ifString(validation.ContactName, <FormFeedback>{validation.ContactName}</FormFeedback>)}
+            {isString(validation.ContactName) && <FormFeedback>{validation.ContactName}</FormFeedback>}
           </FormGroup>
         </Col>
         <Col lg={4} md={8}>
@@ -271,7 +405,7 @@ export default function InformationData() {
               placeholder={Strings.placeholders.ThisFieldIsRequired}
               value={profile.ContactEmail}
               onChange={handleInputChange('ContactEmail')} />
-            {ifString(validation.ContactEmail, <FormFeedback>{validation.ContactEmail}</FormFeedback>)}
+            {isString(validation.ContactEmail) && <FormFeedback>{validation.ContactEmail}</FormFeedback>}
           </FormGroup>
         </Col>
         <Col lg={4} md={8}>
@@ -282,14 +416,17 @@ export default function InformationData() {
               placeholder={Strings.placeholders.ThisFieldIsRequired}
               value={profile.ContactPhone}
               onChange={handleInputChange('ContactPhone')} />
-            {ifString(validation.ContactPhone, <FormFeedback>{validation.ContactPhone}</FormFeedback>)}
+            {isString(validation.ContactPhone) && <FormFeedback>{validation.ContactPhone}</FormFeedback>}
           </FormGroup>
         </Col>
       </Row>
 
+      <InlineMessage markdown={success} color="success" />
+      <InlineMessage markdown={validationError || actionError} color="warning" />
+
       <Row noGutters className="button-group horizontal fluid">
         {isDirty && <LoadingButton color="primary" loading={processing} 
-          onClick={handlePasswordChangeClick}>{Strings.titles.SaveProfileInformation}</LoadingButton>}
+          onClick={handleSaveProfileClick}>{Strings.titles.SaveProfileInformation}</LoadingButton>}
       </Row>
     </SectionCard>
   );

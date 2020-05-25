@@ -40,8 +40,6 @@ export default function SectionCard({
   const toggleSection = () => setShowSection(prev => !prev);
   const Icon = icon && icon in Icons && Icons[icon];
 
-  console.log('SectionCard', title, subtitle, opened);
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setShowSection(opened), [opened]);
 
@@ -52,7 +50,7 @@ export default function SectionCard({
     <Card className={clsx('action-form', !showSection && 'collapsed')} body inverse={false} outline={outline} color={color}>
       {!!title && (
         <Title opened={applyTitleOpened}>
-          <CardTitle className={clsx(allowToggle && 'toggle')} tag="h5" onClick={allowToggle ? toggleSection : null}>{title}</CardTitle>
+          <CardTitle className={clsx(allowToggle && 'toggle')} tag="h4" onClick={allowToggle ? toggleSection : null}>{title}</CardTitle>
           {Icon && <Icon className={`text-${icon}`} size="2em"/>}
         </Title>
       )}

@@ -2,7 +2,7 @@
  * Dollar sign ($) is for list options collection or for a single option item
  */
 
-export default {
+export default Object.freeze({
   TopicsOfInterest: {
     CleanPowerTransport: {
       $: [
@@ -94,4 +94,4 @@ export default {
       ]
     }
   }
-}
+});
