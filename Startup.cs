@@ -18,17 +18,29 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Logging;
+using System;
 
 namespace CERTHB2B
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostEnvironment env)
         {
+            // Console.WriteLine($"ApplicationName: {env.ApplicationName}");
+            // Console.WriteLine($"ContentRootPath: {env.ContentRootPath}");
+            // Console.WriteLine($"EnvironmentName: {env.EnvironmentName}");
+
             Configuration = configuration;
+            Environment = env;
+
+            // var sgc = configuration.GetSection("SendGrid");
+
+            // Console.WriteLine("SendGridUser: '{0}'", configuration.GetValue<string>("SendGridUser"));
+            // Console.WriteLine("SendGridKey: '{0}'", configuration.GetValue<string>("SendGridKey"));
         }
 
         public IConfiguration Configuration { get; }
+        public IHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)

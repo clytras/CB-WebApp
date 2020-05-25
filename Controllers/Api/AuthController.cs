@@ -437,7 +437,7 @@ namespace CERTHB2B.Controllers.Api
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
             const string view = "/Pages/Templates/Email/Account/ResetPassword";
-            string callbackUrl = $"{Request.Scheme}://{Request.Host.Value}/account/reset-password/{user.Id}/{code}";
+            string callbackUrl = $"{Request.Scheme}://{Request.Host.Value}/account/reset-password/?u={user.Id}&v={code}";
 
             var model = new ResetPasswordViewModel(user.Id, code, callbackUrl);
 
@@ -463,7 +463,7 @@ namespace CERTHB2B.Controllers.Api
             //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
             const string view = "/Pages/Templates/Email/Account/ConfirmationCode";
-            string callbackUrl = $"{Request.Scheme}://{Request.Host.Value}/account/confirm-email/{user.Id}/{code}";
+            string callbackUrl = $"{Request.Scheme}://{Request.Host.Value}/account/confirm-email/?u={user.Id}&v={code}";
 
             var model = new ConfirmationCodeViewModel(user.Id, code, callbackUrl);
 

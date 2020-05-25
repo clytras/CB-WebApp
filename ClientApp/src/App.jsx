@@ -95,18 +95,18 @@ function App() {
         ]}> */}
           <Layout>
             <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/account/login" component={Login} />
-            <Route path="/account/logout" component={Logout} />
-            <Route path="/account/register" component={Register} />
-            <Route path="/account/confirm-email/:userId?/:confirmationCode?" component={ConfirmEmail} />
-            <Route path="/account/forgot-password" component={ForgotPassword} />
-            <Route path="/account/reset-password/:userId?/:resetPasswordCode?" component={ResetPassword} />
-            <Route path="/account*" component={AccountIndex} />
-            <Route path="/contact" component={Contact} />
+              <Route exact path="/" component={Home} />
+              <Route path="/account/login" component={Login} />
+              <Route path="/account/logout" component={Logout} />
+              <Route path="/account/register" component={Register} />
+              <Route path="/account/confirm-email" component={ConfirmEmail} />
+              <Route path="/account/forgot-password" component={ForgotPassword} />
+              <Route path="/account/reset-password" component={ResetPassword} />
+              <Route path="/account*" component={AccountIndex} />
+              <Route path="/contact" component={Contact} />
 
-            <Route path="/debug/ajax-auth" component={AjaxAuth} />
-            <Route path="/debug/csrf-post" component={CSRFPost} />
+              <Route path="/debug/ajax-auth" component={AjaxAuth} />
+              <Route path="/debug/csrf-post" component={CSRFPost} />
             </Switch>
           </Layout>
         {/* </Route> */}

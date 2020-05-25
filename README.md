@@ -1,4 +1,4 @@
-# E.K.E.T.A. Greenmind B2B
+# CE.R.T.H. Greenmind B2B
 
 This application is built with:
 
@@ -14,6 +14,7 @@ This application is built with:
 `dotnet user-secrets init`
 
 2. Add items to user secrets:<br>
+`dotnet user-secrets list`<br>
 `dotnet user-secrets set SendGridUser <user>`<br>
 `dotnet user-secrets set SendGridKey  <key>`
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery } from 'lyxlib/react/hooks/router';
 import { Button, Alert } from 'reactstrap';
 import FrontContentBase from '@components/common/FrontContentBase';
 import LoadingOverlay from '@components/common/LoadingOverlay';
@@ -9,16 +10,14 @@ import { translateRequestError } from '@i18n';
 import { apiPost } from '@utils/net';
 
 
-export default function ConfirmEmail({
-  match: {
-    params: {
-      userId, confirmationCode 
-    }
-  }
-}) {
+export default function ConfirmEmail() {
+  const query = useQuery();
   const [emailConfirmed, setEmailConfirmed] = useState(false);
   const [requestError, setRequestError] = useState();
   const [isLoading, setIsLoading] = useState(true);
+
+  const userId = query.get('u');
+  const confirmationCode = query.get('v');
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => confirmEmail(), []);
@@ -98,12 +97,4 @@ export default function ConfirmEmail({
   return renderBase(
     <Alert color="success">Your email address is now confirmed!</Alert>
   );
-
-  // return (
-  //   <>
-  //     <div>Router</div>
-  //     <pre>{JSON.stringify(props, null, 2)}</pre>
-  //     <pre>{JSON.stringify(router, null, 2)}</pre>
-  //   </>
-  // );
 }

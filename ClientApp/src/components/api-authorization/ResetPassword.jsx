@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery } from 'lyxlib/react/hooks/router';
 import { Form, FormGroup, Label, Input, Row, Col } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import PasswordStrengthBar from 'react-password-strength-bar';
@@ -13,13 +14,8 @@ import HttpStatus from 'http-status-codes';
 import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
 
 
-export default function ResetPassword({
-  match: {
-    params: {
-      userId, resetPasswordCode 
-    }
-  }
-}) {
+export default function ResetPassword() {
+  const query = useQuery();
   const [inputEmail, setInputEmail] = useState('');
   const [inputNewPassword, setInputNewPassword] = useState('');
   const [inputConfirmPassword, setInputConfirmPassword] = useState('');
@@ -29,6 +25,9 @@ export default function ResetPassword({
   const [actionError, setActionError] = useState();
   const [requestError, setRequestError] = useState();
   const [preventAutoComplete, setPreventAutoComplete] = useState(true);
+
+  const userId = query.get('u');
+  const resetPasswordCode = query.get('v');
 
   useEffect(() => {
     setTimeout(() => setPreventAutoComplete(false), 600);

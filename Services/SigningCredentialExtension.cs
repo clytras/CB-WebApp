@@ -1,12 +1,4 @@
 using System;
-using Microsoft.AspNetCore.Identity;
-using CERTHB2B.Models;
-using IdentityServer4.Services;
-using System.Threading.Tasks;
-using IdentityServer4.Models;
-using System.Collections.Generic;
-using System.Security.Claims;
-using IdentityModel;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Cryptography.X509Certificates;
 
