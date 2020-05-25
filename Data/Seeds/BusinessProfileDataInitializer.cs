@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace EKETAGreenmindB2B.Data.Seeds
+namespace CERTHB2B.Data.Seeds
 {
     public partial class BusinessProfileDataInitializer
     {

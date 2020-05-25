@@ -1,6 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Identity;
-using EKETAGreenmindB2B.Models;
+using CERTHB2B.Models;
 using IdentityServer4.Services;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using IdentityModel;
 
-namespace EKETAGreenmindB2B.Services
+namespace CERTHB2B.Services
 {
     public class ProfileService : IProfileService
     {

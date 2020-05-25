@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EKETAGreenmindB2B.CustomResults
+namespace CERTHB2B.CustomResults
 {
     public class OkJsonResult : JsonResult
     {

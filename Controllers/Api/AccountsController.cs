@@ -6,17 +6,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.AspNetCore.Authorization;
-using EKETAGreenmindB2B.Models.Requests;
+using CERTHB2B.Models.Requests;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using EKETAGreenmindB2B.Data;
+using CERTHB2B.Data;
 using Microsoft.EntityFrameworkCore;
-using EKETAGreenmindB2B.Models;
+using CERTHB2B.Models;
 using System.Dynamic;
-using EKETAGreenmindB2B.Services;
+using CERTHB2B.Services;
 
-namespace EKETAGreenmindB2B.Controllers.Api
+namespace CERTHB2B.Controllers.Api
 {
     // [Route("api/[controller]/{action=Index}/{itemId?}")]
     // [Route("api/[controller]/{action=Index}/{itemId?}")]
@@ -27,13 +27,13 @@ namespace EKETAGreenmindB2B.Controllers.Api
         private UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext context;
         private readonly IRazorViewToStringRenderer razorRenderer;
-        private readonly EKETAGreenmindB2B.Services.IAppEmailSender appEmailSender;
+        private readonly CERTHB2B.Services.IAppEmailSender appEmailSender;
 
         public AccountsController(
             UserManager<ApplicationUser> userMgr, 
             SignInManager<ApplicationUser> signinMgr, 
             ApplicationDbContext dbContext,
-            EKETAGreenmindB2B.Services.IAppEmailSender appEmailSndr,
+            CERTHB2B.Services.IAppEmailSender appEmailSndr,
             IRazorViewToStringRenderer razorRndr)
         {
             userManager = userMgr;

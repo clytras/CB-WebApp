@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace EKETAGreenmindB2B.Models
+namespace CERTHB2B.Models
 {
     public class BusinessContact
     {

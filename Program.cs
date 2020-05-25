@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace EKETAGreenmindB2B
+namespace CERTHB2B
 {
     public class Program
     {

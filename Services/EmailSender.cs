@@ -5,7 +5,7 @@ using SendGrid.Helpers.Mail;
 using System;
 using System.Threading.Tasks;
 
-namespace EKETAGreenmindB2B.Services
+namespace CERTHB2B.Services
 {
     public class EmailSender : IEmailSender
     {

@@ -1,9 +1,9 @@
 using System;
 using Microsoft.AspNetCore.Identity;
-using EKETAGreenmindB2B.Models;
-using EKETAGreenmindB2B.Utils;
+using CERTHB2B.Models;
+using CERTHB2B.Utils;
 
-namespace EKETAGreenmindB2B.Data.Seeds
+namespace CERTHB2B.Data.Seeds
 {
     public partial class IdentityDataInitializer
     {

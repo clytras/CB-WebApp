@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace EKETAGreenmindB2B.Models.Requests
+namespace CERTHB2B.Models.Requests
 {
     public class ResetPasswordRequest
     {

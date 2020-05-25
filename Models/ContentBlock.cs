@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EKETAGreenmindB2B.Models
+namespace CERTHB2B.Models
 {
     public class ContentBlock
     {

@@ -13,11 +13,11 @@ window.fetch = () => {
       ok: true,
       json: () => Promise.resolve({
         "authority": "https://localhost:5001",
-        "client_id": "EKETAGreenmindB2B",
+        "client_id": "CERTHB2B",
         "redirect_uri": "https://localhost:5001/authentication/login-callback",
         "post_logout_redirect_uri": "https://localhost:5001/authentication/logout-callback",
         "response_type": "id_token token",
-        "scope": "EKETAGreenmindB2BAPI openid profile"
+        "scope": "CERTHB2BAPI openid profile"
      })
     });
 };

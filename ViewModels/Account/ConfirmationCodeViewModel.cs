@@ -1,4 +1,4 @@
-namespace EKETAGreenmindB2B.ViewModels.Account
+namespace CERTHB2B.ViewModels.Account
 {
   public class ConfirmationCodeViewModel
   {

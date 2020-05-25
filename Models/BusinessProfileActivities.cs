@@ -1,4 +1,4 @@
-using EKETAGreenmindB2B.Data;
+using CERTHB2B.Data;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace EKETAGreenmindB2B.Models
+namespace CERTHB2B.Models
 {
     public class BusinessProfileActivities
     {

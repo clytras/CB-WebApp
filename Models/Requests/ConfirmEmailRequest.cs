@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EKETAGreenmindB2B.Models.Requests
+namespace CERTHB2B.Models.Requests
 {
     public class ConfirmEmailRequest
     {

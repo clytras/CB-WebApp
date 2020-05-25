@@ -1,4 +1,4 @@
-namespace EKETAGreenmindB2B.ViewModels
+namespace CERTHB2B.ViewModels
 {
   public class ButtonViewModel
   {

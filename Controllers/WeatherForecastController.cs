@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace EKETAGreenmindB2B.Controllers
+namespace CERTHB2B.Controllers
 {
     [Authorize]
     [ApiController]

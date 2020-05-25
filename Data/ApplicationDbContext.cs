@@ -1,4 +1,4 @@
-﻿using EKETAGreenmindB2B.Models;
+﻿using CERTHB2B.Models;
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Options;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EKETAGreenmindB2B.Data
+namespace CERTHB2B.Data
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {

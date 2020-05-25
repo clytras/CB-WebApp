@@ -1,4 +1,4 @@
-export const ApplicationName = 'EKETAGreenmindB2B';
+export const ApplicationName = 'CERTHB2B';
 
 export const QueryParameterNames = {
   ReturnUrl: 'returnUrl',

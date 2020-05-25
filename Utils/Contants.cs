@@ -1,4 +1,4 @@
-namespace EKETAGreenmindB2B.Utils
+namespace CERTHB2B.Utils
 {
     class Constants
     {

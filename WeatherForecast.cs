@@ -1,6 +1,6 @@
 using System;
 
-namespace EKETAGreenmindB2B
+namespace CERTHB2B
 {
     public class WeatherForecast
     {

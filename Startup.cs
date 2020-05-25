@@ -6,20 +6,20 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
-using EKETAGreenmindB2B.Data;
-using EKETAGreenmindB2B.Models;
-using EKETAGreenmindB2B.Data.Seeds;
+using CERTHB2B.Data;
+using CERTHB2B.Models;
+using CERTHB2B.Data.Seeds;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using EKETAGreenmindB2B.Services;
+using CERTHB2B.Services;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Logging;
 
-namespace EKETAGreenmindB2B
+namespace CERTHB2B
 {
     public class Startup
     {

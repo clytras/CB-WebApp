@@ -1,5 +1,5 @@
 
-namespace EKETAGreenmindB2B.Services
+namespace CERTHB2B.Services
 {
     public class AuthMessageSenderOptions
     {

@@ -6,19 +6,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.AspNetCore.Authorization;
-using EKETAGreenmindB2B.Models.Requests;
+using CERTHB2B.Models.Requests;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using EKETAGreenmindB2B.Data;
+using CERTHB2B.Data;
 using Microsoft.EntityFrameworkCore;
-using EKETAGreenmindB2B.Models;
+using CERTHB2B.Models;
 using System.Dynamic;
 using System.Text.Json;
 using System.Text;
 using System.IO;
 
-namespace EKETAGreenmindB2B.Controllers.Api
+namespace CERTHB2B.Controllers.Api
 {
     [Route("static")]
     public class StaticContentController : ControllerBase

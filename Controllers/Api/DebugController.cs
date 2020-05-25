@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.AspNetCore.Authorization;
-using EKETAGreenmindB2B.Models;
-using EKETAGreenmindB2B.Models.Requests;
-using EKETAGreenmindB2B.CustomResults;
-using EKETAGreenmindB2B.ViewModels;
-using EKETAGreenmindB2B.ViewModels.Account;
+using CERTHB2B.Models;
+using CERTHB2B.Models.Requests;
+using CERTHB2B.CustomResults;
+using CERTHB2B.ViewModels;
+using CERTHB2B.ViewModels.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -19,10 +19,10 @@ using System.Text.Encodings.Web;
 using Devolutions.Zxcvbn;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
-using EKETAGreenmindB2B.Data;
-using EKETAGreenmindB2B.Services;
+using CERTHB2B.Data;
+using CERTHB2B.Services;
 
-namespace EKETAGreenmindB2B.Controllers.Api
+namespace CERTHB2B.Controllers.Api
 {
     // public class CustomUnauthorizedResult : JsonResult
     // {
@@ -51,14 +51,14 @@ namespace EKETAGreenmindB2B.Controllers.Api
         private readonly ApplicationDbContext context;
         private readonly IEmailSender emailSender;
         private readonly IRazorViewToStringRenderer razorRenderer;
-        private readonly EKETAGreenmindB2B.Services.IAppEmailSender appEmailSender;
+        private readonly CERTHB2B.Services.IAppEmailSender appEmailSender;
 
         public DebugController(
             UserManager<ApplicationUser> userMgr, 
             SignInManager<ApplicationUser> signinMgr, 
             ApplicationDbContext dbContext,
             IEmailSender emailSndr,
-            EKETAGreenmindB2B.Services.IAppEmailSender appEmailSndr,
+            CERTHB2B.Services.IAppEmailSender appEmailSndr,
             IRazorViewToStringRenderer razorRndr)
         {
             userManager = userMgr;

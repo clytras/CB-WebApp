@@ -1,6 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Identity;
-using EKETAGreenmindB2B.Models;
+using CERTHB2B.Models;
 using IdentityServer4.Services;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
@@ -10,7 +10,7 @@ using IdentityModel;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Cryptography.X509Certificates;
 
-namespace EKETAGreenmindB2B.Services
+namespace CERTHB2B.Services
 {
     public static class SigningCredentialExtension
     {

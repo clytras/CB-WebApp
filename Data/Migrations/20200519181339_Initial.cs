@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace EKETAGreenmindB2B.Data.Migrations
+namespace CERTHB2B.Data.Migrations
 {
     public partial class Initial : Migration
     {

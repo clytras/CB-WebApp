@@ -12,7 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EKETAGreenmindB2B.Services
+namespace CERTHB2B.Services
 {
     // Code from: https://github.com/aspnet/Entropy/blob/dev/samples/Mvc.RenderViewToString/RazorViewToStringRenderer.cs
     public interface IRazorViewToStringRenderer
