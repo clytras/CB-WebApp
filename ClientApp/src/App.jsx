@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router';
 import Layout from '@components/Layout';
 import { RProgress } from 'rprogress';
 import { ToastContainer } from 'react-toastify';
+import CookieConsent from "react-cookie-consent";
 import { useStoreOf } from '@stores';
 import ApiAuthorizationRoutes from '@components/api-authorization/ApiAuthorizationRoutes';
 import { ApplicationPaths } from '@components/api-authorization/ApiAuthorizationConstants';
@@ -31,9 +32,8 @@ import 'pretty-checkbox';
 import './App.scss';
 import './custom.css';
 
-
-import CSRFPost from '@components/debug/CSRFPost';
-import AjaxAuth from '@components/debug/AjaxAuth';
+// import CSRFPost from '@components/debug/CSRFPost';
+// import AjaxAuth from '@components/debug/AjaxAuth';
 
 
 function App() {
@@ -82,44 +82,33 @@ function App() {
         <AuthRoute path="/admin">
           <AuthRoleRoute path="/admin" ofRoles={[IdentityRoles.Admin, IdentityRoles.Editor]} component={AdminIndex} />
         </AuthRoute>
-        {/* <Route exact path={[
-          '/', 
-          '/ajax-auth', 
-          '/account',
-          // '/account/login', 
-          // '/account/logout',
-          // '/account/confirm-email',
-          // '/account/resend-email-confirmation',
+        <Layout>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/account/login" component={Login} />
+            <Route path="/account/logout" component={Logout} />
+            <Route path="/account/register" component={Register} />
+            <Route path="/account/confirm-email" component={ConfirmEmail} />
+            <Route path="/account/forgot-password" component={ForgotPassword} />
+            <Route path="/account/reset-password" component={ResetPassword} />
+            <Route path="/account*" component={AccountIndex} />
+            <Route path="/contact" component={Contact} />
 
-          '/debug/csrf-post'
-        ]}> */}
-          <Layout>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/account/login" component={Login} />
-              <Route path="/account/logout" component={Logout} />
-              <Route path="/account/register" component={Register} />
-              <Route path="/account/confirm-email" component={ConfirmEmail} />
-              <Route path="/account/forgot-password" component={ForgotPassword} />
-              <Route path="/account/reset-password" component={ResetPassword} />
-              <Route path="/account*" component={AccountIndex} />
-              <Route path="/contact" component={Contact} />
-
-              <Route path="/debug/ajax-auth" component={AjaxAuth} />
-              <Route path="/debug/csrf-post" component={CSRFPost} />
-            </Switch>
-          </Layout>
-        {/* </Route> */}
-
-        {/* <Layout>
-          <Route exact path='/' component={Home} />
-          <Route path='/counter' component={Counter} />
-          <Route path='/ajax-auth' component={AjaxAuth} />
-          <AuthorizeRoute path='/fetch-data' component={FetchData} />
-          <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
-        </Layout> */}
+            {/* <Route path="/debug/ajax-auth" component={AjaxAuth} />
+            <Route path="/debug/csrf-post" component={CSRFPost} /> */}
+          </Switch>
+        </Layout>
       </Switch>
       <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
+      <CookieConsent sameSite="lax"
+        disableStyles={true}
+        location="bottom"
+        buttonClasses="btn btn-primary"
+        containerClasses="cookie-consent alert alert-warning col-lg-12"
+        contentClasses="text-capitalize">
+        <h4>This website uses cookies to enhance the user experience.</h4>
+        <p>By continuing to browse the site you're agreeing to our use of cookies.</p>
+      </CookieConsent>
       <RProgress color={'red'} type="incremental" />
       <ToastContainer position="bottom-right" />
     </>

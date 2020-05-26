@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using CERTHB2B.Data;
 using CERTHB2B.Services;
+using System.Collections.ObjectModel;
 
 namespace CERTHB2B.Controllers.Api
 {
@@ -79,6 +80,44 @@ namespace CERTHB2B.Controllers.Api
                 TestingThis,
                 Testing = "Όλα καλά!"
             });
+        }
+
+        public class Option
+        {
+            public string Name { get; set; }
+            public string Value { get; set; }
+        }
+
+        [HttpGet]
+        public IActionResult TestObjectKeys()
+        {
+            // string Testing = "This test!!!";
+            // var obj = new { ThisKey = "ThisKey" };
+
+            // return Ok(new Dictionary<string, object>()
+            // {
+            //     { "MyTest", "MyValue" },
+            //     { "MoreTest", "Some Value" },
+            //     { obj.ThisKey, Testing }
+            // });
+
+            var options = new List<dynamic>()
+            {
+                new Option() {
+                    Name = "First",
+                    Value = "This is the first"
+                },
+                new Option() {
+                    Name = "Second",
+                    Value = "This is the second!"
+                }
+            };
+
+            var result = new Dictionary<string, object>();
+
+            options.ForEach(o => result.Add(o.Name, o.Value));
+
+            return Ok(result);
         }
 
         [HttpGet]

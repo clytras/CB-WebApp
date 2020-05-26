@@ -25,6 +25,7 @@
     "pretty-checkbox-react": "^2.0.0-rc.1",
     "query-string": "^6.12.1",
     "react": "^16.13.1",
+    "react-cookie-consent": "^5.0.0",
     "react-data-table-component": "^6.9.1",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.21",

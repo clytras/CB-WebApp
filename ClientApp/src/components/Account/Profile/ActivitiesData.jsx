@@ -20,6 +20,7 @@ import clsx from 'clsx';
 export default function ActivitiesData({ authUserProfile }) {
   const [userBusinessProfile] = useStoreOf('userBusinessProfile');
   const [selected, setSelected] = useState({});
+  const [otherActivities, setOtherActivities] = useState({});
   const [isDirty, setIsDirty] = useState(false);
   const [validation, setValidation] = useState();
   const [validationError, setValidationError] = useState();
@@ -29,11 +30,17 @@ export default function ActivitiesData({ authUserProfile }) {
   const [processing, setProcessing] = useState(false);
   const { hasProfile = false } = userBusinessProfile || {};
 
+  const handleOtherActivityChange = alias => 
+    ({ currentTarget: { value }}) => {
+      setIsDirty(true);
+      setOtherActivities(p => ({ ...p, [alias]: value }));
+    }
   const handleOptionClick = (head, sub, option) => () => {
     selectOption(head, sub, option);
   }
 
   const selectOption = (head, sub, option, value) => {
+    setIsDirty(true);
     setSelected(o => {
       if (!(head in o)) {
         o[head] = {};
@@ -141,7 +148,7 @@ export default function ActivitiesData({ authUserProfile }) {
   //   return errors.length === 0;
   // }
 
-  console.log('Strings.titles', Strings.titles);
+  console.log('otherActivities', otherActivities);
 
   function renderSubActivities(head, sub, options) {
     if (!options || !'$' in options || options.$.length === 0) {
@@ -190,8 +197,10 @@ export default function ActivitiesData({ authUserProfile }) {
             {own.length !== 0 && renderSubActivities(head, null, own)}
             <ListGroup className="mb-4">
               <ListGroupItem color="primary">{Strings.titles.OtherText}</ListGroupItem>
-              <ListGroupItem>
-                <Input type="textarea" />
+              <ListGroupItem className="options-list-textarea">
+                <Input type="textarea" name={`Profile.OtherActivities.${head}`} id={`Profile.OtherActivities.${head}`}
+                  value={otherActivities[head] || ''}
+                  onChange={handleOtherActivityChange(head)} />
               </ListGroupItem>
             </ListGroup>
           </div>
