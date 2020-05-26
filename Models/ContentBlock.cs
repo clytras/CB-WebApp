@@ -15,5 +15,6 @@ namespace CERTHB2B.Models
         public long BlockId { get; set; }
         public string BindToContent { get; set; }
         public string Content { get; set; }
+        public bool? Locked { get; set; }
     }
 }

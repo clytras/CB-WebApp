@@ -18,14 +18,12 @@ namespace CERTHB2B.Models
         [Required]
         public string StreetAddress { get; set; }
 
-        [Required]
         public string AddressLine2 { get; set; }
 
         [Required]
         [MaxLength(50)]
         public string City { get; set; }
 
-        [Required]
         [MaxLength(50)]
         public string Region { get; set; }
 

@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDataTable from 'react-data-table-component';
 import { Button } from 'reactstrap';
+import LoadingOverlay from './LoadingOverlay';
+
 
 export default function DataTable(props) {
   return (
     <ReactDataTable {...props}
+      progressComponent={<LoadingOverlay/>}
       customStyles={{
         tableWrapper: {
           style: {

@@ -1,8 +1,11 @@
-﻿using CERTHB2B.Models;
+﻿using CERTHB2B.Data.Seeds;
+using CERTHB2B.Models;
+using CERTHB2B.Utils;
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
@@ -24,6 +27,15 @@ namespace CERTHB2B.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            IdentityModelInitializer.SeedUsersAndRoles(
+                modelBuilder.Entity<IdentityRole>(), 
+                modelBuilder.Entity<ApplicationUser>(), 
+                modelBuilder.Entity<IdentityUserRole<string>>());
+
+            modelBuilder.Entity<ContentBlock>()
+                .Property(p => p.Locked)
+                .HasDefaultValue(false);
+
             modelBuilder.Entity<BusinessProfileActivities>()
                 .HasKey(t => new { t.ProfileId, t.ActivityId });
 
@@ -33,6 +45,9 @@ namespace CERTHB2B.Data
             modelBuilder.Entity<BusinessProfile>()
                 .Property(p => p.IsProfileVisible)
                 .HasDefaultValue(true);
+
+            BusinessProfileDataInitializer.SeedBusinessActivityOptions(
+                modelBuilder.Entity<BusinessActivitiesOptions>());
         }
 
 

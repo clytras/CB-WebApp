@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CERTHB2B.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200522133314_CreateBusinessProfileModel")]
-    partial class CreateBusinessProfileModel
+    [Migration("20200526142918_BusinessProfiles")]
+    partial class BusinessProfiles
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -90,6 +90,61 @@ namespace CERTHB2B.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "818e3ae4-dfaa-4e2e-a042-2db203e8febb",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "dd4f1dee-d24b-4e68-b408-c9375c624989",
+                            Email = "admin@nekya.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "ADMIN@NEKYA.COM",
+                            NormalizedUserName = "ADMIN@NEKYA.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHzf5sE4/pDew5etQujm8dO/17HHohsdhX84KD8PrlWVdpNdRrwRVuDDp06Af8lA0Q==",
+                            PhoneNumberConfirmed = false,
+                            RegistrationDate = new DateTime(2020, 5, 26, 11, 23, 40, 221, DateTimeKind.Utc),
+                            SecurityStamp = "CEAA272E6A8028468585E33BEE7402BB",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@nekya.com"
+                        },
+                        new
+                        {
+                            Id = "bedbc467-6cd4-4342-8658-851556be8ce0",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "0063de9c-29c3-4f58-bb27-8691f18811f8",
+                            Email = "editor@nekya.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = true,
+                            LockoutEnd = new DateTimeOffset(new DateTime(2070, 5, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 3, 0, 0, 0)),
+                            NormalizedEmail = "EDITOR@NEKYA.COM",
+                            NormalizedUserName = "EDITOR@NEKYA.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAENt08bjzGZwulojjOeJZ4ilqVN9ATxdXxj6qPvO2V/6B0culdHIRCFaxMPCTjg0eSQ==",
+                            PhoneNumberConfirmed = false,
+                            RegistrationDate = new DateTime(2020, 5, 26, 11, 23, 40, 221, DateTimeKind.Utc),
+                            SecurityStamp = "DC8A808B01077C43B268EAE077B7EC2E",
+                            TwoFactorEnabled = false,
+                            UserName = "editor@nekya.com"
+                        },
+                        new
+                        {
+                            Id = "182651c4-7698-4745-ad3e-207edba16b1e",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "39b8e7f7-9b5d-4abd-826c-4af31d77f229",
+                            Email = "user@nekya.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = true,
+                            LockoutEnd = new DateTimeOffset(new DateTime(2070, 5, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 3, 0, 0, 0)),
+                            NormalizedEmail = "USER@NEKYA.COM",
+                            NormalizedUserName = "USER@NEKYA.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJNDFzILfnoH3q61fJAwYdTjd+a47AzAVqpvijjS4uyaAbAOjWYNER7J60HYtaLl3Q==",
+                            PhoneNumberConfirmed = false,
+                            RegistrationDate = new DateTime(2020, 5, 26, 11, 23, 40, 221, DateTimeKind.Utc),
+                            SecurityStamp = "9D96BC88CAC7BC479DA8B901743749BF",
+                            TwoFactorEnabled = false,
+                            UserName = "user@nekya.com"
+                        });
                 });
 
             modelBuilder.Entity("CERTHB2B.Models.BusinessActivitiesOptions", b =>
@@ -109,6 +164,193 @@ namespace CERTHB2B.Data.Migrations
                     b.HasAlternateKey("ActivityOptionAlias");
 
                     b.ToTable("BusinessActivitiesOptions");
+
+                    b.HasData(
+                        new
+                        {
+                            ActivityId = 1L,
+                            ActivityOptionAlias = "TopicsOfInterest.CleanPowerTransport.$Electromobility"
+                        },
+                        new
+                        {
+                            ActivityId = 2L,
+                            ActivityOptionAlias = "TopicsOfInterest.CleanPowerTransport.$MicroMobility"
+                        },
+                        new
+                        {
+                            ActivityId = 3L,
+                            ActivityOptionAlias = "TopicsOfInterest.CleanPowerTransport.$Biofuels"
+                        },
+                        new
+                        {
+                            ActivityId = 4L,
+                            ActivityOptionAlias = "TopicsOfInterest.CleanPowerTransport.$HydrogenMobility"
+                        },
+                        new
+                        {
+                            ActivityId = 5L,
+                            ActivityOptionAlias = "TopicsOfInterest.AirMobility.$DronesManufacturing"
+                        },
+                        new
+                        {
+                            ActivityId = 6L,
+                            ActivityOptionAlias = "TopicsOfInterest.AirMobility.$DronesTrading"
+                        },
+                        new
+                        {
+                            ActivityId = 7L,
+                            ActivityOptionAlias = "TopicsOfInterest.Logistics.$LastmileLogistics"
+                        },
+                        new
+                        {
+                            ActivityId = 8L,
+                            ActivityOptionAlias = "TopicsOfInterest.Logistics.$DronesApplicationsForLogistics"
+                        },
+                        new
+                        {
+                            ActivityId = 9L,
+                            ActivityOptionAlias = "TopicsOfInterest.UrbanMobility.$SharedMobility"
+                        },
+                        new
+                        {
+                            ActivityId = 10L,
+                            ActivityOptionAlias = "TopicsOfInterest.UrbanMobility.$TrafficManagementSystems"
+                        },
+                        new
+                        {
+                            ActivityId = 11L,
+                            ActivityOptionAlias = "TopicsOfInterest.TransportInfrastructure.$RailInfrastructure"
+                        },
+                        new
+                        {
+                            ActivityId = 12L,
+                            ActivityOptionAlias = "TopicsOfInterest.TransportInfrastructure.$RoadInfrastructure"
+                        },
+                        new
+                        {
+                            ActivityId = 13L,
+                            ActivityOptionAlias = "TopicsOfInterest.TransportInfrastructure.$MaritimeInfrastructure"
+                        },
+                        new
+                        {
+                            ActivityId = 14L,
+                            ActivityOptionAlias = "TopicsOfInterest.TransportInfrastructure.$AirTransportInfrastructure"
+                        },
+                        new
+                        {
+                            ActivityId = 15L,
+                            ActivityOptionAlias = "TopicsOfInterest.Automotive.$ElectricVehiclesManufacturing"
+                        },
+                        new
+                        {
+                            ActivityId = 16L,
+                            ActivityOptionAlias = "TopicsOfInterest.Automotive.$ElectricVehiclesTrading"
+                        },
+                        new
+                        {
+                            ActivityId = 17L,
+                            ActivityOptionAlias = "TopicsOfInterest.Automotive.$AutonomousVehiclesManufacturing"
+                        },
+                        new
+                        {
+                            ActivityId = 18L,
+                            ActivityOptionAlias = "TopicsOfInterest.Automotive.$AutonomousVehiclesTrading"
+                        },
+                        new
+                        {
+                            ActivityId = 19L,
+                            ActivityOptionAlias = "TopicsOfInterest.ICTTransport.$ITSSystems"
+                        },
+                        new
+                        {
+                            ActivityId = 20L,
+                            ActivityOptionAlias = "TopicsOfInterest.ICTTransport.$CITSSystems"
+                        },
+                        new
+                        {
+                            ActivityId = 21L,
+                            ActivityOptionAlias = "TopicsOfInterest.ICTTransport.$DataAnalyticsTransport"
+                        },
+                        new
+                        {
+                            ActivityId = 22L,
+                            ActivityOptionAlias = "TopicsOfInterest.$TransportPolicy"
+                        },
+                        new
+                        {
+                            ActivityId = 23L,
+                            ActivityOptionAlias = "TopicsOfInterest.$ConsultingServices"
+                        },
+                        new
+                        {
+                            ActivityId = 24L,
+                            ActivityOptionAlias = "Offer.Collaboration.$ForFundingCall"
+                        },
+                        new
+                        {
+                            ActivityId = 25L,
+                            ActivityOptionAlias = "Offer.Collaboration.$DevelopNewProduct"
+                        },
+                        new
+                        {
+                            ActivityId = 26L,
+                            ActivityOptionAlias = "Offer.Collaboration.$DevelopNewService"
+                        },
+                        new
+                        {
+                            ActivityId = 27L,
+                            ActivityOptionAlias = "Offer.$TechnicalCooperation"
+                        },
+                        new
+                        {
+                            ActivityId = 28L,
+                            ActivityOptionAlias = "Offer.ConsultingServices.$BusinessConsultingServices"
+                        },
+                        new
+                        {
+                            ActivityId = 29L,
+                            ActivityOptionAlias = "Offer.ConsultingServices.$TransportRelatedConsultingServices"
+                        },
+                        new
+                        {
+                            ActivityId = 30L,
+                            ActivityOptionAlias = "Request.Collaboration.$ForFundingCall"
+                        },
+                        new
+                        {
+                            ActivityId = 31L,
+                            ActivityOptionAlias = "Request.Collaboration.$DevelopNewProduct"
+                        },
+                        new
+                        {
+                            ActivityId = 32L,
+                            ActivityOptionAlias = "Request.Collaboration.$DevelopNewService"
+                        },
+                        new
+                        {
+                            ActivityId = 33L,
+                            ActivityOptionAlias = "Request.Supplier.$ForComponents"
+                        },
+                        new
+                        {
+                            ActivityId = 34L,
+                            ActivityOptionAlias = "Request.Supplier.$ForServices"
+                        },
+                        new
+                        {
+                            ActivityId = 35L,
+                            ActivityOptionAlias = "Request.Supplier.$ForData"
+                        },
+                        new
+                        {
+                            ActivityId = 36L,
+                            ActivityOptionAlias = "Request.ConsultingServices.$BusinessConsultingServices"
+                        },
+                        new
+                        {
+                            ActivityId = 37L,
+                            ActivityOptionAlias = "Request.ConsultingServices.$TransportRelatedConsultingServices"
+                        });
                 });
 
             modelBuilder.Entity("CERTHB2B.Models.BusinessAddress", b =>
@@ -119,7 +361,6 @@ namespace CERTHB2B.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AddressLine2")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
@@ -141,7 +382,6 @@ namespace CERTHB2B.Data.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Region")
-                        .IsRequired()
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
@@ -268,6 +508,11 @@ namespace CERTHB2B.Data.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool?>("Locked")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.HasKey("BlockId");
 
                     b.ToTable("ContentBlock");
@@ -385,6 +630,29 @@ namespace CERTHB2B.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "24d76187-397c-44aa-bc45-1970ae5adcf3",
+                            ConcurrencyStamp = "d79bb754-16ca-4417-b106-31951e2fb671",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "97c19e19-d4ce-46e7-922b-cc954cfe531d",
+                            ConcurrencyStamp = "7409dfa1-0a1d-4c65-89e9-d04ab259ec03",
+                            Name = "Editor",
+                            NormalizedName = "EDITOR"
+                        },
+                        new
+                        {
+                            Id = "540cf8e7-57d9-4b81-bb5a-898c7f7649c1",
+                            ConcurrencyStamp = "458b4ba1-a711-43dd-b0ea-ea0c930214bb",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -472,6 +740,23 @@ namespace CERTHB2B.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "818e3ae4-dfaa-4e2e-a042-2db203e8febb",
+                            RoleId = "24d76187-397c-44aa-bc45-1970ae5adcf3"
+                        },
+                        new
+                        {
+                            UserId = "bedbc467-6cd4-4342-8658-851556be8ce0",
+                            RoleId = "97c19e19-d4ce-46e7-922b-cc954cfe531d"
+                        },
+                        new
+                        {
+                            UserId = "182651c4-7698-4745-ad3e-207edba16b1e",
+                            RoleId = "540cf8e7-57d9-4b81-bb5a-898c7f7649c1"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

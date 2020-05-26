@@ -3,6 +3,7 @@
 
 
 # Application files
+Temp/
 appsettings.Production.json
 
 # User-specific files

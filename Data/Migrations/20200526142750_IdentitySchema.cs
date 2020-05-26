@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CERTHB2B.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class IdentitySchema : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,20 +32,6 @@ namespace CERTHB2B.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ContentBlock",
-                columns: table => new
-                {
-                    BlockId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BindToContent = table.Column<string>(nullable: true),
-                    Content = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ContentBlock", x => x.BlockId);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,6 +195,41 @@ namespace CERTHB2B.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ApplicationUserId", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "24d76187-397c-44aa-bc45-1970ae5adcf3", null, "d79bb754-16ca-4417-b106-31951e2fb671", "Admin", "ADMIN" },
+                    { "97c19e19-d4ce-46e7-922b-cc954cfe531d", null, "7409dfa1-0a1d-4c65-89e9-d04ab259ec03", "Editor", "EDITOR" },
+                    { "540cf8e7-57d9-4b81-bb5a-898c7f7649c1", null, "458b4ba1-a711-43dd-b0ea-ea0c930214bb", "User", "USER" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LastLoginTime", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RegistrationDate", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "818e3ae4-dfaa-4e2e-a042-2db203e8febb", 0, "dd4f1dee-d24b-4e68-b408-c9375c624989", "admin@nekya.com", true, null, true, null, "ADMIN@NEKYA.COM", "ADMIN@NEKYA.COM", "AQAAAAEAACcQAAAAEHzf5sE4/pDew5etQujm8dO/17HHohsdhX84KD8PrlWVdpNdRrwRVuDDp06Af8lA0Q==", null, false, new DateTime(2020, 5, 26, 11, 23, 40, 221, DateTimeKind.Utc), "CEAA272E6A8028468585E33BEE7402BB", false, "admin@nekya.com" },
+                    { "bedbc467-6cd4-4342-8658-851556be8ce0", 0, "0063de9c-29c3-4f58-bb27-8691f18811f8", "editor@nekya.com", true, null, true, new DateTimeOffset(new DateTime(2070, 5, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 3, 0, 0, 0)), "EDITOR@NEKYA.COM", "EDITOR@NEKYA.COM", "AQAAAAEAACcQAAAAENt08bjzGZwulojjOeJZ4ilqVN9ATxdXxj6qPvO2V/6B0culdHIRCFaxMPCTjg0eSQ==", null, false, new DateTime(2020, 5, 26, 11, 23, 40, 221, DateTimeKind.Utc), "DC8A808B01077C43B268EAE077B7EC2E", false, "editor@nekya.com" },
+                    { "182651c4-7698-4745-ad3e-207edba16b1e", 0, "39b8e7f7-9b5d-4abd-826c-4af31d77f229", "user@nekya.com", true, null, true, new DateTimeOffset(new DateTime(2070, 5, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 3, 0, 0, 0)), "USER@NEKYA.COM", "USER@NEKYA.COM", "AQAAAAEAACcQAAAAEJNDFzILfnoH3q61fJAwYdTjd+a47AzAVqpvijjS4uyaAbAOjWYNER7J60HYtaLl3Q==", null, false, new DateTime(2020, 5, 26, 11, 23, 40, 221, DateTimeKind.Utc), "9D96BC88CAC7BC479DA8B901743749BF", false, "user@nekya.com" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                values: new object[] { "818e3ae4-dfaa-4e2e-a042-2db203e8febb", "24d76187-397c-44aa-bc45-1970ae5adcf3" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                values: new object[] { "bedbc467-6cd4-4342-8658-851556be8ce0", "97c19e19-d4ce-46e7-922b-cc954cfe531d" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                values: new object[] { "182651c4-7698-4745-ad3e-207edba16b1e", "540cf8e7-57d9-4b81-bb5a-898c7f7649c1" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -291,9 +312,6 @@ namespace CERTHB2B.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "ContentBlock");
 
             migrationBuilder.DropTable(
                 name: "DeviceCodes");

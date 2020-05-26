@@ -144,8 +144,6 @@ namespace CERTHB2B
             app.UseIdentityServer();
             app.UseAuthorization();
 
-            IdentityDataInitializer.SeedData(userManager, roleManager);
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

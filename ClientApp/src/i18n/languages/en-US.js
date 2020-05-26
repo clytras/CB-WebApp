@@ -1,3 +1,4 @@
+import Content from './Content.en-US';
 import CountriesISOAlpha3 from './Countries.en-US';
 
 export default {
@@ -158,5 +159,6 @@ export default {
   },
   Collections: {
     Countries: CountriesISOAlpha3
-  }
+  },
+  Content
 }
