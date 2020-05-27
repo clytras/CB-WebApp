@@ -1,19 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.AspNetCore.Authorization;
-using CERTHB2B.Models.Requests;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using CERTHB2B.Data;
 using Microsoft.EntityFrameworkCore;
-using CERTHB2B.Models;
-using System.Dynamic;
 using System.Text.Json;
 using System.Text;
 using System.IO;
@@ -36,8 +25,7 @@ namespace CERTHB2B.Controllers.Api
         {
             string[] bindsTo = new string[] {
                 "Welcome",
-                "Contact",
-                "FooterCopyright"
+                "Contact"
             };
 
             var results = context.ContentBlock

@@ -291,3 +291,10 @@ html {
   margin: 0;
   background-color: #ffeebab3;
 }
+
+
+.Toastify__toast--warning {
+  .Toastify__toast-body {
+    color: #535353;
+  }
+}

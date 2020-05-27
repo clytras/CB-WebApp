@@ -16,7 +16,7 @@ export default function LoadingOverlay({
   loading = true,
   overlay = undefined,
   spinner = 'MoonLoader',
-  topMost = false
+  topmost = false
 }) {
   const Spinner = spinners[spinner];
 
@@ -36,7 +36,7 @@ export default function LoadingOverlay({
     <div style={style} className={
       clsx(css(styles.overlay), {
         [css(styles.inline)]: inline,
-        [css(styles.topMost)]: topMost
+        [css(styles.topmost)]: topmost
       })
     }>
       <Spinner
@@ -51,7 +51,7 @@ export default function LoadingOverlay({
 // export const GlobalLoadingOverlay = withStore(props => {
 //   const store = props.store;
 //   const ui = store.get('ui');
-//   return <LoadingOverlay inline overlay topMost loading={ui.get('loading')}/>;
+//   return <LoadingOverlay inline overlay topmost loading={ui.get('loading')}/>;
 // });
 
 const styles = StyleSheet.create({
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  topMost: {
+  topmost: {
     zIndex: 10000
   },
   inline: {

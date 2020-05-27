@@ -26,12 +26,12 @@ namespace CERTHB2B
     {
         public Startup(IConfiguration configuration, IHostEnvironment env)
         {
+            Configuration = configuration;
+            Environment = env;
+
             // Console.WriteLine($"ApplicationName: {env.ApplicationName}");
             // Console.WriteLine($"ContentRootPath: {env.ContentRootPath}");
             // Console.WriteLine($"EnvironmentName: {env.EnvironmentName}");
-
-            Configuration = configuration;
-            Environment = env;
 
             // var sgc = configuration.GetSection("SendGrid");
 
@@ -58,15 +58,6 @@ namespace CERTHB2B
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            // services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
-            //     .AddRoles<IdentityRole>()
-            //     .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            // Working
-            // services.AddIdentity<ApplicationUser, IdentityRole>()
-            //     // services.AddDefaultIdentity<IdentityUser>()
-            //     .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
                 .GetCertFromServer()

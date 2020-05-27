@@ -2,6 +2,7 @@
   "compilerOptions": {
     "baseUrl": "src",
     "paths": {
+      "@lazy": ["./components/lazy"],
       "@components": ["./components"],
       "@i18n": ["./i18n"],
       "@stores": ["./stores"],

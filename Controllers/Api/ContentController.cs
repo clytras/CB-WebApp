@@ -1,24 +1,15 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.AspNetCore.Authorization;
 using CERTHB2B.Models.Requests;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using CERTHB2B.Data;
 using Microsoft.EntityFrameworkCore;
 using CERTHB2B.Models;
-using System.Dynamic;
 
 namespace CERTHB2B.Controllers.Api
 {
-    // [Route("api/[controller]/{action=Index}/{itemId?}")]
-    // [Route("api/[controller]/{action=Index}/{itemId?}")]
     [Route("api/[controller]")]
     [ApiController]
     public class ContentController : ControllerBase

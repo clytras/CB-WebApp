@@ -1,8 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.css';
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import LoadingOverlay from '@components/common/LoadingOverlay';
 //import registerServiceWorker from './registerServiceWorker';
 
 // const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
@@ -10,10 +11,14 @@ const rootElement = document.getElementById('root');
 
 ReactDOM.render(
   // <BrowserRouter basename={baseUrl}>
-  <BrowserRouter>
-    <App/>
-  </BrowserRouter>,
-  rootElement);
+
+  <Suspense fallback={<LoadingOverlay inline overlay topmost size={100} />}>
+    <BrowserRouter>
+      <App/>
+    </BrowserRouter>
+  </Suspense>
+
+, rootElement);
 
 // Uncomment the line above that imports the registerServiceWorker function
 // and the line below to register the generated service worker.
@@ -23,4 +28,3 @@ ReactDOM.render(
 // disabled by default when Identity is being used.
 //
 //registerServiceWorker();
-

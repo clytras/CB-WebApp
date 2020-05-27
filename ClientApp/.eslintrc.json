@@ -3,6 +3,7 @@
     "import/resolver": {
       "alias": {
         "map": [
+          ["@lazy", "./src/components/lazy"],
           ["@components", "./src/components"],
           ["@i18n", "./src/i18n"],
           ["@stores", "./src/stores"],

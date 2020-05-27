@@ -6,15 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using CERTHB2B.Data;
 using Microsoft.EntityFrameworkCore;
 using CERTHB2B.Models;
-using System.Dynamic;
 using CERTHB2B.Models.Requests;
-using System.Text.Json;
+using CERTHB2B.CustomResults;
 
 namespace CERTHB2B.Controllers.Api
 {
@@ -72,7 +69,7 @@ namespace CERTHB2B.Controllers.Api
 
         [HttpPut("Information")]
         [Authorize]
-        public async Task<IActionResult> OnPutProfile(BusinessProfile businessProfile)
+        public async Task<IActionResult> OnPutInformation(BusinessProfile businessProfile)
         {
             if (ModelState.IsValid)
             {
@@ -84,7 +81,6 @@ namespace CERTHB2B.Controllers.Api
 
                 // businessProfilePutRequest.Profile.Activities = activities;
                 
-                // var user = await userManager.FindByIdAsync("16dad1b9-55a4-4eb6-bda7-d2c020776962");
                 // var user = await userManager.GetUserAsync(User);
                 var user = await userManager.FindByEmailAsync(User.Identity.Name);
 
@@ -120,7 +116,7 @@ namespace CERTHB2B.Controllers.Api
                     try
                     {
                         await context.SaveChangesAsync();
-                        return Ok(businessProfile);
+                        return Ok(await GetProfileData(user.Id).FirstOrDefaultAsync());
                     }
                     catch (Exception e)
                     {
@@ -128,39 +124,114 @@ namespace CERTHB2B.Controllers.Api
                     }
                 }
 
-
-                // // var user = await userManager.GetUserAsync(User);
-
-                // if(user != null) {
-                //     businessProfilePutRequest.Profile.User = user;
-                //     context.Add(businessProfilePutRequest.Profile);
-
-                //     try
-                //     {
-                //         await context.SaveChangesAsync();
-                //         return Ok(businessProfilePutRequest.Profile);
-                //     }
-                //     catch (Exception e)
-                //     {
-                //         return Conflict(e?.InnerException?.Message);
-                //     }
-                // }
-
                 return NotFound(new { userNotFound = User.Identity.Name });
-                // return NotFound();
+            }
 
-                
-                // context.AddRange(businessActivitiesOptions);
+            return BadRequest(ModelState);
+        }
 
-                // try
-                // {
-                //     await context.SaveChangesAsync();
-                //     return Ok();
-                // }
-                // catch (DbUpdateException e)
-                // {
-                //     return Conflict(e?.InnerException?.Message);
-                // }
+        [HttpPut("Activities")]
+        [Authorize]
+        public async Task<IActionResult> OnPutActivities(List<string> activitiesSelected)
+        {
+            if (ModelState.IsValid)
+            {
+                // var user = await userManager.GetUserAsync(User);
+                var user = await userManager.FindByEmailAsync(User.Identity.Name);
+
+                if (user != null)
+                {
+                    var profile = await context.BusinessProfiles
+                        .Include(p => p.Activities)
+                        .FirstOrDefaultAsync(p => p.User.Id == user.Id);
+
+                    if (profile != null)
+                    {
+                        profile.Activities.Clear();
+                        profile.Activities = (
+                            from p in context.BusinessActivitiesOptions
+                            where activitiesSelected.Any(v => p.ActivityOptionAlias.Equals(v))
+                            select new BusinessProfileActivities() {
+                                ActivityId = p.ActivityId
+                            }).ToList();
+                        context.Update(profile);
+                    }
+                    else
+                    {
+                        return new BadRequestJsonResult("NoProfile", null, StatusCodes.Status404NotFound);
+                    }
+
+                    try
+                    {
+                        await context.SaveChangesAsync();
+                        return Ok();
+                    }
+                    catch (Exception e)
+                    {
+                        return Conflict(e?.InnerException?.Message);
+                    }
+                }
+
+                return NotFound();
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        [HttpPut("OtherActivity")]
+        [Authorize]
+        public async Task<IActionResult> OnPutOtherActivity(BusinessOtherActivityPutRequest activityRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                // var user = await userManager.GetUserAsync(User);
+                var user = await userManager.FindByEmailAsync(User.Identity.Name);
+
+                if (user != null)
+                {
+                    var profile = await context.BusinessProfiles
+                        .Include(p => p.OtherActivities)
+                        .FirstOrDefaultAsync(p => p.User.Id == user.Id);
+
+                    if (profile != null)
+                    {
+                        var activity = (
+                            from o in profile.OtherActivities
+                            where o.ActivityAlias == activityRequest.ActivityAlias
+                            select o).FirstOrDefault();
+
+                        if (activity != null)
+                        {
+                            activity.OtherText = activityRequest.OtherText;
+                            context.Update(profile);
+                        }
+                        else
+                        {
+                            context.BusinessProfileOtherActivities.Add(new BusinessProfileOtherActivities()
+                            {
+                                ActivityAlias = activityRequest.ActivityAlias,
+                                OtherText = activityRequest.OtherText,
+                                ProfileId = profile.ProfileId
+                            });
+                        }
+                    }
+                    else
+                    {
+                        return new BadRequestJsonResult("NoProfile", null, StatusCodes.Status404NotFound);
+                    }
+
+                    try
+                    {
+                        await context.SaveChangesAsync();
+                        return Ok();
+                    }
+                    catch (Exception e)
+                    {
+                        return Conflict(e?.InnerException?.Message);
+                    }
+                }
+
+                return NotFound();
             }
 
             return BadRequest(ModelState);
@@ -168,6 +239,15 @@ namespace CERTHB2B.Controllers.Api
 
         private IQueryable<dynamic> GetProfileData(string userId = null, long profileId = 0)
         {
+            var OtherActivitiesList = (
+                from profile in context.BusinessProfiles
+                    .Include(p => p.OtherActivities)
+                where profile.User.Id == userId || profile.ProfileId == profileId
+                select profile.OtherActivities).ToList();
+
+            var OtherActivities = new CollectionToDictionary<BusinessProfileOtherActivities>(OtherActivitiesList)
+                .Convert(i => i.ActivityAlias, i => i.OtherText);
+
             return
                 from profile in context.BusinessProfiles
                     .Include(p => p.ContactPerson)
@@ -187,8 +267,8 @@ namespace CERTHB2B.Controllers.Api
                         from pa in profile.Activities
                         join bao in context.BusinessActivitiesOptions on pa.ActivityId equals bao.ActivityId
                         select bao
-                    ),
-                    profile.OtherActivities
+                    ).Select(a => a.ActivityOptionAlias).Distinct(),
+                    OtherActivities
                 };
         }
 
@@ -203,6 +283,24 @@ namespace CERTHB2B.Controllers.Api
             }
 
             return null;
+        }
+
+        private class CollectionToDictionary<T> : Dictionary<string, object>
+        {
+            private List<ICollection<T>> list;
+
+            public CollectionToDictionary(List<ICollection<T>> list)
+            {
+                this.list = list;
+            }
+
+            public Dictionary<string, object> Convert(Func<T, string> key, Func<T, string> value)
+            {
+                var result = new Dictionary<string, object>();
+                list.ToList().ForEach(item => item.ToList().ForEach(i => result.Add(key(i), value(i))));
+
+                return result;
+            }
         }
     }
 }

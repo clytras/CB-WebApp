@@ -12,14 +12,21 @@ import AuthRoute from '@api-auth/AuthRoute';
 import AuthRoleRoute from '@api-auth/AuthRoleRoute';
 import Home from '@components/Home';
 import Contact from '@components/Contact';
-import AdminIndex from '@components/Admin';
-import AccountIndex from '@components/Account';
-import ForgotPassword from '@api-auth/ForgotPassword';
-import ResetPassword from '@api-auth/ResetPassword';
-import Login from '@api-auth/Login';
-import Logout from '@api-auth/Logout';
-import Register from '@api-auth/Register';
-import ConfirmEmail from '@api-auth/ConfirmEmail';
+
+import {
+  Register, Login, Logout,
+  ConfirmEmail, ForgotPassword, ResetPassword,
+  AdminIndex, AccountIndex
+} from '@lazy';
+
+// import Login from '@lazy';
+// import Logout from '@lazy/Logout';
+// import ConfirmEmail from '@lazy/ConfirmEmail';
+// import ForgotPassword from '@lazy/ForgotPassword';
+// import ResetPassword from '@lazy/ResetPassword';
+// import AdminIndex from '@lazy/AdminIndex';
+// import AccountIndex from '@lazy/AccountIndex';
+
 import { IdentityRoles } from '@api-auth';
 import AuthService from '@api-auth/AuthorizeService';
 import { BusinessProfile } from '@data/BusinessProfile';

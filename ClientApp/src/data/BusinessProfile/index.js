@@ -43,8 +43,30 @@ export class BusinessProfile  {
     return this._profile && this._profile.activities;
   }
 
+  set activities(value) {
+    if (this._profile) {
+      this._profile.activities = value;
+    }
+  }
+
+  get activitiesAssoc() {
+    if (this.activities && this.activities.length) {
+      return this.activities.reduce((assoc, key) => {
+        assoc[key] = true;
+        return assoc;
+      }, {});
+    }
+    return {};
+  }
+
   get otherActivities() {
     return this._profile && this._profile.otherActivities;
+  }
+
+  set otherActivities(value) {
+    if (this._profile) {
+      this._profile.otherActivities = value;
+    }
   }
 
   static FetchProfile(profileId) {
@@ -53,6 +75,20 @@ export class BusinessProfile  {
 
   static SaveProfileInformation(params) {
     return apiPut('/api/BusinessProfile/Information', { addAuth: true, params });
+  }
+
+  static SaveProfileActivities(activities) {
+    return apiPut('/api/BusinessProfile/Activities', { addAuth: true, params: activities });
+  }
+
+  static SaveProfileOtherActivity(ActivityAlias, OtherText) {
+    return apiPut('/api/BusinessProfile/OtherActivity', {
+      addAuth: true,
+      params: {
+        ActivityAlias,
+        OtherText
+      }
+    });
   }
 
   static FetchProfileOfUser(userId) {

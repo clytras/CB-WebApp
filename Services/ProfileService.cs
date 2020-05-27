@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Identity;
 using CERTHB2B.Models;
 using IdentityServer4.Services;

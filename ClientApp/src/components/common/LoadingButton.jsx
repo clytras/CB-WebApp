@@ -1,8 +1,18 @@
 import React from 'react';
 import { Button } from 'reactstrap';
 import MoonLoader from "react-spinners/MoonLoader";
-import { StyleSheet, css } from 'aphrodite';
+import styled from 'styled-components';
 
+
+const Body = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const Content = styled.div`
+  margin-left: ${p => p.loading ? 5 : 0}px;
+`;
 
 export default function LoadingButton({
   children,
@@ -13,24 +23,12 @@ export default function LoadingButton({
 
   return (
     <Button {...rest} disabled={disabled || loading}>
-      <div className={css(styles.content)}>
+      <Body>
         {loading && <MoonLoader size={14} color="white" />}
-        <div className={css(styles.children)}>
+        <Content>
           {children}
-        </div>
-      </div>
+        </Content>
+      </Body>
     </Button>
   )
 }
-
-
-const styles = StyleSheet.create({
-  content: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  children: {
-    marginLeft: 5
-  }
-});

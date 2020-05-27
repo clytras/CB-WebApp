@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Row, Col, FormGroup, FormFeedback, FormText, Label, Input } from 'reactstrap';
 import InlineMessage from '@components/common/InlineMessage';
 import LoadingButton from '@components/common/LoadingButton';
@@ -21,9 +21,8 @@ import { getCountriesForSelect } from '@data/Countries';
 import clsx from 'clsx';
 
 
-const countriesOptions = getCountriesForSelect();
-
 export default function InformationData() {
+  const countriesOptions = useMemo(() => getCountriesForSelect(), []);
   const [authUserProfile] = useStoreOf('authUserProfile');
   const [userBusinessProfile, setUserBusinessProfile] = useStoreOf('userBusinessProfile', 'setUserBusinessProfile');
   const inputEmailRef = useRef();
@@ -43,11 +42,8 @@ export default function InformationData() {
     ContactEmail: '',
     ContactPhone: ''
   });
-
-  const [validation, setValidation] = useState({
-    // Telephone: 'Wrong number',
-    // Email: true
-  });
+  const [profileCountryValue, setProfileCountryValue] = useState({ value: '', label: '' });
+  const [validation, setValidation] = useState({});
   const [validationError, setValidationError] = useState();
   const [actionError, setActionError] = useState();
   const [success, setSuccess] = useState();
@@ -55,7 +51,7 @@ export default function InformationData() {
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
-    console.log('InfoData', authUserProfile, userBusinessProfile);
+    // console.log('InfoData', authUserProfile, userBusinessProfile, countriesOptions);
 
     if (userBusinessProfile.hasProfile) {
       let {
@@ -68,7 +64,7 @@ export default function InformationData() {
           city: City = '',
           region: Region = '',
           postalCode: PostalCode = '',
-          country: Country = '',
+          country: Country = ''
         } = {},
         contactPerson: {
           name: ContactName = '',
@@ -82,6 +78,13 @@ export default function InformationData() {
         Email = '';
       }
 
+      let countryText = '';
+      const selectedCountry = Country && countriesOptions.find(({ value: v }) => v === Country);
+      if (selectedCountry) {
+        countryText = selectedCountry.label;
+      }
+
+      setProfileCountryValue({ value: countryText, label: countryText });
       setProfile({
         CompanyName, Email, Telephone,
         StreetAddress, AddressLine2, City, Region, PostalCode, Country,
@@ -112,9 +115,16 @@ export default function InformationData() {
     setProfile(p => ({ ...p, [field]: v }));
   }
 
-  const handleSaveProfileClick = event => {
-    event.preventDefault();
+  const handleCountryChange = ({ value, label }) => {
+    console.log('handleCountryChange', value, label);
+    setProfileCountryValue({ value, label });
+    setIsDirty(true);
+    setValidationError();
+    setValidation(p => ({ ...p, Country: false }));
+    setProfile(p => ({ ...p, Country: value }));
+  }
 
+  const handleSaveProfileClick = event => {
     setActionError();
     setError();
     setSuccess();
@@ -150,6 +160,7 @@ export default function InformationData() {
       }).then(async resp => {
         if (resp.ok) {
           setSuccess(Strings.messages.ProfileInformationSaved);
+          setIsDirty(false);
 
           const newProfile = await resp.json();
           setUserBusinessProfile(new BusinessProfile(newProfile));
@@ -370,10 +381,13 @@ export default function InformationData() {
             <Label for="Profile.CompanyLocation.Country">{Strings.titles.Country}</Label>
             <Select name="Profile.CompanyLocation.Country" inputId="Profile.CompanyLocation.Country"
               invalid={!!validation.Country}
-              defaultInputValue={profile.Country in countriesOptions ? countriesOptions[profile.Country] : ''}
-              defaultValue={profile.Country}
+              // defaultInputValue={profileCountryLabel}
+              // defaultValue={profileCountryCode}
+              // inputValue={profileCountryLabel}
+              value={profileCountryValue}
               placeholder={Strings.placeholders.ThisFieldIsRequired}
-              onChange={handleInputChange('Country')}
+              onChange={handleCountryChange}
+              // onInputChange={handleCountryChange}
               options={countriesOptions} />
           </FormGroup>
         </Col>

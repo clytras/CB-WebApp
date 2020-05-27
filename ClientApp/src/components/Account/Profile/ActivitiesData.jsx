@@ -1,166 +1,142 @@
-import React, { useState } from 'react';
-import { Row, Col, FormGroup, Form, Label, Input, ListGroup, ListGroupItem } from 'reactstrap';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Row, Col, Input, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import { MdDone } from 'react-icons/md';
 import InlineMessage from '@components/common/InlineMessage';
 import LoadingButton from '@components/common/LoadingButton';
-import styled from 'styled-components';
 import { useStoreOf } from '@stores';
 import Activities from '@data/BusinessProfile/Activities';
-import { apiPost } from '@utils/net';
-import { RProgressApi } from 'rprogress';
+import { getActivitiesFlatList } from '@data/BusinessProfile/Lists';
+import { BusinessProfile } from '@data/BusinessProfile';
+import throttle from 'lodash.throttle';
 import { toast } from 'react-toastify';
-import HttpStatus from 'http-status-codes';
-import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
+import { Strings } from '@i18n';
 import SectionCard from '@components/common/SectionCard';
-import clsx from 'clsx';
 
 
-
-
-export default function ActivitiesData({ authUserProfile }) {
+export default function ActivitiesData() {
   const [userBusinessProfile] = useStoreOf('userBusinessProfile');
+  const countersRef = useRef({});
   const [selected, setSelected] = useState({});
   const [otherActivities, setOtherActivities] = useState({});
-  const [isDirty, setIsDirty] = useState(false);
-  const [validation, setValidation] = useState();
-  const [validationError, setValidationError] = useState();
-  const [actionError, setActionError] = useState();
-  const [success, setSuccess] = useState();
-  const [error, setError] = useState();
-  const [processing, setProcessing] = useState(false);
+  const [otherActivitiesDirty, setOtherActivitiesDirty] = useState({});
+  const [processing, setProcessing] = useState({});
   const { hasProfile = false } = userBusinessProfile || {};
+
+  useEffect(() => {
+    // console.log('ActivitiesData', userBusinessProfile);
+
+    countersRef.current = getActivitiesFlatList(null, {
+      withCounters: true,
+      withSelectedCounters: true,
+      applySelectionsOf: userBusinessProfile.activities || []
+    });
+
+    setSelected(userBusinessProfile.activitiesAssoc);
+    setOtherActivities({ ...userBusinessProfile.otherActivities });
+    setOtherActivitiesDirty({});
+  }, [userBusinessProfile]);
 
   const handleOtherActivityChange = alias => 
     ({ currentTarget: { value }}) => {
-      setIsDirty(true);
+      setOtherActivitiesDirty(p => ({ ...p, [alias]: true }));
       setOtherActivities(p => ({ ...p, [alias]: value }));
     }
+  
+  const handleOtherActivityUndoClick = alias => () => {
+    setOtherActivities(p => ({ ...p, [alias]: userBusinessProfile.otherActivities[alias] || '' }));
+    setOtherActivitiesDirty(p => ({ ...p, [alias]: false }));
+  }
+
+  const handleOtherActivitySaveClick = alias => () => {
+    setProcessing(p => ({ ...p, [alias]: true }));
+
+    BusinessProfile.SaveProfileOtherActivity(alias, otherActivities[alias] || '').then(resp => {
+      if (resp.ok) {
+        userBusinessProfile.otherActivities = { ...otherActivities };
+        toast.success(Strings.messages.DataSaved);
+      } else {
+        setOtherActivities(p => ({ ...p, [alias]: userBusinessProfile.otherActivities[alias] || '' }));
+        toast.warning(Strings.messages.ErrorSaving);
+      }
+    }).catch(err => {
+      console.error('ERR: Save profile other activities', err);
+      toast.error(Strings.messages.ErrorSaving);
+    }).finally(() => {
+      setOtherActivitiesDirty(p => ({ ...p, [alias]: false }));
+      setProcessing(p => ({ ...p, [alias]: false }));
+    });
+  }
+
   const handleOptionClick = (head, sub, option) => () => {
     selectOption(head, sub, option);
   }
 
   const selectOption = (head, sub, option, value) => {
-    setIsDirty(true);
-    setSelected(o => {
-      if (!(head in o)) {
-        o[head] = {};
-      }
+    setSelected(p => {
+      const { current: counters } = countersRef;
+      const alias = sub ? `${head}.${sub}.$${option}` : `${head}.$${option}`;
+      const state = alias in p && p[alias];
+      let v = value === undefined ? state : value;
+      p[alias] = v === undefined ? true : !v;
+      const count = p[alias] ? 1 : -1;
 
-      let oset = o[head];
+      doSaveActivities(p);
 
       if (sub) {
-        if (!(sub in oset)) {
-          oset[sub] = {};
-        }
-        oset = oset[sub];
+        counters[`${head}.${sub}`].select += count;
       }
 
-      let v = value === undefined ? oset[option] : value;
-      oset[option] = v === undefined ? true : !v;
-
-      return { ...o };
+      counters[head].select += count;
+      return { ...p };
     });
   }
 
-  const hasOption = (options, head, sub, option) => {
-    if (head in options) {
-      if (sub) {
-        if (sub in options[head]) {
-          return options[head][sub][option] === true;
+  const getOption = (options, head, sub, option) => {
+    const alias = sub ? `${head}.${sub}.$${option}` : `${head}.$${option}`;
+    return alias in options && options[alias];
+  }
+
+  const getCounter = (head, sub) => {
+    const { current: counters } = countersRef;
+    const value = counters[sub ? `${head}.${sub}` : head];
+    return value || { total: 0, select: 0 };
+  }
+
+  const doSaveActivities = useCallback(
+    throttle((activities) => {
+
+      const selectedActivities = Object.entries(activities)
+        .filter(([, v]) => v)
+        .map(([k]) => k);
+
+      BusinessProfile.SaveProfileActivities(selectedActivities).then(resp => {
+        if (resp.ok) {
+          userBusinessProfile.activities = [...selectedActivities];
+        } else {
+          setSelected(userBusinessProfile.activities);
+          toast.warning(Strings.messages.ErrorSaving);
         }
-      } else {
-        return options[head][option] === true;
-      }
-    }
-    return false;
-  }
-
-  // const handleNewPasswordChange = ({ currentTarget: { value }}) => setInputNewPassword(value);
-  // const handleConfirmPasswordChange = ({ currentTarget: { value }}) => setInputConfirmPassword(value);
-  const handleSaveActivitiesClick = () => {
-    setActionError();
-    setError();
-
-    // if(validate()) {
-    //   RProgressApi.start();
-    //   setProcessing(true);
-    //   apiPost(`/api/Auth/ChangePassword`, {
-    //     addAuth: true,
-    //     params: {
-    //       CurrentPassword: inputCurrentPassword,
-    //       NewPassword: inputNewPassword,
-    //       ConfirmPassword: inputConfirmPassword
-    //     }
-    //   }).then(async resp => {
-    //     if(resp.ok) {
-    //       setInputCurrentPassword('');
-    //       setInputNewPassword('');
-    //       setInputConfirmPassword('');
-    //       setInputPasswordScore(0);
-    //       toast.success(Strings.messages.Auth.PasswordChangedSuccessfully);
-    //     } else if(resp.status === HttpStatus.UNAUTHORIZED) {
-    //       setInputCurrentPassword('');
-    //       setActionError(Strings.messages.Auth.CheckCurrentPasswordRetry);
-    //     } else {
-    //       let errorCode;
-
-    //       try {
-    //         ({ errorCode } = await resp.json());
-    //       } catch(err) {}
-  
-    //       setActionError(translateCodeMessage(errorCode, `${HttpStatus.getStatusText(resp.status)} (${resp.status})`));
-    //     }
-    //   }).catch(err => {
-    //     setError(translateRequestError(err));
-    //   }).finally(() => {
-    //     RProgressApi.complete();
-    //     setProcessing(false);
-    //   });
-    // }
-  }
-
-  // function validate() {
-  //   setValidation();
-
-  //   const errors = [];
-  //   const passwordValidatorSchema = new PasswordValidator();
-
-  //   passwordValidatorSchema
-  //     .is().min(8)
-  //     .has().uppercase()
-  //     .has().lowercase()
-  //     .has().digits()
-  //     .has().not().spaces();
-    
-  //   if(!passwordValidatorSchema.validate(inputNewPassword)) {
-  //     errors.push(Strings.messages.Auth.InvalidPassword);
-  //   }
-
-  //   if(inputNewPassword !== inputConfirmPassword) {
-  //     errors.push(Strings.messages.Auth.ConfirmPasswordNotMatch);
-  //   }
-
-  //   if(inputNewPassword.length && inputPasswordScore < 3) {
-  //     errors.push(Strings.messages.Auth.WeakVulnerablePassword);
-  //   }
-
-  //   setValidation(errors);
-  //   return errors.length === 0;
-  // }
-
-  console.log('otherActivities', otherActivities);
+      }).catch(err => {
+        console.error('ERR: Save profile activities', err);
+        toast.error(Strings.messages.ErrorSaving);
+      });
+      
+    }, 1000, { leading: false, trailing: true }),
+  []);
 
   function renderSubActivities(head, sub, options) {
     if (!options || !'$' in options || options.$.length === 0) {
       return null;
     }
 
+    const { total, select } = getCounter(head, sub);
+
     return (
       <ListGroup key={`sub-activity-${head}-${sub}`} className={'options-list mb-4'}>
-        {sub && <ListGroupItem color="primary">{Strings.Business.Lists[sub]}</ListGroupItem>}
+        {sub && <ListGroupItem color="primary">{`${Strings.Business.Lists[sub]} (${select} / ${total})`}</ListGroupItem>}
         {options.$.map(option => (
           <ListGroupItem key={`option-activity-${head}-${sub}-${option}`} action
-            className={hasOption(selected, head, sub, option) ? 'selected' : 'text-secondary'}
+            className={getOption(selected, head, sub, option) ? 'selected' : 'text-secondary'}
             tag="button" onClick={handleOptionClick(head, sub, option)}><MdDone className="text-muted" size="1.5em"/>{Strings.Business.Lists[option]}</ListGroupItem>)
         )}
       </ListGroup>
@@ -173,17 +149,17 @@ export default function ActivitiesData({ authUserProfile }) {
       color={hasProfile ? 'primary' : 'light'}
       opened={hasProfile}
       outline={hasProfile}>
-      <InlineMessage text={error} color="danger" />
-      <InlineMessage text={validation || actionError} color="warning" />
+      <InlineMessage text={Strings.messages.ActivitiesAutoSave} color="info" />
 
       {Object.entries(Activities).map(([head, subs]) => {
         const own = { $: [] };
+        const { total, select } = getCounter(head);
 
         return (
           <div key={`head-activity-${head}`}>
             <Row className="mb-3">
               <Col>
-                <h5>{Strings.Business.Lists[head]}</h5>
+                <h5>{`${Strings.Business.Lists[head]} (${select} / ${total})`}</h5>
                 <hr/>
               </Col>
             </Row>
@@ -191,29 +167,31 @@ export default function ActivitiesData({ authUserProfile }) {
               if (options === '$') {
                 own.$.push(sub);
                 return null;
+              } else if (options !== '_selected') {
+                return renderSubActivities(head, sub, options);
               }
-              return renderSubActivities(head, sub, options);
             })}
             {own.length !== 0 && renderSubActivities(head, null, own)}
             <ListGroup className="mb-4">
-              <ListGroupItem color="primary">{Strings.titles.OtherText}</ListGroupItem>
+              <ListGroupItem color="primary">{`${Strings.Business.Lists[head]} \\ ${Strings.titles.OtherText}`}</ListGroupItem>
               <ListGroupItem className="options-list-textarea">
                 <Input type="textarea" name={`Profile.OtherActivities.${head}`} id={`Profile.OtherActivities.${head}`}
                   value={otherActivities[head] || ''}
                   onChange={handleOtherActivityChange(head)} />
+                {otherActivitiesDirty[head] && (
+                  <Row noGutters className="button-group horizontal fluid mt-2">
+                    <Col>
+                      <LoadingButton color="primary" loading={processing[head]} 
+                        onClick={handleOtherActivitySaveClick(head)}>{Strings.titles.Save}</LoadingButton>
+                      {!processing[head] && <Button onClick={handleOtherActivityUndoClick(head)} color="light">{Strings.titles.Undo}</Button>}
+                    </Col>
+                  </Row>
+                )}
               </ListGroupItem>
             </ListGroup>
           </div>
         );
       })}
-
-      <InlineMessage markdown={success} color="success" />
-      <InlineMessage markdown={validationError || actionError} color="warning" />
-
-      <Row noGutters className="button-group horizontal fluid">
-        {isDirty && <LoadingButton color="primary" loading={processing} 
-          onClick={handleSaveActivitiesClick}>{Strings.titles.SaveProfileActivities}</LoadingButton>}
-      </Row>
     </SectionCard>
   );
 }
