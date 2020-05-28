@@ -4,6 +4,7 @@ import { useStoreOf } from '@stores';
 import InformationData from './InformationData';
 import ActivitiesData from './ActivitiesData';
 import EmailVerificationNotice from '../EmailVerificationNotice';
+import BusinessProfileUnvisibleNotice from '../BusinessProfileUnvisibleNotice';
 import BusinessProfileNotice from '../BusinessProfileNotice';
 
 
@@ -14,6 +15,7 @@ export default function Profile() {
   return hasUser && (
     <>
       <EmailVerificationNotice/>
+      <BusinessProfileUnvisibleNotice/>
       <BusinessProfileNotice/>
 
       <Row>

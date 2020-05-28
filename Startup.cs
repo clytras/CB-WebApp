@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace CERTHB2B
 {
@@ -106,6 +107,7 @@ namespace CERTHB2B
         public void Configure(IApplicationBuilder app, 
                               IWebHostEnvironment env,
                               IAntiforgery antiforgery,
+                              IHostApplicationLifetime appLifetime,
                               UserManager<ApplicationUser> userManager, 
                               RoleManager<IdentityRole> roleManager)
         {
@@ -113,6 +115,24 @@ namespace CERTHB2B
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+
+                int seedUsersWithProfiles = Configuration.GetValue<int>("SeedUsersWithProfiles");
+
+                if (seedUsersWithProfiles > 0)
+                {
+                    using (var serviceScope = app.ApplicationServices.CreateScope())
+                    {
+                        var services = serviceScope.ServiceProvider;
+                        var context = services.GetService<ApplicationDbContext>();
+                        var seeder = new SeedUsersWithProfiles(context, userManager, roleManager);
+
+                        seeder.Seed(seedUsersWithProfiles).Wait();
+                    }
+
+                    Console.WriteLine("Task complete. Exiting application.");
+                    appLifetime.StopApplication();
+                    return;
+                }
             }
             else
             {

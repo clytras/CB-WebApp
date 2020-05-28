@@ -3,18 +3,11 @@ import { RProgressApi } from 'rprogress';
 import { apiGet } from '@utils/net';
 import { getStaticContent } from '@data/StaticContent';
 import HttpStatus from 'http-status-codes';
-import Markdown from '@components/common/Markdown';
-import FeedbackMessage from '@components/common/FeedbackMessage';
+import Markdown from './Markdown';
+import FeedbackMessage from './FeedbackMessage';
+import ContentBody from './ContentBody';
 import { utsj } from 'lyxlib/utils/time';
 
-
-export function ContentBody({ children }) {
-  return (
-    <div className="content">
-      {children}
-    </div>
-  );
-}
 
 export default function FrontContent({
   contentBlocks,
@@ -100,9 +93,9 @@ export default function FrontContent({
 
   if(!loading && content && content.length) {
     return (
-      <ContentBody>
+      <>
         {content.map(({ content }, i) => <Markdown key={`frontcontent-content-${componentId}-${i}`} source={content} />)}
-      </ContentBody>
+      </>
     );
   }
 

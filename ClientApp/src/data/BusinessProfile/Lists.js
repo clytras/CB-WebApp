@@ -4,23 +4,44 @@ import { Strings } from '@i18n';
 import BusinessActivities from './Activities';
 
 
-export function getActivitiesListWithCounters(data) {
-  function recurse(obj) {
+export function getActivitiesListWithCounters(data, applySelectionsOf) {
+  if (!data) data = BusinessActivities;
+
+  function recurse(obj, cur = '') {
     const out = { ...obj, _count: 0 };
+
+    if (cur) cur = `${cur}.`;
+    if (applySelectionsOf) out._select = 0;
   
     for (const key in obj) {
       const value = obj[key];
   
       if (key === '$') {
         out._count += value.length;
+
+        if (applySelectionsOf) {
+          for (const option of value) {
+            if (applySelectionsOf.indexOf(`${cur}$${option}`) > -1) {
+              out._select++;
+            }
+          }
+        }
       } else if (value === '$') {
         out._count++;
+
+        if (applySelectionsOf && applySelectionsOf.indexOf(`${cur}$${key}`) > -1) {
+          out._select++;
+        }
       } else {
-        out[key] = recurse(value);
+        out[key] = recurse(value, `${cur}${key}`);
         out._count += out[key]._count;
+
+        if (applySelectionsOf) {
+          out._select += out[key]._select;
+        }
       }
     }
-
+  
     return out;
   }
 
@@ -45,23 +66,22 @@ export function getActivitiesFlatList(path, {
   withSelectedCounters = false,
   applySelectionsOf = []
 } = {}) {
-  const data = withCounters ? getActivitiesListWithCounters(BusinessActivities) : BusinessActivities;
+  const data = withCounters ?
+    getActivitiesListWithCounters(
+      BusinessActivities, 
+      withSelectedCounters && applySelectionsOf
+    ) : 
+    BusinessActivities;
   const list = path ? get(data, path) : data;
   const prepend = (path || '').split('.')[0];
   const recurse = (items, prepend) => {
     let result = withCounters ? {} : [];
     const entries = Object.entries(items);
-    let select = 0;
-
     const add = option => {
       const $option = `$${option}`;
       const path = [prepend, $option].join('.');
 
-      if (withSelectedCounters) {
-        if (applySelectionsOf && applySelectionsOf.indexOf(path) >= 0) {
-          select++;
-        }
-      } else if (!withCounters) {
+      if (!withCounters) {
         const item = prepend ? path : $option;
         result.push(item);
       }
@@ -78,21 +98,16 @@ export function getActivitiesFlatList(path, {
         if (children === '$' && options) {
           add(alias);
         }
-      } else if (!onlyOptions && alias !== '_count') {
+      } else if (!onlyOptions && alias !== '_count' && alias !== '_select') {
         const item = prepend ? [prepend, alias].join('.') : alias;
         if (withCounters) {
-          let append = recurse(children, item);
-
           if (withSelectedCounters) {
-            const [groupSelect, group] = append;
-            append = group;
-            result[item] = { total: children._count, select: groupSelect };
-            select += groupSelect;
+            result[item] = { total: children._count, select: children._select };
           } else {
             result[item] = children._count;
           }
           
-          result = {...result, ...append };
+          result = {...result, ...recurse(children, item) };
         } else {
           result.push(item);
           result = result.concat(recurse(children, item));
@@ -100,18 +115,11 @@ export function getActivitiesFlatList(path, {
       }
     }
 
-    return withSelectedCounters ? [select, result] : result;
+    return result;
   }
 
   if (list) {
-    const result = recurse(list, prepend);
-
-    if (withSelectedCounters) {
-      const [, list] = result;
-      return list;
-    }
-
-    return result;
+    return recurse(list, prepend);
   }
 }
 

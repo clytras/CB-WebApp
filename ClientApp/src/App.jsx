@@ -12,11 +12,12 @@ import AuthRoute from '@api-auth/AuthRoute';
 import AuthRoleRoute from '@api-auth/AuthRoleRoute';
 import Home from '@components/Home';
 import Contact from '@components/Contact';
+import ContentBody from '@components/common/ContentBody';
 
 import {
   Register, Login, Logout,
   ConfirmEmail, ForgotPassword, ResetPassword,
-  AdminIndex, AccountIndex
+  AdminIndex, AccountIndex, DiscoverIndex
 } from '@lazy';
 
 // import Login from '@lazy';
@@ -90,20 +91,31 @@ function App() {
           <AuthRoleRoute path="/admin" ofRoles={[IdentityRoles.Admin, IdentityRoles.Editor]} component={AdminIndex} />
         </AuthRoute>
         <Layout>
+          <Route exact path={[
+            '/', '/contact', 
+            '/account/login', '/account/logout', '/account/register',
+            '/account/confirm-email', '/account/forgot-password', '/account/reset-password'
+          ]}>
+            <ContentBody>
+              <Switch>
+                <Route exact path="/" component={Home} />
+                <Route path="/contact" component={Contact} />
+                <Route path="/account/login" component={Login} />
+                <Route path="/account/logout" component={Logout} />
+                <Route path="/account/register" component={Register} />
+                <Route path="/account/confirm-email" component={ConfirmEmail} />
+                <Route path="/account/forgot-password" component={ForgotPassword} />
+                <Route path="/account/reset-password" component={ResetPassword} />
+              </Switch>
+            </ContentBody>
+          </Route>
           <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/account/login" component={Login} />
-            <Route path="/account/logout" component={Logout} />
-            <Route path="/account/register" component={Register} />
-            <Route path="/account/confirm-email" component={ConfirmEmail} />
-            <Route path="/account/forgot-password" component={ForgotPassword} />
-            <Route path="/account/reset-password" component={ResetPassword} />
             <Route path="/account*" component={AccountIndex} />
-            <Route path="/contact" component={Contact} />
-
-            {/* <Route path="/debug/ajax-auth" component={AjaxAuth} />
-            <Route path="/debug/csrf-post" component={CSRFPost} /> */}
+            <Route path="/discover*" component={DiscoverIndex} />
           </Switch>
+
+          {/* <Route path="/debug/ajax-auth" component={AjaxAuth} />
+          <Route path="/debug/csrf-post" component={CSRFPost} /> */}
         </Layout>
       </Switch>
       <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />

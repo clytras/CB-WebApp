@@ -257,6 +257,7 @@ namespace CERTHB2B.Controllers.Api
                 select new {
                     UserId = userId,
                     profile.ProfileId,
+                    profile.IsProfileVisible,
                     profile.Email,
                     profile.Telephone,
                     profile.CompanyName,

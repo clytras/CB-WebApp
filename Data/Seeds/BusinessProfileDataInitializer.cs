@@ -8,9 +8,7 @@ namespace CERTHB2B.Data.Seeds
 {
     public partial class BusinessProfileDataInitializer
     {
-        public static void SeedBusinessActivityOptions(EntityTypeBuilder options)
-        {
-            var aliases = new List<string>
+        public static List<string> ActivitiesOptions = new List<string>
             {
                 "TopicsOfInterest.CleanPowerTransport.$Electromobility",
                 "TopicsOfInterest.CleanPowerTransport.$MicroMobility",
@@ -50,8 +48,9 @@ namespace CERTHB2B.Data.Seeds
                 "Request.ConsultingServices.$BusinessConsultingServices",
                 "Request.ConsultingServices.$TransportRelatedConsultingServices"
             };
-
-            options.HasData(aliases.Select((a, i) => new BusinessActivitiesOptions
+        public static void SeedBusinessActivityOptions(EntityTypeBuilder options)
+        {
+            options.HasData(ActivitiesOptions.Select((a, i) => new BusinessActivitiesOptions
             {
                 ActivityId = i + 1,
                 ActivityOptionAlias = a

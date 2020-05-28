@@ -8,6 +8,7 @@ const ResetPassword = lazy(() => import('@api-auth/ResetPassword'/* webpackChunk
 const Register = lazy(() => import('@api-auth/Register'/* webpackChunkName: "register" */));
 const AdminIndex = lazy(() => import('@components/Admin'/* webpackChunkName: "admin" */));
 const AccountIndex = lazy(() => import('@components/Account'/* webpackChunkName: "account" */));
+const DiscoverIndex = lazy(() => import('@components/Discover'/* webpackChunkName: "discover" */));
 
 export {
   Login,
@@ -17,5 +18,6 @@ export {
   ResetPassword,
   Register,
   AdminIndex,
-  AccountIndex
+  AccountIndex,
+  DiscoverIndex
 }

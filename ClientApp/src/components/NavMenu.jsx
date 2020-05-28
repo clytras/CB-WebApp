@@ -20,7 +20,7 @@ export default function NavMenu() {
       <div>
         <Link to="/"><Logo src="/assets/Interreg-Greenmind-Logo.jpg"/></Link>
       </div>
-      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
+      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow" light>
         <Container>
           {/* <NavbarBrand tag={Link} to="/">CERTHB2B</NavbarBrand> */}
           <NavbarToggler onClick={toggleNavbar} className="mr-2" />

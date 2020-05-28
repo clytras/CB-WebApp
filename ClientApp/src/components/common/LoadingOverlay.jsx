@@ -1,17 +1,20 @@
 import React from 'react';
 import clsx from 'clsx';
-import { GridLoader, ClipLoader, MoonLoader } from 'react-spinners';
+import { GridLoader, ClipLoader, MoonLoader, BarLoader } from 'react-spinners';
 import { StyleSheet, css } from 'aphrodite';
 
 const spinners = {
   'GridLoader': GridLoader,
   'ClipLoader': ClipLoader,
-  'MoonLoader': MoonLoader
+  'MoonLoader': MoonLoader,
+  'BarLoader': BarLoader
 }
 
 export default function LoadingOverlay({
   color = '#535353',
   size = 50,
+  height = 8,
+  width = 220,
   inline = false,
   loading = true,
   overlay = undefined,
@@ -32,6 +35,8 @@ export default function LoadingOverlay({
     }
   }
 
+  const props = spinner === 'BarLoader' ? { width, height } : { size };
+
   return loading && (
     <div style={style} className={
       clsx(css(styles.overlay), {
@@ -40,7 +45,7 @@ export default function LoadingOverlay({
       })
     }>
       <Spinner
-        size={size}
+        {...props}
         color={color}
         loading={true}
       />

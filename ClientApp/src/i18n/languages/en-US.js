@@ -13,6 +13,12 @@ export default {
   euroSign: '€',
 
   titles: {
+    Discover: 'Discover',
+    Register: 'Register',
+    Login: 'Login',
+    Logout: 'Logout',
+    Administrator: 'Administrator',
+    MyProfile: 'My Profile',
     Information: 'Information',
     CompanyName: 'Company name',
     Email: 'Email',
@@ -90,6 +96,7 @@ export default {
       NoVerifiedEmail: 'Your email address has not been verified.  \nYou need to verify your email address to complete you profile.\n\nPlease check your email inbox and follow the verification link to verify your email address.\n\nVisit your [profile settings](/account/settings) and use the resend email verification action to resend the verification email.',
     },
     Business: {
+      BusinessProfileUnvisible: 'Your profile is not visible by others.  \nPlease [contact support](/contact) to request your profile visibility.',
       BusinessProfileNotComplete: 'Your profile is not complete.  \nPeople cannot discover you unless you complete your profile.\n\nPlease visit your [account profile page](/account/profile) and provide your data to complete your profile.',
       SaveBasicInformationBeforeActivities: 'Save profile information above to select your activities'
     },

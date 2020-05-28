@@ -15,6 +15,10 @@ export class BusinessProfile  {
     return this._profile && this._profile.profileId;
   }
 
+  get isProfileVisible() {
+    return this._profile && this._profile.isProfileVisible;
+  }
+
   get userId() {
     return this._profile && this._profile.userId;
   }

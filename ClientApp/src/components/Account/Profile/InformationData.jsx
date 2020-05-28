@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { Row, Col, FormGroup, FormFeedback, FormText, Label, Input } from 'reactstrap';
+import { Row, Col, FormGroup, FormFeedback, Label, Input } from 'reactstrap';
 import InlineMessage from '@components/common/InlineMessage';
 import LoadingButton from '@components/common/LoadingButton';
 import isEmpty from 'validator/es/lib/isEmpty';

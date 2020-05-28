@@ -2,6 +2,7 @@ import React from 'react';
 import { NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { useStoreOf } from '@stores';
+import { Strings } from '@i18n';
 
 
 export default function LoginMenu({ pathname }) {
@@ -13,7 +14,7 @@ export default function LoginMenu({ pathname }) {
     if(isEditorRole || isAdminRole) {
       return (
         <NavItem>
-          <NavLink tag={Link} to="/admin">Admin Panel</NavLink>
+          <NavLink tag={Link} to="/admin">{Strings.titles.Administrator}</NavLink>
         </NavItem>
       );
     }
@@ -21,18 +22,23 @@ export default function LoginMenu({ pathname }) {
 
   const [, controller, action] = pathname.split('/');
   const isAccount = controller === 'account';
-  const irRootAccount = isAccount && !/login|logout|register|reset-password|confirm-email/i.test(action);
-  const { hasUser, userName } = authUserProfile;
+  const isRootAccount = isAccount && !/login|logout|register|reset-password|confirm-email/i.test(action);
+  const isDiscover = controller === 'discover';
+  const { hasUser /*, userName*/ } = authUserProfile;
 
   if(hasUser) {
     return (
       <>
-        <NavItem active={irRootAccount}>
-          <NavLink tag={Link} to="/account">Hello {userName}</NavLink>
+        <NavItem active={isDiscover}>
+          <NavLink tag={Link} to="/discover">{Strings.titles.Discover}</NavLink>
+        </NavItem>
+        <NavItem active={isRootAccount}>
+          {/* <NavLink tag={Link} to="/account">Hello {userName}</NavLink> */}
+          <NavLink tag={Link} to="/account">{Strings.titles.MyProfile}</NavLink>
         </NavItem>
         {renderAdminPanelLink()}
         <NavItem active={action === 'logout'}>
-          <NavLink tag={Link} to="/account/logout">Logout</NavLink>
+          <NavLink tag={Link} to="/account/logout">{Strings.titles.Logout}</NavLink>
         </NavItem>
       </>
     );
@@ -41,10 +47,10 @@ export default function LoginMenu({ pathname }) {
   return (
     <>
       <NavItem active={action === 'register'}>
-        <NavLink tag={Link} to="/account/register">Register</NavLink>
+        <NavLink tag={Link} to="/account/register">{Strings.titles.Register}</NavLink>
       </NavItem>
       <NavItem active={action === 'login'}>
-        <NavLink tag={Link} to="/account/login">Login</NavLink>
+        <NavLink tag={Link} to="/account/login">{Strings.titles.Login}</NavLink>
       </NavItem>
     </>
   ); 
