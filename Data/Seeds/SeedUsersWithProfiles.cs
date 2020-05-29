@@ -62,12 +62,13 @@ namespace CERTHB2B.Data.Seeds
                         IsProfileVisible = faker.Random.Int(1, 100) < 90, // 95% visible profiles
                         CompanyName = faker.Company.CompanyName(),
                         Email = faker.Random.Int(1, 100) < 50 ? null : faker.Internet.Email(),
-                        Telephone = faker.Phone.PhoneNumber()
+                        Telephone = faker.Phone.PhoneNumber(),
+                        UserId = user.Id
                     };
 
-                    // 80% To have a CompanyLocation
-                    if (faker.Random.Int(1, 100) < 85)
-                    {
+                    // // 80% To have a CompanyLocation
+                    // if (faker.Random.Int(1, 100) < 85)
+                    // {
                         var location = new BusinessAddress()
                         {
                             StreetAddress = faker.Address.StreetAddress(),
@@ -85,11 +86,11 @@ namespace CERTHB2B.Data.Seeds
                             location.Region = faker.Address.County();
 
                         profile.CompanyLocation = location;
-                    }
+                    // }
 
-                    // 85% To have a ContactPerson
-                    if (faker.Random.Int(1, 100) < 85)
-                    {
+                    // // 85% To have a ContactPerson
+                    // if (faker.Random.Int(1, 100) < 85)
+                    // {
                         var contactGender = faker.PickRandom<Gender>();
                         var contactFullname = faker.Name.FullName(contactGender);
                         var lastName = faker.Name.LastName(contactGender);
@@ -110,7 +111,7 @@ namespace CERTHB2B.Data.Seeds
                         }
 
                         profile.ContactPerson = contact;
-                    }
+                    // }
 
                     var activities = faker.Random.ListItems(BusinessProfileDataInitializer.ActivitiesOptions);
                     profile.Activities = (

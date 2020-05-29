@@ -9,14 +9,14 @@ import Settings from './Settings';
 
 export default function Account() {
   return (
+    <AuthRoute exact path={["/account", "/account/profile", "/account/settings"]}>
       <Layout>
-        <AuthRoute path="/account*">
-          <Switch>
-            <Route exact path="/account" component={Summary} />
-            <Route path="/account/profile" component={Profile} />
-            <Route path="/account/settings" component={Settings} />
-          </Switch>
-        </AuthRoute>
+        <Switch>
+          <Route exact path="/account" component={Summary} />
+          <Route path="/account/profile" component={Profile} />
+          <Route path="/account/settings" component={Settings} />
+        </Switch>
       </Layout>
+    </AuthRoute>
   );
 }

@@ -33,7 +33,7 @@ export default function ResetPassword() {
     setTimeout(() => setPreventAutoComplete(false), 600);
   }, []);
 
-  const renderBase = content => <FrontContentBase columnSize="6" centered>{content}</FrontContentBase>;
+  const renderBase = content => <FrontContentBase className="reset-font-size" centered>{content}</FrontContentBase>;
   const handleEmailChange = ({ currentTarget: { value }}) => setInputEmail(value);
   const handleNewPasswordChange = ({ currentTarget: { value }}) => setInputNewPassword(value);
   const handleConfirmPasswordChange = ({ currentTarget: { value }}) => setInputConfirmPassword(value);

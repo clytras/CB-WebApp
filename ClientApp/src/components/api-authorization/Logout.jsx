@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AuthService from '@api-auth/AuthorizeService';
 import FrontContentBase from '@components/common/FrontContentBase';
+import styled from 'styled-components';
 import { RProgressApi } from 'rprogress';
 import { useStoreOf } from '@stores';
 import LoadingButton from '@components/common/LoadingButton';
@@ -10,6 +11,8 @@ import InlineMessage from '@components/common/InlineMessage';
 import Delayed from '@components/common/Delayed';
 import { translateRequestError } from '@i18n';
 
+
+const Container = styled.div`text-align: center`;
 
 export default function Logout() {
   const [authUserProfile] = useStoreOf('authUserProfile');
@@ -27,7 +30,7 @@ export default function Logout() {
     })();
   }, []);
 
-  const renderBase = content => <FrontContentBase columnSize="4" centered>{content}</FrontContentBase>;
+  const renderBase = content => <FrontContentBase className="reset-font-size" centered>{content}</FrontContentBase>;
 
   const handleLogoutClick = () => {
     console.log("Logging out");
@@ -61,12 +64,13 @@ export default function Logout() {
   if(authUserProfile.hasUser) {
     const { userName } = authUserProfile;
     return renderBase(
-      <>
+      <Container>
         <InlineMessage text={requestError} color="danger"/>
-        <h4>You are logged in as:</h4>
-        <p>{userName}</p>
+        <h4>You are logged in as</h4>
+        <hr/>
+        <p className="text-secondary">{userName}</p>
         <LoadingButton onClick={handleLogoutClick} loading={isProcessing}>Log out</LoadingButton>
-      </>
+      </Container>
     );
   }
 

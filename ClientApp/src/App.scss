@@ -230,6 +230,66 @@ html {
   }
 }
 
+.discover-profiles {
+  .header {
+    .title {
+      text-align: center;
+      font-size: 1.7rem;
+      font-weight: 600;
+    }
+  }
+
+  .profiles {
+    .profile {
+      .company-name {
+        font-size: 1em;
+        font-weight: 600;
+      }
+
+      .address {
+        font-size: .8em;
+        line-height: 1.3em;
+        height: 2.6em;
+        max-height: 2.6em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 2;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+      }
+
+      .activities {
+        .title {
+          font-size: .9em;
+        }
+
+        .stats {
+          display: flex;
+          flex-direction: row;
+          margin: .5em 0;
+          font-size: 1.5em;
+
+          > div {
+            flex: 1;
+
+            span {
+              font-size: .6em;
+            }
+          }
+
+          .count {
+            border-right: 1px solid #f0f0f0;
+          }
+
+          .percent {
+            text-align: right;
+          }
+        }
+      }
+    }
+  }
+}
+
 .action-form {
   &.collapsed {
     .card-title {
@@ -368,6 +428,9 @@ html {
   background-color: #ffeebab3;
 }
 
+.reset-font-size {
+  font-size: 1rem;
+}
 
 .Toastify__toast--warning {
   .Toastify__toast-body {

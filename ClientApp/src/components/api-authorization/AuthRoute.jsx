@@ -3,7 +3,10 @@ import { Redirect, Route } from 'react-router-dom';
 import LoadingOverlay from '@components/common/LoadingOverlay';
 import Delayed from '@components/common/Delayed';
 import { useStoreOf } from '@stores';
+import styled from 'styled-components';
 
+
+const Flexed = styled.div`flex: 1`;
 
 export default function AuthRoute({
   children,
@@ -17,9 +20,11 @@ export default function AuthRoute({
 
   if (!authReady) {
     return (
-      <Delayed waitBeforeShow={1000}>
-        <LoadingOverlay/>
-      </Delayed>
+      <Flexed>
+        <Delayed waitBeforeShow={1000}>
+          <LoadingOverlay/>
+        </Delayed>
+      </Flexed>
     );
   }
 

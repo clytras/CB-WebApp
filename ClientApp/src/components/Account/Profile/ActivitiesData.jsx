@@ -6,7 +6,7 @@ import LoadingButton from '@components/common/LoadingButton';
 import { useStoreOf } from '@stores';
 import Activities from '@data/BusinessProfile/Activities';
 import { getActivitiesFlatList } from '@data/BusinessProfile/Lists';
-import { BusinessProfile } from '@data/BusinessProfile';
+import { saveProfileActivities, saveProfileOtherActivity } from '@data/BusinessProfile';
 import throttle from 'lodash.throttle';
 import { toast } from 'react-toastify';
 import { Strings } from '@i18n';
@@ -50,7 +50,7 @@ export default function ActivitiesData() {
   const handleOtherActivitySaveClick = alias => () => {
     setProcessing(p => ({ ...p, [alias]: true }));
 
-    BusinessProfile.SaveProfileOtherActivity(alias, otherActivities[alias] || '').then(resp => {
+    saveProfileOtherActivity(alias, otherActivities[alias] || '').then(resp => {
       if (resp.ok) {
         userBusinessProfile.otherActivities = { ...otherActivities };
         toast.success(Strings.messages.DataSaved);
@@ -109,7 +109,7 @@ export default function ActivitiesData() {
         .filter(([, v]) => v)
         .map(([k]) => k);
 
-      BusinessProfile.SaveProfileActivities(selectedActivities).then(resp => {
+      saveProfileActivities(selectedActivities).then(resp => {
         if (resp.ok) {
           userBusinessProfile.activities = [...selectedActivities];
         } else {

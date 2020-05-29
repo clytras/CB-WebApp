@@ -6,6 +6,8 @@ import BusinessProfileUnvisibleNotice from '../BusinessProfileUnvisibleNotice';
 import BusinessProfileNotice from '../BusinessProfileNotice';
 import InformationBlock from './InformationBlock';
 import ActivitiesBlock from './ActivitiesBlock';
+import ProfileSummary from './ProfileSummary';
+import { MdPhone, MdMail } from 'react-icons/md';
 
 
 const Header = styled.div`
@@ -22,7 +24,7 @@ export default function Summary() {
   const [authUserProfile] = useStoreOf('authUserProfile');
   const [userBusinessProfile] = useStoreOf('userBusinessProfile');
   const { hasUser = false, userName: userEmail = '' } = authUserProfile || {};
-  const { hasProfile = false, companyName = '', email } = userBusinessProfile || {};
+  const { hasProfile = false } = userBusinessProfile || {};
 
   return hasUser && (
     <>
@@ -31,13 +33,14 @@ export default function Summary() {
       <BusinessProfileNotice/>
 
       {hasProfile && (
-        <>
-          <Header>{companyName}</Header>
-          <HeaderEmail className="text-secondary">{email || userEmail}</HeaderEmail>
-          <hr/>
-          <InformationBlock/>
-          <ActivitiesBlock/>
-        </>    
+        <ProfileSummary profile={userBusinessProfile} userEmail={userEmail} />
+        // <>
+        //   <Header>{companyName}</Header>
+        //   <HeaderEmail className="text-secondary"><MdMail/> {email || userEmail}</HeaderEmail>
+        //   <hr/>
+        //   <InformationBlock profile={userBusinessProfile} />
+        //   <ActivitiesBlock profile={userBusinessProfile} />
+        // </>    
       )}
     </>
   );

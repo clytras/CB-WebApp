@@ -111,28 +111,14 @@ namespace CERTHB2B
                               UserManager<ApplicationUser> userManager, 
                               RoleManager<IdentityRole> roleManager)
         {
+            if (HandleInitiSeeds(app, appLifetime, userManager, roleManager)) {
+                return;
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-
-                int seedUsersWithProfiles = Configuration.GetValue<int>("SeedUsersWithProfiles");
-
-                if (seedUsersWithProfiles > 0)
-                {
-                    using (var serviceScope = app.ApplicationServices.CreateScope())
-                    {
-                        var services = serviceScope.ServiceProvider;
-                        var context = services.GetService<ApplicationDbContext>();
-                        var seeder = new SeedUsersWithProfiles(context, userManager, roleManager);
-
-                        seeder.Seed(seedUsersWithProfiles).Wait();
-                    }
-
-                    Console.WriteLine("Task complete. Exiting application.");
-                    appLifetime.StopApplication();
-                    return;
-                }
             }
             else
             {
@@ -185,6 +171,33 @@ namespace CERTHB2B
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+        }
+
+        private bool HandleInitiSeeds(
+            IApplicationBuilder app,
+            IHostApplicationLifetime appLifetime,
+            UserManager<ApplicationUser> userManager, 
+            RoleManager<IdentityRole> roleManager)
+        {
+            int seedUsersWithProfiles = Configuration.GetValue<int>("SeedUsersWithProfiles");
+
+            if (seedUsersWithProfiles > 0)
+            {
+                using (var serviceScope = app.ApplicationServices.CreateScope())
+                {
+                    var services = serviceScope.ServiceProvider;
+                    var context = services.GetService<ApplicationDbContext>();
+                    var seeder = new SeedUsersWithProfiles(context, userManager, roleManager);
+
+                    seeder.Seed(seedUsersWithProfiles).Wait();
+                }
+
+                Console.WriteLine("Task complete. Exiting application.");
+                appLifetime.StopApplication();
+                return true;
+            }
+
+            return false;
         }
     }
 }

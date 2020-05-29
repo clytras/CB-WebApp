@@ -15,7 +15,7 @@ export default function ForgotPassword() {
   const [actionError, setActionError] = useState();
   const [requestError, setRequestError] = useState();
 
-  const renderBase = content => <FrontContentBase columnSize="6" centered>{content}</FrontContentBase>;
+  const renderBase = content => <FrontContentBase className="reset-font-size" centered>{content}</FrontContentBase>;
   const handleEmailChange = ({ currentTarget: { value }}) => setInputEmail(value);
   const handleResendFormSubmit = event => {
     event.preventDefault();

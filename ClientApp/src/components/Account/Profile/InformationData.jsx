@@ -14,7 +14,7 @@ import { RProgressApi } from 'rprogress';
 import { toast } from 'react-toastify';
 import HttpStatus from 'http-status-codes';
 import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
-import { BusinessProfile }  from '@data/BusinessProfile';
+import { BusinessProfile, saveProfileInformation }  from '@data/BusinessProfile';
 import SectionCard from '@components/common/SectionCard';
 import Select from '@components/common/Select';
 import { getCountriesForSelect } from '@data/Countries';
@@ -140,7 +140,7 @@ export default function InformationData() {
         ContactName, ContactEmail, ContactPhone
       } = profile;
       
-      BusinessProfile.SaveProfileInformation({
+      saveProfileInformation({
         CompanyName,
         Email: useAccountEmail ? null : Email,
         Telephone,
@@ -154,8 +154,8 @@ export default function InformationData() {
         },
         ContactPerson: {
           Name: ContactName,
-          Email: ContactEmail,
-          Telephone: ContactPhone
+          Email: ContactEmail || null,
+          Telephone: ContactPhone || null
         }
       }).then(async resp => {
         if (resp.ok) {
@@ -255,21 +255,25 @@ export default function InformationData() {
       }
     })) return;
 
-    if (only('ContactEmail', v => {
-      if (isEmpty(v)) {
-        errors.ContactEmail = true;
-      } else if (!isEmail(v)) {
-        errors.ContactEmail = Strings.validation.Fields.NotValidEmail;
-      }
-    })) return;
+    // if (only('ContactEmail', v => {
+    //   if (isEmpty(v)) {
+    //     errors.ContactEmail = true;
+    //   } else if (!isEmail(v)) {
+    //     errors.ContactEmail = Strings.validation.Fields.NotValidEmail;
+    //   }
+    // })) return;
 
     if (only('ContactPhone', v => {
-      if (isEmpty(v)) {
-        errors.ContactPhone = true;
-      } else if(!isPhoneNumber(v)) {
+      if(!isEmpty(v) && !isPhoneNumber(v)) {
         errors.ContactPhone = Strings.formatString(
           Strings.validation.Fields.InvalidTelephone, { min: 10, max: 15 });
       }
+      // if (isEmpty(v)) {
+      //   errors.ContactPhone = true;
+      // } else if(!isPhoneNumber(v)) {
+      //   errors.ContactPhone = Strings.formatString(
+      //     Strings.validation.Fields.InvalidTelephone, { min: 10, max: 15 });
+      // }
     })) return;
 
     setValidation(errors);
@@ -414,9 +418,9 @@ export default function InformationData() {
         <Col lg={4} md={8}>
           <FormGroup>
             <Label for="Profile.ContactPerson.Email">{Strings.titles.Email}</Label>
-            <Input name="Profile.ContactPerson.Email" id="Profile.ContactPerson.Email" required type="email"
+            <Input name="Profile.ContactPerson.Email" id="Profile.ContactPerson.Email" type="email"
               invalid={!!validation.ContactEmail}
-              placeholder={Strings.placeholders.ThisFieldIsRequired}
+              // placeholder={Strings.placeholders.ThisFieldIsRequired}
               value={profile.ContactEmail}
               onChange={handleInputChange('ContactEmail')} />
             {isString(validation.ContactEmail) && <FormFeedback>{validation.ContactEmail}</FormFeedback>}
@@ -425,9 +429,9 @@ export default function InformationData() {
         <Col lg={4} md={8}>
           <FormGroup>
             <Label for="Profile.ContactPerson.Telephone">{Strings.titles.Telephone}</Label>
-            <Input name="Profile.ContactPerson.Telephone" id="Profile.ContactPerson.Telephone" required
+            <Input name="Profile.ContactPerson.Telephone" id="Profile.ContactPerson.Telephone"
               invalid={!!validation.ContactPhone}
-              placeholder={Strings.placeholders.ThisFieldIsRequired}
+              // placeholder={Strings.placeholders.ThisFieldIsRequired}
               value={profile.ContactPhone}
               onChange={handleInputChange('ContactPhone')} />
             {isString(validation.ContactPhone) && <FormFeedback>{validation.ContactPhone}</FormFeedback>}

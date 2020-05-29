@@ -109,7 +109,7 @@ export default function Login() {
     });
   }
 
-  const renderBase = content => <FrontContentBase columnSize="4" centered>{content}</FrontContentBase>;
+  const renderBase = content => <FrontContentBase className="reset-font-size" lg={6} xl={4} centered>{content}</FrontContentBase>;
 
   if(redirectTo) {
     return <Delayed><Redirect to={redirectTo} /></Delayed>;

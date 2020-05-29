@@ -22,7 +22,7 @@ export default function ConfirmEmail() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => confirmEmail(), []);
 
-  const renderBase = content => <FrontContentBase columnSize="6" centered>{content}</FrontContentBase>;
+  const renderBase = content => <FrontContentBase className="reset-font-size" centered>{content}</FrontContentBase>;
 
   function confirmEmail() {
     if(userId && confirmationCode) {

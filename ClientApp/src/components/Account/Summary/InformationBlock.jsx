@@ -1,27 +1,30 @@
 import React from 'react';
 import { Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
-import { useStoreOf } from '@stores';
 import { Strings } from '@i18n';
 
 
-export default function InformationBlock() {
-  const [userBusinessProfile] = useStoreOf('userBusinessProfile');
+export default function InformationBlock({ profile }) {
+  
 
   const {
-    companyLocation: {
-      streetAddress = '',
-      addressLine2,
-      region,
-      city = '',
-      postalCode = '',
-      country = ''
-    } = {},
-    contactPerson: {
-      name: contactName = '',
-      email: contactEmail,
-      telephone: contactPhone
-    } = {}
-  } = userBusinessProfile || {};
+    companyLocation,
+    contactPerson
+  } = profile || {};
+
+  const {
+    streetAddress = '',
+    addressLine2,
+    region,
+    city = '',
+    postalCode = '',
+    country = ''
+  } = companyLocation || {};
+
+  const {
+    name: contactName = '',
+    email: contactEmail,
+    telephone: contactPhone
+  } = contactPerson || {};
 
   const countryText = country && country in Strings.Collections.Countries ? 
     Strings.Collections.Countries[country] :
@@ -74,13 +77,13 @@ export default function InformationBlock() {
               {contactEmail && (
                 <>
                   <dt>{Strings.titles.Email}</dt>
-                  <dd>{contactEmail}</dd>
+                  <dd><a href={`mailto:${contactEmail}`}>{contactEmail}</a></dd>
                 </>
               )}
               {contactPhone && (
                 <>
                   <dt>{Strings.titles.Telephone}</dt>
-                  <dd>{contactPhone}</dd>
+                  <dd><a href={`tel:${contactPhone}`}>{contactPhone}</a></dd>
                 </>
               )}
             </dl>

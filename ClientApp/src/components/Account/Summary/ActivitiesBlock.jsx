@@ -7,29 +7,32 @@ import { Strings } from '@i18n';
 import clsx from 'clsx';
 
 
-export default function ActivitiesBlock() {
-  const [userBusinessProfile] = useStoreOf('userBusinessProfile');
+export default function ActivitiesBlock({ profile }) {
+  // const [userBusinessProfile] = useStoreOf('userBusinessProfile');
   const activities = useMemo(() => {
-    console.log('ActivitiesBlock', userBusinessProfile);
+    console.log('ActivitiesBlock', profile);
 
-    return getActivitiesListWithCounters(null, userBusinessProfile.activities);
-  }, [userBusinessProfile]);
+    return getActivitiesListWithCounters(null, profile.activities);
+  }, [profile]);
 
-  const hasActivity = useCallback((head, sub, option) => {
-    const alias = sub ? `${head}.${sub}.$${option}` : `${head}.$${option}`;
-    const { activities } = userBusinessProfile;
+  const makeActivityAlias = (head, sub, option) => sub ? `${head}.${sub}.$${option}` : `${head}.$${option}`;
+
+  const hasActivity = useCallback(alias => {
+    // const alias = makeActivityAlias();
+    const { activities } = profile;
     return activities && activities.indexOf(alias) > -1;
-  }, [userBusinessProfile]);
+  }, [profile]);
 
   function renderActivities(head) {
     let subs = activities[head];
     const own = [];
     const { _select = 0, _count = 0 } = subs;
-    const { otherActivities = {}} = userBusinessProfile || {};
+    const { otherActivities = {}} = profile || {};
 
     const renderItem = (head, sub, option, className) => {
-      const selected = hasActivity(head, sub, option);
-      return <li className={clsx('option', className, selected ? 'selected' : 'unselected')}><MdDone className="mr-1 mb-1" size="1.2em"/>{Strings.Business.Lists[option]}</li>;
+      const alias = makeActivityAlias(head, sub, option);
+      const selected = hasActivity(alias);
+      return <li key={`activity-${alias}`} className={clsx('option', className, selected ? 'selected' : 'unselected')}><MdDone className="mr-1 mb-1" size="1.2em"/>{Strings.Business.Lists[option]}</li>;
     }
 
     console.log('renderActivities', head, subs, Object.entries(subs));
@@ -48,7 +51,7 @@ export default function ActivitiesBlock() {
               } else if (sub !== '_select' && sub !== '_count') {
                 // return renderSubActivities(head, sub, options);
                 return (
-                  <li>{Strings.Business.Lists[sub]}
+                  <li key={`activity-group-${head}.${sub}`}>{Strings.Business.Lists[sub]}
                     <ul className="options">{options.$.map(option => renderItem(head, sub, option))}</ul>
                   </li>
                 );

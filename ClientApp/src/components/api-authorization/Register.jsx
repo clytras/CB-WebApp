@@ -133,7 +133,7 @@ export default function Register() {
     return errors.length === 0;
   }
 
-  const renderBase = content => <FrontContentBase columnSize="4" centered>{content}</FrontContentBase>;
+  const renderBase = content => <FrontContentBase className="reset-font-size" centered>{content}</FrontContentBase>;
 
   if(isFetching) {
     return <LoadingOverlay/>;

@@ -30,7 +30,7 @@ import {
 
 import { IdentityRoles } from '@api-auth';
 import AuthService from '@api-auth/AuthorizeService';
-import { BusinessProfile } from '@data/BusinessProfile';
+import { getProfileOfUser } from '@data/BusinessProfile';
 
 import 'rprogress/lib/components/overlay/overlay-styles.css';
 import 'rprogress/lib/components/rprogress/rprogress-styles.css';
@@ -63,7 +63,7 @@ function App() {
         const userProfile = await AuthService.getUserProfile();
         setAuthUserProfile(userProfile);
 
-        const userBusinessProfile = await BusinessProfile.GetProfileOfUser();
+        const userBusinessProfile = await getProfileOfUser();
         setUserBusinessProfile(userBusinessProfile);
 
         console.log('App:authCheck', user, userProfile, userBusinessProfile);

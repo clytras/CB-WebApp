@@ -1,5 +1,5 @@
 import isEmpty from 'lodash.isempty';
-import { apiGet, apiPut } from '@utils/net';
+import { apiGet, apiPut, apiPost } from '@utils/net';
 
 
 export class BusinessProfile  {
@@ -72,48 +72,59 @@ export class BusinessProfile  {
       this._profile.otherActivities = value;
     }
   }
+}
 
-  static FetchProfile(profileId) {
-    return apiGet(`/api/BusinessProfile/${profileId}`, { addAuth: true });
-  }
+export function fetchProfile(profileId) {
+  return apiGet(`/api/BusinessProfile/${profileId}`, { addAuth: true });
+}
 
-  static SaveProfileInformation(params) {
-    return apiPut('/api/BusinessProfile/Information', { addAuth: true, params });
-  }
+export function saveProfileInformation(params) {
+  return apiPut('/api/BusinessProfile/Information', { addAuth: true, params });
+}
 
-  static SaveProfileActivities(activities) {
-    return apiPut('/api/BusinessProfile/Activities', { addAuth: true, params: activities });
-  }
+export function saveProfileActivities(activities) {
+  return apiPut('/api/BusinessProfile/Activities', { addAuth: true, params: activities });
+}
 
-  static SaveProfileOtherActivity(ActivityAlias, OtherText) {
-    return apiPut('/api/BusinessProfile/OtherActivity', {
-      addAuth: true,
-      params: {
-        ActivityAlias,
-        OtherText
-      }
-    });
-  }
+export function saveProfileOtherActivity(ActivityAlias, OtherText) {
+  return apiPut('/api/BusinessProfile/OtherActivity', {
+    addAuth: true,
+    params: {
+      ActivityAlias,
+      OtherText
+    }
+  });
+}
 
-  static FetchProfileOfUser(userId) {
-    return apiGet(`/api/BusinessProfile/OfAccount${userId ? `/${userId}` : ''}`, { addAuth: true });
-  }
+export function fetchProfileOfUser(userId) {
+  return apiGet(`/api/BusinessProfile/OfAccount${userId ? `/${userId}` : ''}`, { addAuth: true });
+}
 
-  static async GetProfileOfUser(userId) {
-    let result;
+export async function getProfileOfUser(userId) {
+  let result;
 
-    try {
-      const resp = await BusinessProfile.FetchProfileOfUser(userId);
+  try {
+    const resp = await fetchProfileOfUser(userId);
 
-      console.log('GetProfileOfUser:resp', resp);
+    console.log('GetProfileOfUser:resp', resp);
 
-      if (resp.ok) {
-        result = await resp.json();
-      }
-    } catch(err) {}
+    if (resp.ok) {
+      result = await resp.json();
+    }
+  } catch(err) {}
 
-    console.log('GetProfileOfUser:result', result);
+  console.log('GetProfileOfUser:result', result);
 
-    return new BusinessProfile(result);
-  }
+  return new BusinessProfile(result);
+}
+
+export function getProfilesListing({
+  returnActivitiesOptions = false
+}) {
+  return apiPost('/api/BusinessProfile/Listing', {
+    addAuth: true,
+    params: {
+      returnActivitiesOptions
+    }
+  });
 }

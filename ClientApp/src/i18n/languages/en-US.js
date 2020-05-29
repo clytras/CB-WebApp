@@ -21,6 +21,7 @@ export default {
     MyProfile: 'My Profile',
     Information: 'Information',
     CompanyName: 'Company name',
+    DiscoverProfiles: 'Discover Profiles',
     Email: 'Email',
     Name: 'Name',
     Telephone: 'Telephone',
@@ -94,12 +95,14 @@ export default {
       CheckCurrentPasswordRetry: 'Check your current password and retry',
       EmailIsVerified: 'Your email address is already verified',
       NoVerifiedEmail: 'Your email address has not been verified.  \nYou need to verify your email address to complete you profile.\n\nPlease check your email inbox and follow the verification link to verify your email address.\n\nVisit your [profile settings](/account/settings) and use the resend email verification action to resend the verification email.',
+      // YourEmailConfirmed: 'Your email address is now confirmed.'
     },
     Business: {
       BusinessProfileUnvisible: 'Your profile is not visible by others.  \nPlease [contact support](/contact) to request your profile visibility.',
       BusinessProfileNotComplete: 'Your profile is not complete.  \nPeople cannot discover you unless you complete your profile.\n\nPlease visit your [account profile page](/account/profile) and provide your data to complete your profile.',
       SaveBasicInformationBeforeActivities: 'Save profile information above to select your activities'
     },
+    CouldNotLoadDataReloadPage: 'Could not load request data.\nIf you keep seeing this, try to reload the page.',
     ActivitiesAutoSave: 'Activities will be saved automatically on selecting options',
     InvalidFieldsDataTryAgain: 'There are some missing fields or fields with wrong information.  \nInput valid data to fix the errors and try again.',
     ProfileInformationSaved: 'Your profile information is now saved.  \nAlso review and update your related activities below.',

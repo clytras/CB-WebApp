@@ -23,8 +23,10 @@ namespace CERTHB2B.Models
         [Required]
         public string Telephone { get; set; }
 
+        public string UserId { get; set; }
+
         [JsonIgnore]
-        public ApplicationUser User { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
         public BusinessAddress CompanyLocation { get; set; }
 
