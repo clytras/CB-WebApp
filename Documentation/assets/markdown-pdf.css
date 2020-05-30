@@ -1,0 +1,34 @@
+.header {
+  background-color: red;
+}
+
+:not(pre):not(.hljs) > code {
+  color: #d61b99;
+  font-size: inherit;
+  background-color: whitesmoke;
+  padding: .1em .2em;
+  border-radius: .2em;
+}
+
+ol > li > ol {
+  list-style-type: lower-alpha;
+  padding-left: 1em;
+}
+
+.warning {
+  background-color: #ffffd5;
+  padding: .5rem;
+  border: 1px solid #f6efae;
+  border-radius: .4em;
+}
+
+.warning p {
+  color: #856404;
+  margin: .8em .3em;
+}
+
+.warning:before {
+  content: '⚠️ Warning';
+  font-weight: bold;
+  color: #c0af19;
+}

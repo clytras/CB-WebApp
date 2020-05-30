@@ -343,7 +343,7 @@ export default function InformationData() {
       <FormGroup>
         <Label for="Profile.CompanyLocation.AddressLine2">{Strings.titles.AdditionalAddressInformation}</Label>
         <Input name="Profile.CompanyLocation.AddressLine2" id="Profile.CompanyLocation.AddressLine2"
-          value={profile.AddressLine2}
+          value={profile.AddressLine2 || ''}
           onChange={handleInputChange('AddressLine2')} />
       </FormGroup>
       
@@ -362,7 +362,7 @@ export default function InformationData() {
           <FormGroup>
             <Label for="Profile.CompanyLocation.Region">{Strings.titles.StateRegionProvince}</Label>
             <Input name="Profile.CompanyLocation.Region" id="Profile.CompanyLocation.Region"
-              value={profile.Region}
+              value={profile.Region || ''}
               onChange={handleInputChange('Region')} />
           </FormGroup>
         </Col>
@@ -421,7 +421,7 @@ export default function InformationData() {
             <Input name="Profile.ContactPerson.Email" id="Profile.ContactPerson.Email" type="email"
               invalid={!!validation.ContactEmail}
               // placeholder={Strings.placeholders.ThisFieldIsRequired}
-              value={profile.ContactEmail}
+              value={profile.ContactEmail || ''}
               onChange={handleInputChange('ContactEmail')} />
             {isString(validation.ContactEmail) && <FormFeedback>{validation.ContactEmail}</FormFeedback>}
           </FormGroup>
@@ -432,7 +432,7 @@ export default function InformationData() {
             <Input name="Profile.ContactPerson.Telephone" id="Profile.ContactPerson.Telephone"
               invalid={!!validation.ContactPhone}
               // placeholder={Strings.placeholders.ThisFieldIsRequired}
-              value={profile.ContactPhone}
+              value={profile.ContactPhone || ''}
               onChange={handleInputChange('ContactPhone')} />
             {isString(validation.ContactPhone) && <FormFeedback>{validation.ContactPhone}</FormFeedback>}
           </FormGroup>

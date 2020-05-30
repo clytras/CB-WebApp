@@ -17,7 +17,6 @@ export default function Profiles() {
   const [profiles, setProfiles] = useState();
   const [actionError, setActionError] = useState();
   const [updater, setUpdater] = useState(0);
-  const [openProfileId, setOpenProfileId] = useState();
 
   useEffect(() => {
     setActionError();
@@ -48,9 +47,15 @@ export default function Profiles() {
     .finally(() => setLoading(false));
   }, [updater]);
 
+  const handleRetryClick = () => {
+    setLoading(true);
+    setUpdater(utsj());
+  }
+
   function renderProfile(profile) {
     const { profileId, companyName, city, region, country, activities, matchingActivities } = profile;
-    const address = region ? [city, region, country] : [city, country];
+    const countryText = country in Strings.Collections.Countries ? Strings.Collections.Countries[country] : country;
+    const address = region ? [city, region, countryText] : [city, countryText];
     const percentMatch = Math.round((matchingActivities.length /  totalActivitiesOptions) * 100);
 
     return (
@@ -58,7 +63,7 @@ export default function Profiles() {
       //   <div className="company-name">{companyName}</div>
       //   <div className="address">{address}</div>
       // </div>
-      <Col xl={4} lg={4} md={6} sm={12} xs={12}>
+      <Col key={`profile-card-${profileId}`} xl={4} lg={4} md={6} sm={12} xs={12}>
         <Card body className="profile mb-3">
             <CardTitle className="company-name">{companyName}</CardTitle>
             <CardSubtitle className="address">{address.join(', ')}</CardSubtitle>
@@ -93,7 +98,7 @@ export default function Profiles() {
         )}
         {loading && <LoadingOverlay/>}
         {actionError && <FeedbackMessage className="mt-3" color="warning"
-          columnSize={8} message={actionError} onRetry={() => {}} />}
+          columnSize={8} message={actionError} onRetry={handleRetryClick} />}
       </div>
     </div>
   );

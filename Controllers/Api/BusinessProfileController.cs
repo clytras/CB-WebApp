@@ -69,7 +69,7 @@ namespace CERTHB2B.Controllers.Api
 
         [HttpPost("Listing")]
         // [HttpGet("Listing")]
-        // [Authorize]
+        [Authorize]
         public async Task<IActionResult> OnGetListing(BusinessProfileListingRequest listingRequest)
         {
             var user = await userManager.FindByEmailAsync(User.Identity.Name);
@@ -116,7 +116,7 @@ namespace CERTHB2B.Controllers.Api
                             select m.ActivityId
                         ).ToList()
                     }
-                );
+                ).AsEnumerable().OrderByDescending(p => p.MatchingActivities.Count);
 
                 if (listingRequest.ReturnActivitiesOptions)
                 {

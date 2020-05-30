@@ -86,6 +86,10 @@ export default function Register() {
           try {
             ({ errorCode } = await resp.json());
           } catch(err) {}
+
+          // resp.json().then(({ errorCode }) => {
+          //   setRegisterError(translateCodeMessage(errorCode, 'RegistrationError'));
+          // }).catch();
   
           setRegisterError(translateCodeMessage(errorCode, 'RegistrationError'));
         }

@@ -6,7 +6,7 @@ import { useStoreOf } from '@stores';
 import styled from 'styled-components';
 
 
-const Flexed = styled.div`flex: 1`;
+const Flexed = styled.div`margin-top: 2em; flex: 1`;
 
 export default function AuthRoute({
   children,

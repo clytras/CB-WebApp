@@ -5,6 +5,7 @@
 # Application files
 Temp/
 appsettings.Production.json
+tex2pdf*
 
 # User-specific files
 *.suo

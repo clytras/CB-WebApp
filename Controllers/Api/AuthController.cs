@@ -263,7 +263,8 @@ namespace CERTHB2B.Controllers.Api
         {
             if (ModelState.IsValid)
             {
-                var user = await userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
+                // var user = await userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
+                var user = await userManager.FindByEmailAsync(User.Identity.Name);
 
                 if(user != null)
                 {
@@ -280,10 +281,12 @@ namespace CERTHB2B.Controllers.Api
 
                     var result = await userManager.ChangePasswordAsync(user, changePasswordRequest.CurrentPassword, changePasswordRequest.NewPassword);
 
-                    if(result.Succeeded)
+                    if(!result.Succeeded)
                     {
-                        return Ok();
+                        return new UnauthorizedJsonResult("WrongPassword");
                     }
+
+                    return Ok();
                 }
 
                 return Unauthorized();
