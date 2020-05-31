@@ -1,53 +1,58 @@
 # Ce.R.T.H. B2B
 
-::: header
-Some header text to preview
-:::
+<div class="intro">
+  <div class="banner">
+    <h2>IDEA P.C. NEKYA</h2>
+    <h3>Christos Lytras</h3>
+    <div class="contact">
+      ✉️ <a href="mailto:christos.lytras@gmail.com">christos.lytras@gmail.com</a><br>
+      ✉️ <a href="mailto:chris@nekya.com">chris@nekya.com</a><br>
+      📞 <a href="tel:+306980372501">+30 698 037 2 501</a>
+    </div>
+  </div>
+</div>
+
+<div class="page"/>
 
 ## Table of Contents
+
 1. [Specifications](#Specifications)
-   1. [Technologies & Framworks](#TechnologiesFramworks)
-   1. [Requirements](#Requirements)
+   1. [Technologies & Frameworks](#Specifications-TechnologiesFramworks)
+   1. [Requirements](#Specifications-Requirements)
 1. [Installation](#Installation)
    1. [Production](#Installation-Production)
    1. [Development](#Installation-Development)
       1. User Secrets
 
 
-<ol class="toc">
- <li>First</li>
- <li>Second
- <ol>
-  <li>Sub of Second</li>
-  <li>Another Sub</li>
- </ol>
- </li>
- <li>Third</li>
- <li>Fourth </li>
-</ol>
+1. Test
+1. This
 
-
-<div class="alert warning">
-Do not do this because.
+<div class="alert success">
+  <p>Do not do this because success.</p>
 </div>
 
-:imp:
+<div class="alert info">
+  <p>Do not do this because info.</p>
+</div>
+
+<div class="alert warning">
+  <p>Do not do this because warning.</p>
+</div>
+
+<div class="alert danger">
+  <p>Do not do this because danger.</p>
+</div>
+
 
 <div class="page"/>
 
 
-## <a id="Specifications"></a>Specifications
+## Specifications
 
-### <a id="Specifications-TechnologiesFramworks"></a>Technologies & Frameworks
+### Technologies & Frameworks
 
 This application is built with:
-
-```csharp
-for (int i = 0 ; i < 10; i++)
-{
-  // Code to execute.
-}
-```
 
 - [ASP.NET Core][1] and [C#][2] for cross-platform server-side code
 - [Entity Framework Core][5] for ORM with the database
@@ -55,7 +60,7 @@ for (int i = 0 ; i < 10; i++)
 - [React][3] for client-side code
 - [Bootstrap][4] for layout and styling
 
-### <a id="Specifications-Requirements"></a>Requirements
+### Requirements
 
 1. Database server like SQL Server or MySQL Server
 1. SSL certificate and permanent HTTPS redirection  
@@ -67,21 +72,21 @@ for (int i = 0 ; i < 10; i++)
 
 <div class="page"/>
 
-## <a id="Installation"></a>Installation
+## Installation
 
-### <a id="Installation-Production"></a>Production
+### Production
 
-### <a id="Installation-Development"></a>Development
+### Development
 
-#### <a id="user-secrets"></a>User Secrets
+#### User Secrets
 
 1. Init user secrets under the project directory:<br>
 `dotnet user-secrets init`
 
-2. Add items to user secrets:<br>
+1. Add items to user secrets:<br>
 `dotnet user-secrets list`
 `dotnet user-secrets set SendGridUser <user>`
-`dotnet user-secrets set SendGridKey  <key>`
+`dotnet u1er-secrets set SendGridKey  <key>`
 
 
 

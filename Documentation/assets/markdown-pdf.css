@@ -5,30 +5,158 @@
 :not(pre):not(.hljs) > code {
   color: #d61b99;
   font-size: inherit;
-  background-color: whitesmoke;
+  background-color: #f7f4f6;
   padding: .1em .2em;
   border-radius: .2em;
 }
 
-ol > li > ol {
+.emoji {
+  vertical-align: sub;
+}
+
+/* ol > li > ol {
   list-style-type: lower-alpha;
   padding-left: 1em;
+} */
+
+/* ol { counter-reset: item }
+li{ display: block }
+li:before {
+  content: counters(item, ".") " ";
+  counter-increment: item
+} */
+
+ol {
+  list-style-type: none;
+  counter-reset: item;
+  margin: 0;
+  padding: 0;
+}
+
+ol > li {
+  display: table;
+  counter-increment: item;
+  margin-bottom: 0.6em;
+}
+
+ol > li:before {
+  content: counters(item, ".") ". ";
+  display: table-cell;
+  padding-right: 0.6em;
+  color: grey;  
+}
+
+li ol > li {
+  margin: 0;
+}
+
+li ol > li:before {
+  content: counters(item, ".") ". ";
+}
+
+.intro {
+  margin-top: 6cm;
+  text-align: center;
+}
+
+.banner {
+  text-align: left;
+  display: inline-block;
+  /* margin: 5cm 0; */
+}
+
+.banner .contact {
+  font-family: 'Segoe UI Emoji';
+}
+
+.intro h2 {
+  font-size: 3em;
+  font-weight: bold;
+}
+
+.intro h3 {
+  font-size: 2em;
+}
+
+.alert {
+  padding: .5rem;
+  border-width: 1px;
+  border-radius: .4em;
+  border-style: solid;
+  margin: 1em 0;
+}
+
+.alert:before {
+  font-weight: bold;
+}
+
+.alert blockquote {
+  margin: 0;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.alert p {
+  margin: .5em .3em .1em;
+}
+
+.alert:before {
+  font-family: 'Segoe UI Emoji';
 }
 
 .warning {
   background-color: #ffffd5;
-  padding: .5rem;
-  border: 1px solid #f6efae;
-  border-radius: .4em;
+  border-color: #f6efae;
 }
 
 .warning p {
   color: #856404;
-  margin: .8em .3em;
 }
 
 .warning:before {
   content: '⚠️ Warning';
-  font-weight: bold;
   color: #c0af19;
+}
+
+.success {
+  background-color: #cff3d0;
+  border-color: #b4e8b4;
+}
+
+.success p {
+  color: #0f8504;
+}
+
+.success:before {
+  content: '✔️ Success';
+  color: #19c064;
+}
+
+.info {
+  background-color: #d5f0ff;
+  border-color: #aedcf6;
+}
+
+.info p {
+  color: #046b85;
+}
+
+.info:before {
+  content: 'ℹ️ Information';
+  color: #19a7c0;
+}
+
+.danger {
+  background-color: #ffd5d5;
+  border-color: #f6aeae;
+}
+
+.danger p {
+  color: #850404;
+}
+
+.danger:before {
+  content: '❌ Danger';
+  color: #c01919;
 }
