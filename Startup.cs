@@ -30,9 +30,13 @@ namespace CERTHB2B
             Configuration = configuration;
             Environment = env;
 
+            
+
             // Console.WriteLine($"ApplicationName: {env.ApplicationName}");
             // Console.WriteLine($"ContentRootPath: {env.ContentRootPath}");
             // Console.WriteLine($"EnvironmentName: {env.EnvironmentName}");
+
+            
 
             // var sgc = configuration.GetSection("SendGrid");
 
@@ -111,7 +115,7 @@ namespace CERTHB2B
                               UserManager<ApplicationUser> userManager, 
                               RoleManager<IdentityRole> roleManager)
         {
-            if (HandleInitiSeeds(app, appLifetime, userManager, roleManager)) {
+            if (HandleInitialSeeds(app, appLifetime, userManager, roleManager)) {
                 return;
             }
 
@@ -173,7 +177,7 @@ namespace CERTHB2B
             });
         }
 
-        private bool HandleInitiSeeds(
+        private bool HandleInitialSeeds(
             IApplicationBuilder app,
             IHostApplicationLifetime appLifetime,
             UserManager<ApplicationUser> userManager, 
@@ -193,6 +197,26 @@ namespace CERTHB2B
                 }
 
                 Console.WriteLine("Task complete. Exiting application.");
+                appLifetime.StopApplication();
+                return true;
+            }
+
+            var migrate = Configuration.GetValue<string>("Migrate");
+
+
+            if (!String.IsNullOrEmpty(migrate) && migrate.Equals("all", StringComparison.CurrentCultureIgnoreCase))
+            {
+                Console.WriteLine("Applying database migrations.");
+
+                using (var serviceScope = app.ApplicationServices.CreateScope())
+                {
+                    var services = serviceScope.ServiceProvider;
+                    var context = services.GetService<ApplicationDbContext>();
+
+                    context.Database.MigrateAsync().Wait();
+                }
+
+                Console.WriteLine("Migrations complete. Exiting application.");
                 appLifetime.StopApplication();
                 return true;
             }
