@@ -11,7 +11,7 @@ const Body = styled.div`
 `;
 
 const Content = styled.div`
-  margin-left: ${p => p.loading ? 5 : 0}px;
+  margin-left: ${p => p.ml}px;
 `;
 
 export default function LoadingButton({
@@ -25,7 +25,7 @@ export default function LoadingButton({
     <Button {...rest} disabled={disabled || loading}>
       <Body>
         {loading && <MoonLoader size={14} color="white" />}
-        <Content>
+        <Content ml={loading ? 5 : 0}>
           {children}
         </Content>
       </Body>

@@ -15,7 +15,12 @@ const defaultOptions = {
   color: null
 }
 
-function MsgBox({ className }, ref) {
+function MsgBox({
+  className,
+  disableButtons = '',
+  hideButtons = '',
+  children
+}, ref) {
   const [isOpen, setIsOpen] = useState(false);
   const [opts, setOpts] = useState(defaultOptions);
 
@@ -57,22 +62,32 @@ function MsgBox({ className }, ref) {
 
   const hasButtons = !!buttons;
   buttons = buttons && buttons.toLowerCase().split(/\s*,\s*/);
+  const disabled = (disableButtons || '').toLowerCase().split(/\s*,\s*/);
+  const hidden = (hideButtons || '').toLowerCase().split(/\s*,\s*/);
+
+  const btns = {
+    ok: ['primary', okText, confirm('ok')],
+    delete: ['danger', deleteText, confirm('delete')],
+    yes: ['primary', yesText, confirm('yes')],
+    no: ['primary', noText, confirm('no')],
+    cancel: ['secondary', cancelText, dismiss],
+    close: ['light', closeText, dismiss],
+  };
+
+  console.log('MsgBox', disableButtons, disabled, hidden);
 
   return (
     <Modal isOpen={isOpen} toggle={dismiss} className={className}>
       {title && <ModalHeader toggle={dismiss}>{title}</ModalHeader>}
-      
       <ModalBody className={clsx(color && `alert-${color}`, css(styles.messageTextWhiteSpace))}>
-        {message}
+        {children || message}
       </ModalBody>
       {hasButtons && (
         <ModalFooter>
-          {buttons.includes('ok') && <Button className="m2" color="primary" onClick={confirm('ok')}>{okText}</Button>}
-          {buttons.includes('delete') && <Button className="m2" color="danger" onClick={confirm('delete')}>{deleteText}</Button>}
-          {buttons.includes('yes') && <Button className="m2" color="primary" onClick={confirm('yes')}>{yesText}</Button>}
-          {buttons.includes('no') && <Button className="m2" color="primary" onClick={confirm('no')}>{noText}</Button>}
-          {buttons.includes('cancel') && <Button className="m2" color="secondary" onClick={dismiss}>{cancelText}</Button>}
-          {buttons.includes('close') && <Button className="m2" color="light" onClick={dismiss}>{closeText}</Button>}
+          {buttons.filter(key => hidden.indexOf(key) < 0).map(key => {
+            const [color, text, callback] = btns[key];
+            return <Button key={`msgbox-btn-${key}`} className="m2" color={color} disabled={disabled.includes(key)} onClick={callback}>{text}</Button>;
+          })}
         </ModalFooter>
       )}
     </Modal>

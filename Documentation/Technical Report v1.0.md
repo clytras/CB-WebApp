@@ -21,7 +21,7 @@
    1. [Technologies & Frameworks](#specifications-technologies--frameworks)
    1. [Requirements](#specifications-requirements)
    1. [Compatibility](#specifications-compatibility)
-   1. [Database Business Model Diagram](#specifications-db--business--model--diagram)
+   1. [Database Business Profiles Model Diagram](#specifications-db--business--model--diagram)
 1. [Installation](#installation)
    1. [Production](#installation-production)
       1. [ASP.NET Core Runtimes](#installation-production-aspnet--core--runtimes)

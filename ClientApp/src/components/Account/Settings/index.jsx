@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col, FormGroup, Form, Label, Input } from 'reactstrap';
 import { useStoreOf } from '@stores';
 import ChangePassword from './ChangePassword';
+import DeleteAccount from './DeleteAccount';
 import ResendEmailConfirmation from './ResendEmailConfirmation';
 import EmailVerificationNotice from '../EmailVerificationNotice';
 
@@ -35,6 +36,11 @@ export default function Settings() {
           </Col>
         </Row>
       )}
+      <Row>
+        <Col className="mb-3">
+          <DeleteAccount/>
+        </Col>
+      </Row>  
     </>
   );
 }

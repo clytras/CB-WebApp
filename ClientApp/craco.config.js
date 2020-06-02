@@ -11,6 +11,7 @@ module.exports = {
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@api-auth': path.resolve(__dirname, 'src/components/api-authorization'),
       '@data': path.resolve(__dirname, 'src/data'),
+      '@assets': path.resolve(__dirname, 'src/assets'),
     },
     resolve: {
       extensions: ['.css', '.jsx']
@@ -27,6 +28,7 @@ module.exports = {
         '@utils': '<rootDir>/src/utils',
         '@api-auth': '<rootDir>/src/components/api-authorization',
         '@data': '<rootDir>/src/data',
+        '@assets': '<rootDir>/src/assets',
       }
     }
   },

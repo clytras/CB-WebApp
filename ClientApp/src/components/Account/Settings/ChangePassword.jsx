@@ -4,6 +4,7 @@ import InlineMessage from '@components/common/InlineMessage';
 import LoadingButton from '@components/common/LoadingButton';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import PasswordValidator from 'password-validator';
+import { utsj } from 'lyxlib/utils/time';
 import { apiPost } from '@utils/net';
 import { RProgressApi } from 'rprogress';
 import { toast } from 'react-toastify';
@@ -17,6 +18,7 @@ export default function ChangePassword() {
   const [inputNewPassword, setInputNewPassword] = useState('');
   const [inputConfirmPassword, setInputConfirmPassword] = useState('');
   const [inputPasswordScore, setInputPasswordScore] = useState(0);
+  const [resetOpened, setResetOpened] = useState(0);
   const [validation, setValidation] = useState();
   const [actionError, setActionError] = useState();
   const [error, setError] = useState();
@@ -46,6 +48,7 @@ export default function ChangePassword() {
           setInputNewPassword('');
           setInputConfirmPassword('');
           setInputPasswordScore(0);
+          setResetOpened(utsj());
           toast.success(Strings.messages.Auth.PasswordChangedSuccessfully);
         } else if(resp.status === HttpStatus.UNAUTHORIZED) {
           setInputCurrentPassword('');
@@ -98,13 +101,13 @@ export default function ChangePassword() {
   }
 
   return (
-    <SectionCard title="Change your password" opened={false} color="warning" allowToggle={true}>
+    <SectionCard title={Strings.titles.ChangeYourPassword} opened={false} resetOpened={resetOpened} color="warning" allowToggle={true}>
       <InlineMessage text={error} color="danger" />
       <InlineMessage text={validation || actionError} color="warning" />
       <Row form>
         <Col md={4}>
           <FormGroup>
-            <Label for="User.CurrentPassword">Current password</Label>
+            <Label for="User.CurrentPassword">{Strings.titles.CurrentPassword}</Label>
             <Input type="password" name="User.CurrentPassword" id="User.CurrentPassword"
               value={inputCurrentPassword}
               onChange={handleCurrentPasswordChange} />
@@ -114,7 +117,7 @@ export default function ChangePassword() {
       <Row form>
         <Col md={4}>
           <FormGroup>
-            <Label for="User.NewPassword">New password</Label>
+            <Label for="User.NewPassword">{Strings.titles.NewPassword}</Label>
             <Input type="password" name="User.NewPassword" id="User.NewPassword"
               value={inputNewPassword}
               onChange={handleNewPasswordChange} />
@@ -123,7 +126,7 @@ export default function ChangePassword() {
         </Col>
         <Col md={4}>
           <FormGroup>
-            <Label for="User.ConfirmPassword">Confirm password</Label>
+            <Label for="User.ConfirmPassword">{Strings.titles.ConfirmPassword}</Label>
             <Input type="password" name="User.ConfirmPassword" id="User.ConfirmPassword" 
               value={inputConfirmPassword}
               onChange={handleConfirmPasswordChange} />
@@ -131,7 +134,7 @@ export default function ChangePassword() {
         </Col>
       </Row>
       <Row noGutters className="button-group horizontal fluid">
-        <LoadingButton loading={processing} color="primary" onClick={handlePasswordChangeClick}>Change password</LoadingButton>
+        <LoadingButton loading={processing} color="primary" onClick={handlePasswordChangeClick}>{Strings.titles.ChangePassword}</LoadingButton>
       </Row>
     </SectionCard>
   );

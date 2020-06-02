@@ -32,6 +32,7 @@ export default function SectionCard({
   color = 'primary',
   allowToggle = true,
   opened = true,
+  resetOpened,
   outline = true,
   children
 }) {
@@ -40,8 +41,13 @@ export default function SectionCard({
   const toggleSection = () => setShowSection(prev => !prev);
   const Icon = icon && icon in Icons && Icons[icon];
 
+  console.log('SectionCard', opened, resetOpened);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => setShowSection(opened), [opened]);
+  useEffect(() => {
+    console.log('effect', opened, resetOpened);
+    setShowSection(opened);
+   }, [opened, resetOpened]);
 
   const onCollapseEntering = () => setApplyTitleOpened(true);
   const onCollapseExited = () => setApplyTitleOpened(false);

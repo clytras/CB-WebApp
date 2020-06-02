@@ -17,6 +17,10 @@ export default {
     Register: 'Register',
     Login: 'Login',
     Logout: 'Logout',
+    Password: 'Password',
+    CurrentPassword: 'Current password',
+    NewPassword: 'New password',
+    ConfirmPassword: 'Confirm password',
     Administrator: 'Administrator',
     MyProfile: 'My Profile',
     Information: 'Information',
@@ -42,6 +46,10 @@ export default {
     SaveProfileActivities: 'Save profile activities',
     UseAccountEmailAddress: 'Use account email address',
     ContactPerson: 'Contact person',
+    DeleteYourAccount: 'Delete your account',
+    DeleteAccount: 'Delete account',
+    ChangeYourPassword: 'Change your password',
+    ChangePassword: 'Change password',
     Nav: {
       Sections: {
         edit: 'Edit',
@@ -96,6 +104,8 @@ export default {
       EmailIsVerified: 'Your email address is already verified',
       NoVerifiedEmail: 'Your email address has not been verified.  \nYou need to verify your email address to complete you profile.\n\nPlease check your email inbox and follow the verification link to verify your email address.\n\nVisit your [profile settings](/account/settings) and use the resend email verification action to resend the verification email.',
       // YourEmailConfirmed: 'Your email address is now confirmed.'
+      DeleteAccountAndData: 'Delete your account and all of your data.  \n\nThis action cannot be undone.',
+      DeleteAccountConfirm: 'Are you sure you want to **delete your account** and all your data?  \n\nAll of your data stored to this platform will be deleted.  \n\nThis action is **final** and **cannot be undone**.  \n\n*Please type your password to continue with the account deletion.*'
     },
     Business: {
       BusinessProfileUnvisible: 'Your profile is not visible by others.  \nPlease [contact support](/contact) to request your profile visibility.',
@@ -116,6 +126,7 @@ export default {
     EntryUpdated: 'Entry updated successfully',
     EntryCreated: 'Entry created successfully',
     EntryDeleted: 'Entry deleted successfully',
+    TypeYourPassword: 'You must type your password',
 
     Confirms: {
       QuestionDelete: 'Are you sure you want to delete {for}?',

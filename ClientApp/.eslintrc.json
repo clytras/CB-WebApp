@@ -9,7 +9,8 @@
           ["@stores", "./src/stores"],
           ["@utils", "./src/utils"],
           ["@api-auth", "./src/components/api-authorization"],
-          ["@data", "./src/data"]
+          ["@data", "./src/data"],
+          ["@assets", "./src/assets"]
         ]
       }
     }
