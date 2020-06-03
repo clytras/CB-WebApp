@@ -15,9 +15,6 @@ import SectionCard from '@components/common/SectionCard';
 
 export default function DeleteAccount() {
   const [userPassword, setUserPassword] = useState('');
-  const [inputNewPassword, setInputNewPassword] = useState('');
-  const [inputConfirmPassword, setInputConfirmPassword] = useState('');
-  const [inputPasswordScore, setInputPasswordScore] = useState(0);
   const msgboxRef = useRef();
   const [resetOpened, setResetOpened] = useState(0);
   const [validation, setValidation] = useState();
@@ -31,10 +28,6 @@ export default function DeleteAccount() {
     setPopupHideButtons(!pwd ? 'delete' : '');
   }
 
-  const handleCurrentPasswordChange = ({ currentTarget: { value }}) => setInputCurrentPassword(value);
-  const handleNewPasswordChange = ({ currentTarget: { value }}) => setInputNewPassword(value);
-  const handleConfirmPasswordChange = ({ currentTarget: { value }}) => setInputConfirmPassword(value);
-  const handlePasswordScoreChange = score => setInputPasswordScore(score);
   const handleDeleteAccountClick = () => {
     msgboxRef.current.show({
       title: `Delete account?`,

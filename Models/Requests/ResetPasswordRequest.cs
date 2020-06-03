@@ -15,10 +15,10 @@ namespace CERTHB2B.Models.Requests
         public string Email { get; set; }
 
         [Required]
-        [DataType(DataType.Password)]
+        // [DataType(DataType.Password)]
         public string NewPassword { get; set; }
 
-        [DataType(DataType.Password)]
+        // [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
     }
 }

@@ -12,6 +12,7 @@ namespace CERTHB2B.Models
         [JsonIgnore]
         public BusinessProfile Profile { get; set; }
 
+        [ForeignKey("BusinessActivitiesOptions")]
         public long ActivityId { get; set; }
     }
 }

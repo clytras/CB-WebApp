@@ -35,5 +35,14 @@ namespace CERTHB2B.Models
         public ICollection<BusinessProfileActivities> Activities { get; set; }
 
         public ICollection<BusinessProfileOtherActivities> OtherActivities { get; set; }
+
+        // [InverseProperty("To")]
+        public virtual ICollection<BusinessProfileRequests> ContactRequests { get; set; }
+
+        // [InverseProperty("From")]
+        // public virtual ICollection<BusinessProfileRequests> RequestsSent { get; set; }
+
+        // [InverseProperty("To")]
+        // public virtual ICollection<BusinessProfileRequests> RequestsReceived { get; set; }
     }
 }
