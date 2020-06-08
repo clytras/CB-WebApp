@@ -51,6 +51,7 @@ function MsgBox({
     message,
     buttons,
     color,
+    renderProps = {},
 
     okText,
     cancelText,
@@ -74,13 +75,15 @@ function MsgBox({
     close: ['light', closeText, dismiss],
   };
 
-  console.log('MsgBox', disableButtons, disabled, hidden);
+  // console.log('MsgBox', title, disableButtons, disabled, hidden, renderProps);
+
+  const body = children || message;
 
   return (
     <Modal isOpen={isOpen} toggle={dismiss} className={className}>
       {title && <ModalHeader toggle={dismiss}>{title}</ModalHeader>}
       <ModalBody className={clsx(color && `alert-${color}`, css(styles.messageTextWhiteSpace))}>
-        {children || message}
+        {typeof(body) === 'function' ? body(renderProps) : body}
       </ModalBody>
       {hasButtons && (
         <ModalFooter>

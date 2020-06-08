@@ -13,8 +13,6 @@ export default function Discover() {
         <Switch>
           <Route exact path="/discover" component={Profiles} />
           <Route path="/discover/profile/:profileId" component={OpenProfile} />
-          {/* <Route path="/account/profile" component={Profile} />
-          <Route path="/account/settings" component={Settings} /> */}
         </Switch>
       </ContentBody>
     </AuthRoute>

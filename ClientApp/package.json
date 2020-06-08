@@ -1,6 +1,6 @@
 {
   "name": "CERTHB2B",
-  "version": "0.1.0",
+  "version": "0.1.8",
   "private": true,
   "dependencies": {
     "@hot-loader/react-dom": "^16.13.0",
@@ -29,7 +29,7 @@
     "react": "^16.13.1",
     "react-app-polyfill": "^1.0.6",
     "react-cookie-consent": "^5.0.0",
-    "react-data-table-component": "^6.9.1",
+    "react-data-table-component": "git+https://github.com/clytras/react-data-table-component.git",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.21",
     "react-icons": "^3.10.0",
@@ -44,6 +44,7 @@
     "react-select": "^3.1.0",
     "react-spinners": "^0.8.3",
     "react-toastify": "^6.0.4",
+    "react-tooltip": "^4.2.6",
     "reactstrap": "^8.4.1",
     "rimraf": "^3.0.2",
     "rprogress": "git+https://github.com/clytras/rprogress.git",

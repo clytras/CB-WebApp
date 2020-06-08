@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using CERTHB2B.Models;
 using CERTHB2B.Models.Requests;
@@ -15,6 +16,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using CERTHB2B.Data;
 using CERTHB2B.Services;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Antiforgery;
 
 namespace CERTHB2B.Controllers.Api
 {
@@ -28,6 +31,7 @@ namespace CERTHB2B.Controllers.Api
         private readonly IEmailSender emailSender;
         private readonly IRazorViewToStringRenderer razorRenderer;
         private readonly CERTHB2B.Services.IAppEmailSender appEmailSender;
+        // private readonly IAntiforgery antiforgery;
 
         public AuthController(
             UserManager<ApplicationUser> userMgr, 
@@ -98,10 +102,15 @@ namespace CERTHB2B.Controllers.Api
                     return Ok(new { content });
                 }
 
+                var errors = new List<string>();
+
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    // ModelState.AddModelError(string.Empty, error.Description);
+                    errors.Add(error.Description);
                 }
+
+                return BadRequest(errors);
             }
 
             return BadRequest(ModelState);
@@ -210,6 +219,46 @@ namespace CERTHB2B.Controllers.Api
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> LockoutAccount(LockoutAccountRequest lockoutRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByIdAsync(lockoutRequest.UserId);
+                if (user != null)
+                {
+                    if (user.LockoutEnabled)
+                    {
+
+                        var result = await userManager.SetLockoutEndDateAsync(user, 
+                            lockoutRequest.DurationInSeconds > 0 ? 
+                                DateTimeOffset.UtcNow.AddSeconds(Convert.ToDouble(lockoutRequest.DurationInSeconds)) : 
+                                (DateTimeOffset?)null);
+
+                        if (result.Succeeded)
+                        {
+                            return Ok(new { user.LockoutEnd });
+                        }
+
+                        var errors = new List<string>();
+                        foreach (var error in result.Errors)
+                        {
+                            errors.Add(error.Description);
+                        }
+
+                        return BadRequest(errors);
+                    }
+
+                    return new BadRequestJsonResult("NoUserLockout");
+                }
+
+                return NotFound();
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequest loginRequest)
@@ -230,7 +279,7 @@ namespace CERTHB2B.Controllers.Api
                     }
                     if(result.IsLockedOut)
                     {
-                        return new UnauthorizedJsonResult("AccountLocked");
+                        return new UnauthorizedJsonResult("AccountLocked", user.LockoutEnd.GetValueOrDefault().ToUniversalTime());
                     }
                     if (result.RequiresTwoFactor)
                     {
@@ -245,15 +294,25 @@ namespace CERTHB2B.Controllers.Api
                 return Unauthorized();
             }
             // return View(login);
-            return BadRequest(ModelState);
+            // return BadRequest(ModelState);
+            return new BadRequestJsonResult("ModelError");
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize]
+        // [AllowAnonymous]
         // [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
+
+            // var tokens = antiforgery.GetAndStoreTokens(HttpContext);
+            // antiforgery.SetCookieTokenAndHeader(HttpContext);
+            // // HttpContext.Response.Cookies.Append("X-CSRF-TOKEN", tokens.RequestToken, 
+            // //     new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Lax });
+            // HttpContext.Response.Cookies.Append("CSRF-TOKEN", tokens.RequestToken, 
+            //     new CookieOptions { HttpOnly = false, SameSite = SameSiteMode.Lax });
+            
             return Ok();
         }
 

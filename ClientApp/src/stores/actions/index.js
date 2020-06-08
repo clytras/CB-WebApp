@@ -29,3 +29,6 @@ export const setUserBusinessProfile = (store, userBusinessProfile) => {
   store.setState({ userBusinessProfile });
 }
 
+export const setNewContactRequests = (store, newContactRequests) => {
+  store.setState({ newContactRequests });
+}

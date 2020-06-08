@@ -17,21 +17,16 @@ export default function Profile() {
       <EmailVerificationNotice/>
       <BusinessProfileUnvisibleNotice/>
       <BusinessProfileNotice/>
-
       <Row>
         <Col className="mb-3">
           <InformationData/>
         </Col>
       </Row>      
-
-      {(
-        <Row>
-          <Col className="mb-3">
-            <ActivitiesData/>
-          </Col>
-        </Row>
-      )}
-
+      <Row>
+        <Col className="mb-3">
+          <ActivitiesData/>
+        </Col>
+      </Row>
     </>
   );
 }

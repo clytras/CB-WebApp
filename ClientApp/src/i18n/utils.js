@@ -4,11 +4,11 @@ export function protoFormatPlural(fmt, data) {
     let value = data[key];
     pluralData[key] = value;
     if(!isNaN(value) && typeof(this.plurals[key]) !== undefined) {
-      pluralData[`${key}_pluralized`] = this.plurals[key][value <= 1 ? 'singular' : 'plural'];
+      pluralData[`${key}_plural`] = this.plurals[key][value <= 1 ? 'singular' : 'plural'];
     }
   }
 
-  //console.log('formatPlural', fmt, pluralData, this.plurals);
+  // console.log('formatPlural', fmt, pluralData, this.plurals);
   return this.formatString(fmt, pluralData);
 }
 

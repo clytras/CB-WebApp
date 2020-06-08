@@ -39,6 +39,9 @@ namespace CERTHB2B.Controllers.Api
         {
             var userList = await (
                 from user in context.Users
+                join profile in context.BusinessProfiles
+                    on user.Id equals profile.UserId into joinGroup
+                from jg in joinGroup.DefaultIfEmpty()
                 select new
                 {
                     UserId = user.Id,
@@ -53,10 +56,13 @@ namespace CERTHB2B.Controllers.Api
                     RoleNames = (
                         from userRole in context.UserRoles
                         join role in context.Roles
-                        on userRole.RoleId equals role.Id
+                            on userRole.RoleId equals role.Id
                         where userRole.UserId == user.Id
                         select role.Name
-                    ).ToList()
+                    ).ToList(),
+                    HasProfile = jg != null,
+                    ProfileId = jg.ProfileId,
+                    IsProfileVisible = jg.IsProfileVisible.GetValueOrDefault(),
                 }
             ).ToListAsync();
 

@@ -38,7 +38,7 @@ export default function ActivitiesBlock({ profile }) {
     console.log('renderActivities', head, subs, Object.entries(subs));
 
     return (
-      <ListGroup className="display-group mb-4">
+      <ListGroup className={`display-group mb-4 list-activities-head-${head}`}>
         <ListGroupItem color="success">
           <h4 className="header">{Strings.Business.Lists[head]}<Badge color="success">{`${_select} / ${_count}`}</Badge></h4>
         </ListGroupItem>

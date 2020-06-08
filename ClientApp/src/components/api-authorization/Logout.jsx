@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import AuthService from '@api-auth/AuthorizeService';
 import FrontContentBase from '@components/common/FrontContentBase';
 import styled from 'styled-components';
@@ -19,9 +19,7 @@ export default function Logout() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [requestError, setRequestError] = useState();
-
-
-  console.log('Logout', authUserProfile, isFetching);
+  const [redirect, setRedirect] = useState();
 
   useEffect(() => {
     (async () => {
@@ -45,9 +43,10 @@ export default function Logout() {
     }).then(async resp => {
       console.log('logout resp', resp);
 
-      if(resp.ok) {
+      if (resp.ok) {
         console.log('calling ajaxSignOut');
         await AuthService.ajaxSignOut();
+        setRedirect('/');
       }
     }).catch(err => {
       setRequestError(translateRequestError(err));
@@ -55,6 +54,12 @@ export default function Logout() {
       RProgressApi.complete();
       setIsProcessing(false);
     });
+  }
+
+  if (redirect) {
+    // return <Redirect to={redirect} />;
+    window.location.href = '/';
+    return null;
   }
 
   if(isFetching) {

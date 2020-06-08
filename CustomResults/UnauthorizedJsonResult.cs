@@ -7,7 +7,7 @@ namespace CERTHB2B.CustomResults
     {
         public UnauthorizedJsonResult(
             string errorCode,
-            string content = null,
+            dynamic content = null,
             int statusCode = StatusCodes.Status401Unauthorized
         )
             : base(new { errorCode, content })

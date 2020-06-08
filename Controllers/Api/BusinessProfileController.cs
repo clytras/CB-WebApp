@@ -13,6 +13,7 @@ using CERTHB2B.Models;
 using CERTHB2B.Models.Requests;
 using CERTHB2B.CustomResults;
 using X.PagedList;
+using CERTHB2B.Utils;
 
 namespace CERTHB2B.Controllers.Api
 {
@@ -54,7 +55,7 @@ namespace CERTHB2B.Controllers.Api
                 var user = await userManager.FindByEmailAsync(User.Identity.Name);
 
                 if (user != null)
-                    result = GetProfileData(user.Id);
+                    result = GetProfileData(user.Id, withNewContactRequestsCounter: true);
             }
             else
                 result = GetProfileData(userId);
@@ -73,14 +74,6 @@ namespace CERTHB2B.Controllers.Api
         public async Task<IActionResult> OnGetListing(BusinessProfileListingRequest listingRequest)
         {
             var user = await userManager.FindByEmailAsync(User.Identity.Name);
-            // var user = await userManager.FindByEmailAsync("admin@nekya.com");
-
-            // var toMatch = new List<long>()
-            // {
-            //     24, // "Offer.Collaboration.$ForFundingCall",
-            //     21, // "TopicsOfInterest.ICTTransport.$DataAnalyticsTransport",
-            //     8,  // "TopicsOfInterest.Logistics.$DronesApplicationsForLogistics"
-            // };
 
             if (user != null) {
 
@@ -183,13 +176,50 @@ namespace CERTHB2B.Controllers.Api
                         await context.SaveChangesAsync();
                         return Ok(await GetProfileData(user.Id).FirstOrDefaultAsync());
                     }
-                    catch (Exception e)
+                    catch
                     {
-                        return Conflict(e?.InnerException?.Message);
+                        throw;
                     }
                 }
 
                 return NotFound(new { userNotFound = User.Identity.Name });
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        [HttpPost("SetProfileOfUserVisibility")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> OnSetProfileOfUserVisibility(ProfileOfUserVisibility profileVisibility)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByIdAsync(profileVisibility.UserId);
+
+                if (user != null)
+                {
+                    var profile = await context.BusinessProfiles.FirstOrDefaultAsync(p => p.User.Id == user.Id);
+
+                    if (profile != null)
+                    {
+                        profile.IsProfileVisible = profileVisibility.Visibility;
+                        context.Update(profile);
+
+                        try
+                        {
+                            await context.SaveChangesAsync();
+                            return Ok();
+                        }
+                        catch
+                        {
+                            throw;
+                        }
+                    }
+
+                    return new BadRequestJsonResult("NoProfile");
+                }
+
+                return NotFound();
             }
 
             return BadRequest(ModelState);
@@ -302,6 +332,63 @@ namespace CERTHB2B.Controllers.Api
             return BadRequest(ModelState);
         }
 
+        [HttpPost("SendContactRequest")]
+        [Authorize]
+        public async Task<IActionResult> OnSendContactRequest(SendContactRequest contactRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(User.Identity.Name);
+
+                if (user != null)
+                {
+                    var profile = await context.BusinessProfiles
+                        .Include(p => p.ContactRequests)
+                        .FirstOrDefaultAsync(p => p.User.Id == user.Id);
+
+                    if (profile != null)
+                    {
+                        Console.WriteLine("Own profile found");
+                        var toProfile = await context.BusinessProfiles
+                            .Include(p => p.ContactRequests)
+                            .FirstOrDefaultAsync(p => p.ProfileId == contactRequest.ToProfileId);
+                        
+                        if (toProfile != null)
+                        {
+                            Console.WriteLine("To profile found");
+                            context.Add(new BusinessProfileRequests
+                            {
+                                From = profile,
+                                ToId = toProfile.ProfileId,
+                                Date = DateTime.Now.ToUniversalTime(),
+                                IsOpened = false
+                            });
+
+                            try
+                            {
+                                Console.WriteLine("profile SaveChangesAsync");
+                                await context.SaveChangesAsync();
+                                return Ok();
+                            }
+                            catch(Exception err)
+                            {
+                                Console.WriteLine("profile err", err.ToString());
+                                throw;
+                            }
+                        }
+
+                        return new BadRequestJsonResult("NoToProfile");
+                    }
+
+                    return new BadRequestJsonResult("NoOwnProfile");
+                }
+
+                return NotFound(new { userNotFound = User.Identity.Name });
+            }
+
+            return BadRequest(ModelState);
+        }
+
         private Dictionary<string, object> GetActivitiesOptions()
         {
             return new CollectionToDictionary<BusinessActivitiesOptions>(
@@ -309,7 +396,7 @@ namespace CERTHB2B.Controllers.Api
             ).Convert(i => i.ActivityId.ToString(), i => i.ActivityOptionAlias);
         }
 
-        private IQueryable<dynamic> GetProfileData(string userId = null, long profileId = 0)
+        private IQueryable<dynamic> GetProfileData(string userId = null, long profileId = 0, bool withNewContactRequestsCounter = false)
         {
             var OtherActivitiesList = (
                 from profile in context.BusinessProfiles
@@ -319,12 +406,20 @@ namespace CERTHB2B.Controllers.Api
 
             var OtherActivities = new CollectionToDictionary<BusinessProfileOtherActivities>(OtherActivitiesList)
                 .Convert(i => i.ActivityAlias, i => i.OtherText);
+            
+            // dynamic ContactRequests = null;
+
+            // if (withContactRequests == true)
+            // {
+            //     ContactRequests = context.BusinessContactRequests
+            // }
 
             return
                 from profile in context.BusinessProfiles
                     .Include(p => p.ContactPerson)
                     .Include(p => p.CompanyLocation)
                     .Include(p => p.OtherActivities)
+                    .Include(p => p.ContactRequests)
                     .Include(p => p.User)
                 where profile.User.Id == userId || profile.ProfileId == profileId
                 select new {
@@ -342,7 +437,12 @@ namespace CERTHB2B.Controllers.Api
                         join bao in context.BusinessActivitiesOptions on pa.ActivityId equals bao.ActivityId
                         select bao
                     ).Select(a => a.ActivityOptionAlias).Distinct(),
-                    OtherActivities
+                    OtherActivities,
+                    NewContactRequests = withNewContactRequestsCounter == true ? (
+                        from requests in context.BusinessContactRequests
+                        where requests.ToId == profile.ProfileId && requests.IsOpened == false
+                        select requests
+                    ).Count() : 0
                 };
         }
 
@@ -359,36 +459,5 @@ namespace CERTHB2B.Controllers.Api
             return null;
         }
 
-        private class CollectionToDictionary<T> : Dictionary<string, object>
-        {
-            private List<T> list;
-            private List<ICollection<T>> listCollection;
-
-            public CollectionToDictionary(List<ICollection<T>> listCollection)
-            {
-                this.listCollection = listCollection;
-            }
-
-            public CollectionToDictionary(List<T> list)
-            {
-                this.list = list;
-            }
-
-            public Dictionary<string, object> Convert(Func<T, string> key, Func<T, string> value)
-            {
-                var result = new Dictionary<string, object>();
-
-                if (listCollection != null)
-                {
-                    listCollection.ToList().ForEach(item => item.ToList().ForEach(i => result.Add(key(i), value(i))));
-                }
-                else
-                {
-                    list.ForEach(item => result.Add(key(item), value(item)));
-                }
-
-                return result;
-            }
-        }
     }
 }

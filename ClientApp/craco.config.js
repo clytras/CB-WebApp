@@ -1,4 +1,5 @@
 const path = require('path');
+const { DefinePlugin } = require("webpack");
 const reactHotReloadPlugin = require('craco-plugin-react-hot-reload');
 
 module.exports = {
@@ -15,7 +16,14 @@ module.exports = {
     },
     resolve: {
       extensions: ['.css', '.jsx']
-    }
+    },
+    plugins: [
+      new DefinePlugin({
+        "process.env.APP_VERSION": JSON.stringify(
+          require("./package.json").version
+        )
+      })
+    ]
   },
   jest: {
     configure: {

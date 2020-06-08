@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Row, Col, CardBody, Card, CardTitle, CardSubtitle, CardText, Button } from 'reactstrap';
+import { Row, Col, Card, CardTitle, CardSubtitle, Button } from 'reactstrap';
 import { getProfilesListing } from '@data/BusinessProfile';
 import { toast } from 'react-toastify';
+import { useStoreOf } from '@stores';
 import Masonry from 'react-masonry-component';
 import LoadingOverlay from '@components/common/LoadingOverlay';
 import FeedbackMessage from '@components/common/FeedbackMessage';
+import BusinessProfileNotice from '@components/Account/BusinessProfileNotice';
 import { utsj } from 'lyxlib/utils/time';
 import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
 
 
 export default function Profiles() {
+  const [authUserProfile] = useStoreOf('authUserProfile');
+  const [userBusinessProfile] = useStoreOf('userBusinessProfile');
   const [loading, setLoading] = useState(true);
   const [activitiesOptions, setActivitiesOptions] = useState();
   const [totalActivitiesOptions, setTotalActivitiesOptions] = useState(0);
@@ -19,33 +23,38 @@ export default function Profiles() {
   const [updater, setUpdater] = useState(0);
 
   useEffect(() => {
-    setActionError();
+    const { hasUser = false } = authUserProfile || {};
+    const { hasProfile = false } = userBusinessProfile || {};
 
-    getProfilesListing({
-      returnActivitiesOptions: updater === 0
-    })
-    .then(async resp => {
-      if (resp.ok) {
-        const result = await resp.json();
+    if (hasUser && hasProfile) {
+      setActionError();
 
-        if (updater === 0) {
-          const { profiles, activitiesOptions } = result || {};
-
-          console.log('profiles, activitiesOptions', profiles, activitiesOptions);
-
-          setProfiles(profiles);
-          setActivitiesOptions(activitiesOptions);
-          setTotalActivitiesOptions(Object.keys(activitiesOptions).length);
+      getProfilesListing({
+        returnActivitiesOptions: updater === 0
+      })
+      .then(async resp => {
+        if (resp.ok) {
+          const result = await resp.json();
+  
+          if (updater === 0) {
+            const { profiles, activitiesOptions } = result || {};
+  
+            console.log('profiles, activitiesOptions', profiles, activitiesOptions);
+  
+            setProfiles(profiles);
+            setActivitiesOptions(activitiesOptions);
+            setTotalActivitiesOptions(Object.keys(activitiesOptions).length);
+          } else {
+            setProfiles(result);
+          }
         } else {
-          setProfiles(result);
+          setActionError(Strings.messages.CouldNotLoadDataReloadPage);
         }
-      } else {
-        setActionError(Strings.messages.CouldNotLoadDataReloadPage);
-      }
-    })
-    .catch(err => toast.error(translateRequestError(err)))
-    .finally(() => setLoading(false));
-  }, [updater]);
+      })
+      .catch(err => toast.error(translateRequestError(err)))
+      .finally(() => setLoading(false));
+    }
+  }, [updater, authUserProfile, userBusinessProfile]);
 
   const handleRetryClick = () => {
     setLoading(true);
@@ -59,10 +68,6 @@ export default function Profiles() {
     const percentMatch = Math.round((matchingActivities.length /  totalActivitiesOptions) * 100);
 
     return (
-      // <div className="profile">
-      //   <div className="company-name">{companyName}</div>
-      //   <div className="address">{address}</div>
-      // </div>
       <Col key={`profile-card-${profileId}`} xl={4} lg={4} md={6} sm={12} xs={12}>
         <Card body className="profile mb-3">
             <CardTitle className="company-name">{companyName}</CardTitle>
@@ -89,16 +94,18 @@ export default function Profiles() {
       </Row>
       <hr/>
       <div className="reset-font-size">
-        {profiles && profiles.length && (
-          <Row className="profiles">
-            <div style={{ width: '100%' }}>
-              <Masonry option={{ transitionDuration: 0 }}>{profiles.map(renderProfile)}</Masonry>
-            </div>
-          </Row>
-        )}
-        {loading && <LoadingOverlay/>}
-        {actionError && <FeedbackMessage className="mt-3" color="warning"
-          columnSize={8} message={actionError} onRetry={handleRetryClick} />}
+        <BusinessProfileNotice>
+          {profiles && profiles.length && (
+            <Row className="profiles">
+              <div style={{ width: '100%' }}>
+                <Masonry option={{ transitionDuration: 0 }}>{profiles.map(renderProfile)}</Masonry>
+              </div>
+            </Row>
+          )}
+          {loading && <LoadingOverlay/>}
+          {actionError && <FeedbackMessage className="mt-3" color="warning"
+            columnSize={8} message={actionError} onRetry={handleRetryClick} />}
+        </BusinessProfileNotice>
       </div>
     </div>
   );

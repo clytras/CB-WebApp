@@ -65,6 +65,7 @@ namespace CERTHB2B
                 // For accepting greek characters
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
+                options.Password.RequiredLength = 8;
             })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -73,7 +74,12 @@ namespace CERTHB2B
                 .GetCertFromServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
-            services.AddAuthentication()
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
                 .AddIdentityServerJwt();
 
             services.AddCors(options =>

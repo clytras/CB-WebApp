@@ -10,6 +10,7 @@ const initialState = {
   authUser: null,
   authUserProfile: new UserProfile(),
   userBusinessProfile: new BusinessProfile(),
+  newContactRequests: 0,
   meta: {}
 }
 

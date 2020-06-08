@@ -13,6 +13,13 @@ export default {
   euroSign: '€',
 
   titles: {
+    Requests: 'Requests',
+    Actions: 'Actions',
+    LastLogin: 'Last login',
+    Registration: 'Registration',
+    Roles: 'Roles',
+    Edit: 'Edit',
+    Delete: 'Delete',
     Discover: 'Discover',
     Register: 'Register',
     Login: 'Login',
@@ -41,7 +48,9 @@ export default {
     OtherText: 'Other',
     Save: 'Save',
     Undo: 'Undo',
+    RequestProblem: 'Request problem',
     RejectionReason: 'Rejection reason',
+    ResponseText: 'Response text',
     SaveProfileInformation: 'Save profile information',
     SaveProfileActivities: 'Save profile activities',
     UseAccountEmailAddress: 'Use account email address',
@@ -50,6 +59,14 @@ export default {
     DeleteAccount: 'Delete account',
     ChangeYourPassword: 'Change your password',
     ChangePassword: 'Change password',
+    ReloadPage: 'Reload page',
+    AddNewContentBlock: 'Add new Content Block',
+    LockAccount: 'Lock account',
+    UnlockAccount: 'Unlock account',
+    Lock: 'Lock',
+    Unlock: 'Unlock',
+    Send: 'Send',
+    SendContactRequest: 'Send contact request',
     Nav: {
       Sections: {
         edit: 'Edit',
@@ -78,9 +95,49 @@ export default {
   placeholders: {
     ThisFieldIsRequired: 'This field is required',
   },
+  fields: {
+    duration: {
+      Hours: '{hours} {hours_plural}',
+      Days: '{days} {days_plural}',
+      Weeks: '{weeks} {weeks_plural}',
+      Months: '{months} {months_plural}',
+      Years: '{years} {years_plural}',
+      Permanently: 'Permanently'
+    }
+  },
+  plurals: {
+    years: {
+      singular: 'year',
+      plural: 'years'
+    },
+    months: {
+      singular: 'month',
+      plural: 'months'
+    },
+    weeks: {
+      singular: 'week',
+      plural: 'weeks' 
+    },
+    days: {
+      singular: 'day',
+      plural: 'days'
+    },
+    hours: {
+      singular: 'hour',
+      plural: 'hours'
+    },
+    minutes: {
+      singular: 'minute',
+      plural: 'minutes'
+    },
+    seconds: {
+      singular: 'second',
+      plural: 'seconds'
+    }
+  },
   messages: {
     Auth: {
-      AccountLocked: 'Account is locked',
+      AccountLocked: 'Account is locked until {lockedUntil}',
       Account2FA: 'Account requires two factor authentication',
       LoginFail: 'Check you email and password',
       AccountExists: 'An account with that mail already exists',
@@ -88,7 +145,7 @@ export default {
       EmailNotMatchRequest: 'The email address does not match with the action request',
       PasswordChangedSuccessfully: 'Your password changed successfully',
       InvalidEmailAddress: 'Invalid email address',
-      InvalidPassword: 'Password must have at least 8 character, contain upper/lower letters and digits',
+      InvalidPassword: 'Password must have at least 8 character, contain upper/lower letters, digits and symbols',
       ConfirmPasswordNotMatch: 'Confirmation password does not match with the password',
       WeakVulnerablePassword: 'Password is weak or vulnerable',
       ResourceAccessDenied: 'You do not have access to this resource',
@@ -110,25 +167,43 @@ export default {
     Business: {
       BusinessProfileUnvisible: 'Your profile is not visible by others.  \nPlease [contact support](/contact) to request your profile visibility.',
       BusinessProfileNotComplete: 'Your profile is not complete.  \nPeople cannot discover you unless you complete your profile.\n\nPlease visit your [account profile page](/account/profile) and provide your data to complete your profile.',
-      SaveBasicInformationBeforeActivities: 'Save profile information above to select your activities'
+      NoProfileInformation: 'You have to fill your profile information before you can search and connect with other people.\n\nPlease visit your [account profile page](/account/profile) and provide your data to complete your profile.',
+      SaveBasicInformationBeforeActivities: 'Save profile information above to select your activities',
+      SendContactRequest: 'Send a contact request to "{companyName}"?  \nAn email with this request will be send to them.'
     },
     CouldNotLoadDataReloadPage: 'Could not load request data.\nIf you keep seeing this, try to reload the page.',
     ActivitiesAutoSave: 'Activities will be saved automatically on selecting options',
     InvalidFieldsDataTryAgain: 'There are some missing fields or fields with wrong information.  \nInput valid data to fix the errors and try again.',
     ProfileInformationSaved: 'Your profile information is now saved.  \nAlso review and update your related activities below.',
+    UserHasNoProfile: 'User has no profile information yet',
+    AccountCannotBeLocked: 'Account cannot be locked',
+    AccountLockedUntil: 'Account is locked until {lockedUntil}',
+    LockAccount: 'Lock this account',
+    UnlockAccount: 'Unlock this account',
+    MakeProfileHidden: 'Make this profile hidden (not shown in search)',
+    MakeProfileVisible: 'Make this profile visible (include in search)',
     ErrorSaving: 'Could not complete save request.  \nIf you keep seeing this, try to reload the page.',
     DataSaved: 'Data saved successfully',
     RequestError: 'Request error ({error})',
     ContactSupport: 'Please contact support',
     UnexpectedError: 'There was an unexpected error',
     RequestRejected: 'The request was rejected by the server',
+    RequestProblem: 'The request returned an unknown state.\n\nCheck your internet connection and try again.\nIf the problem persists, please try to reload the page.',
     DeleteEntry: 'Are you sure you want to delete this entry?',
     EntryUpdated: 'Entry updated successfully',
     EntryCreated: 'Entry created successfully',
     EntryDeleted: 'Entry deleted successfully',
     TypeYourPassword: 'You must type your password',
+    AppNewVersion: '🚀 There is a new application version.\nMake sure to save all unsaved data and reload the page.',
 
     Confirms: {
+      UnlockAccount: 'Do you want to unlock user\'s "{email}" account?',
+      LockAccountFor: 'Lock user\'s "{email}" account for:',
+      MakeProfileVisible: 'Make profile visible',
+      MakeProfileVisibleInSearch: 'Do you want to make user\'s "{email}" profile visible in search results?',
+      HideProfile: 'Hide profile',
+      HideProfileFromSearch: 'Do you want to hide user\'s "{email}" profile from search results?',
+      QuestingDeleteContentBlock: 'Delete Content Block Id#{id}',
       QuestionDelete: 'Are you sure you want to delete {for}?',
       for: {
         ContentBlock: 'the content block'

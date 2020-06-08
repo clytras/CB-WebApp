@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import { Link, Redirect, useLocation } from 'react-router-dom';
+import DateTime from 'luxon/src/datetime';
 import authService, { AuthenticationResultStatus } from './AuthorizeService';
 import FrontContentBase from '@components/common/FrontContentBase';
 import { RProgressApi } from 'rprogress';
@@ -9,7 +10,7 @@ import LoadingButton from '@components/common/LoadingButton';
 import LoadingOverlay from '@components/common/LoadingOverlay';
 import InlineMessage from '@components/common/InlineMessage';
 import Delayed from '@components/common/Delayed';
-import { translateCodeMessage, translateRequestError } from '@i18n';
+import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
 import { apiPost } from '@utils/net';
 
 
@@ -78,28 +79,33 @@ export default function Login() {
     }).then(async resp => {
       console.log('Ajax login resp', resp);
 
-      let errorCode;
-
       if(resp.ok) {
         const { status, message } = await authService.ajaxSignIn();
         console.log('ajaxSignIn', status, message);
 
         if(status === AuthenticationResultStatus.Fail) {
-          if(message) {
-            setLoginError(JSON.stringify(message, null, 2));
+          if (message) {
+            setLoginError(message);
           } else {
-            errorCode = 'LoginFail';
+            setLoginError(Strings.messages.Auth.LoginFail);
           }
         } else {
           setRedirectTo(location?.state?.from?.pathname || '/');
         }
       } else {
-        
+        let errorCode, content;
         try {
-          ({ errorCode } = await resp.json());
+          ({ errorCode, content } = await resp.json());
         } catch(err) {}
 
-        setLoginError(translateCodeMessage(errorCode, 'LoginFail'));
+        let message = translateCodeMessage(errorCode, 'LoginFail');
+
+        if (errorCode === 'AccountLocked' && content) {
+          const lockedUntil = DateTime.fromISO(content).toLocaleString(DateTime.DATETIME_SHORT);
+          message = Strings.formatString(message, { lockedUntil });
+        }
+
+        setLoginError(message);
       }
     }).catch(err => {
       setRequestError(translateRequestError(err));

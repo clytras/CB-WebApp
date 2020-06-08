@@ -6,6 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text;
 using System.IO;
+using CERTHB2B.Utils;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.SpaServices;
+using System.Collections.Generic;
 
 namespace CERTHB2B.Controllers.Api
 {
@@ -13,15 +17,17 @@ namespace CERTHB2B.Controllers.Api
     public class StaticContentController : ControllerBase
     {
         private readonly ApplicationDbContext context;
+        private readonly IHostEnvironment environment;
 
-        public StaticContentController(ApplicationDbContext dbContext)
+        public StaticContentController(ApplicationDbContext dbContext, IHostEnvironment env)
         {
             context = dbContext;
+            environment = env;
         }
     
-        [HttpGet("content.js")]
+        [HttpGet("initial.js")]
         [ResponseCache(NoStore = true)]
-        public ActionResult Content()
+        public ActionResult Initial()
         {
             string[] bindsTo = new string[] {
                 "Welcome",
@@ -35,28 +41,15 @@ namespace CERTHB2B.Controllers.Api
                     b.Content
                 }).ToList();
 
-            string content = "";
+            var dic = results.ToDictionary(p => p.BindToContent, p => p.Content);
+            string staticContent = DataConverters.DataToJson(dic);
 
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new Utf8JsonWriter(stream))
-                {
-                    writer.WriteStartObject();
-
-                    foreach(var block in results)
-                    {
-                        writer.WriteString(block.BindToContent, block.Content);
-                    }
-
-                    writer.WriteEndObject();
-                }
-
-                string json = Encoding.UTF8.GetString(stream.ToArray());
-                content = $"window.__StaticContent = {json};";
-            }
+            var packageJson = System.IO.File.ReadAllText(Path.Combine(environment.ContentRootPath, "ClientApp", "package.json"));
+            var packageInfo = JsonSerializer.Deserialize<Dictionary<string, dynamic>>(packageJson);
+            var spaVersion = packageInfo["version"];
             
             Response.ContentType = "application/javascript";
-            return Content(content);
+            return Content($"window.__SpaVersion = '{spaVersion}';\nwindow.__StaticContent = {staticContent};");
         }
     }
 }

@@ -72,6 +72,10 @@ export class BusinessProfile  {
       this._profile.otherActivities = value;
     }
   }
+
+  get newContactRequests() {
+    return this._profile && this._profile.newContactRequests;
+  }
 }
 
 export function fetchProfile(profileId) {
@@ -126,5 +130,19 @@ export function getProfilesListing({
     params: {
       returnActivitiesOptions
     }
+  });
+}
+
+export function setProfileOfUserVisibility(UserId, Visibility) {
+  return apiPost('/api/BusinessProfile/SetProfileOfUserVisibility', {
+    addAuth: true, 
+    params: { UserId, Visibility }
+  });
+}
+
+export function sendContactRequest(ToProfileId) {
+  return apiPost('/api/BusinessProfile/SendContactRequest', {
+    addAuth: true, 
+    params: { ToProfileId }
   });
 }

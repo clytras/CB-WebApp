@@ -1,5 +1,6 @@
 import { UserManager, WebStorageStateStore } from 'oidc-client';
 import { ApplicationPaths, ApplicationName } from './ApiAuthorizationConstants';
+import { apiPost } from '@utils/net';
 import { translateBool } from 'lyxlib/utils/str';
 import { IdentityRoles } from '.';
 
@@ -366,3 +367,10 @@ export const AuthenticationResultStatus = {
   Success: 'success',
   Fail: 'fail'
 };
+
+export function lockoutAccount(UserId, DurationInSeconds) {
+  return apiPost('/api/Auth/LockoutAccount', {
+    addAuth: true, 
+    params: { UserId, DurationInSeconds }
+  });
+}

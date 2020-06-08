@@ -171,8 +171,8 @@ namespace CERTHB2B.Controllers.Api
 
         [HttpPost]
         // [AllowAnonymous]
-        [Authorize]
-        // [ValidateAntiForgeryToken]
+        // [Authorize]
+        [ValidateAntiForgeryToken]
         public IActionResult TestPostParamsAntiForgery(LoginRequest login)
         {
             if (ModelState.IsValid)

@@ -7,6 +7,7 @@ using CERTHB2B.Models.Requests;
 using CERTHB2B.Data;
 using Microsoft.EntityFrameworkCore;
 using CERTHB2B.Models;
+using CERTHB2B.CustomResults;
 
 namespace CERTHB2B.Controllers.Api
 {
@@ -27,7 +28,8 @@ namespace CERTHB2B.Controllers.Api
         {
             return Ok(context.ContentBlock.Select(b => new {
                 Id = b.BlockId,
-                BindToContent = b.BindToContent
+                b.BindToContent,
+                b.Locked
             }));
         }
 
@@ -45,7 +47,7 @@ namespace CERTHB2B.Controllers.Api
         }
 
         [HttpPut("{itemId}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Update(long itemId, ContentBlockRequest contentBlockRequest)
         {
             if(ModelState.IsValid)
@@ -76,7 +78,7 @@ namespace CERTHB2B.Controllers.Api
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Create(ContentBlockRequest contentBlockRequest)
         {
             if (ModelState.IsValid)
@@ -94,7 +96,7 @@ namespace CERTHB2B.Controllers.Api
                 }
                 catch
                 {
-                    return Ok(new { err = "db error" });
+                    // return Ok(new { err = "db error" });
                     throw;
                 }
             }
@@ -103,13 +105,18 @@ namespace CERTHB2B.Controllers.Api
         }
 
         [HttpDelete("{itemId}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Delete(long itemId)
         {
             var contentBlockItem = await context.ContentBlock.FindAsync(itemId);
 
             if(contentBlockItem != null)
             {
+                if (contentBlockItem.Locked == true)
+                {
+                    return new BadRequestJsonResult("Locked", statusCode: 403);
+                }
+
                 context.ContentBlock.Remove(contentBlockItem);
 
                 try
@@ -119,7 +126,7 @@ namespace CERTHB2B.Controllers.Api
                 }
                 catch
                 {
-                    return Ok(new { err = "db error" });
+                    // return Ok(new { err = "db error" });
                     throw;
                 }
             }
@@ -128,7 +135,7 @@ namespace CERTHB2B.Controllers.Api
         }
 
         [HttpGet("BindTo/{bindToContent}")]
-        public async Task<IActionResult> GetBintTo(string bindToContent)
+        public async Task<IActionResult> GetBindTo(string bindToContent)
         {
             var binds = bindToContent.Split(',');
             var contentBlocks = await context.ContentBlock.Where(b => binds.Contains(b.BindToContent)).ToListAsync();

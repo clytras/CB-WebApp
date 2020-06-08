@@ -29,16 +29,13 @@ export default function NavMenu() {
               <NavItem active={pathname === '/'}>
                 <NavLink tag={Link} to="/">Home</NavLink>
               </NavItem>
-              <NavItem active={/\/contact\/?/i.test(pathname)}>
-                <NavLink tag={Link} to="/contact">Contact</NavLink>
-              </NavItem>
               {/* <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/counter">Counter</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/fetch-data">Fetch data</NavLink>
-              </NavItem>
-              <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/debug/csrf-post">CSRF Post</NavLink>
+              </NavItem> */}
+              {/* <NavItem active={/\/contact\/?/i.test(pathname)}>
+                <NavLink tag={Link} to="/contact">Contact</NavLink>
+              </NavItem> */}
+              {/* <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/ajax-auth">Ajax Auth</NavLink>
               </NavItem> */}
               <LoginMenu pathname={pathname} />

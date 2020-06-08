@@ -68,20 +68,5 @@ export default function OpenProfile({
     return <ProfileSummary profile={profile} showSendContactRequest />;
   }
 
-  // if (profile) {
-  //   const { companyName = '', email = '', telephone = '' } = profile || {};
-
-  //   return (
-  //     <>
-  //       <Header>{companyName}</Header>
-  //       <HeaderEmail className="text-secondary"><MdMail/> {email}</HeaderEmail>
-  //       <HeaderEmail className="text-secondary"><MdPhone/> {telephone}</HeaderEmail>
-  //       <hr/>
-  //       <InformationBlock profile={profile} />
-  //       <ActivitiesBlock profile={profile} />
-  //     </>    
-  //   );
-  // }
-
   return null;
 }

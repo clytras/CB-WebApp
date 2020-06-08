@@ -65,8 +65,6 @@ export default function Register() {
       }).then(async resp => {
         console.log('Ajax register resp', resp);
   
-        let errorCode;
-  
         if(resp.ok) {
           let content;
   
@@ -83,15 +81,23 @@ export default function Register() {
         } else if(resp.status === HttpStatus.CONFLICT) {
           setRegisterError(Strings.messages.Auth.AccountExists);
         } else {
+          let responseData = {};
           try {
-            ({ errorCode } = await resp.json());
+            responseData = await resp.json();
           } catch(err) {}
+
+          console.log('responseData', responseData);
+
+          if (Array.isArray(responseData)) {
+            setRegisterError(responseData);
+          } else {
+            const { errorCode } = responseData || {};
+            setRegisterError(translateCodeMessage(errorCode, 'RegistrationError'));
+          }
 
           // resp.json().then(({ errorCode }) => {
           //   setRegisterError(translateCodeMessage(errorCode, 'RegistrationError'));
           // }).catch();
-  
-          setRegisterError(translateCodeMessage(errorCode, 'RegistrationError'));
         }
       }).catch(err => {
         setRequestError(translateRequestError(err));
@@ -119,6 +125,7 @@ export default function Register() {
       .has().uppercase()
       .has().lowercase()
       .has().digits()
+      .has().symbols()
       .has().not().spaces();
     
     if(!passwordValidatorSchema.validate(inputPassword)) {

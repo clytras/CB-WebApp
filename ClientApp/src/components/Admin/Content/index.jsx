@@ -24,13 +24,12 @@ export default function Content() {
     setDoEditId(target.dataset.id);
   }
   const handleDeleteClick = ({ target }) => {
-    console.log('Delete', target.dataset.id, target.parentNode);
-
     const { id } = target.dataset;
 
     if(id) {
       msgboxRef.current.show({
-        title: `Delete Content Block Id#${id}?`,
+        // title: `Delete Content Block Id#${id}?`,
+        title: Strings.formatString(Strings.messages.Confirms.QuestingDeleteContentBlock, { id }),
         message: `${Strings.messages.DeleteEntry}`,
         color: 'danger',
         buttons: 'delete,cancel',
@@ -85,7 +84,7 @@ export default function Content() {
       name: 'Actions',
       button: true,
       width: '200px',
-      cell: ({ id }) => <Actions onEdit={handleEditClick} onDelete={handleDeleteClick} data-id={id}/>
+      cell: ({ id, locked }) => <Actions onEdit={handleEditClick} onDelete={!locked && handleDeleteClick} data-id={id}/>
     }
   ], []);
 
@@ -134,7 +133,7 @@ export default function Content() {
       <DataTable
         columns={columns}
         noContextMenu
-        actions={<Button color="primary" tag={Link} to="/admin/content/add">Add new Content Block</Button>}
+        actions={<Button color="primary" tag={Link} to="/admin/content/add">{Strings.titles.AddNewContentBlock}</Button>}
         data={rows}
         progressPending={pending}
         pagination />

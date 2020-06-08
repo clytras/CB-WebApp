@@ -2,7 +2,8 @@
 $break-small: 320px;
 $break-mobile: 576px;
 $break-medium: 768px;
-$break-large: 1200px;
+$break-large: 992px;
+$break-xlarge: 1200px;
 
 html, body, #root {
   height: 100%;
@@ -331,12 +332,21 @@ html {
 .datatable-actions {
   overflow: visible !important;
 
-  button:not(:last-child) {
+  button:not(:last-child), svg:not(:last-child) {
     margin-right: 6px;
   }
 
+  svg {
+    cursor: pointer;
+
+    &.disabled {
+      cursor: default;
+      opacity: .4;
+    }
+  }
+
   &.disabled {
-    opacity: .5;
+    opacity: .4;
     pointer-events: none;
   }
 }
@@ -394,6 +404,10 @@ html {
     }
   }
 
+    li.option {
+      font-weight: bold;
+    }
+
   ul.subs {
     list-style: none;
     margin: 0;
@@ -409,6 +423,22 @@ html {
 
     .other-text {
       font-weight: normal;
+    }
+  }
+
+  &.list-activities-head-TopicsOfInterest {
+    ul.subs {
+      > li {
+        display: inline-table;
+        width: 50%;
+      }
+
+      @media (max-width: $break-large) {
+        > li {
+          display: block;
+          width: auto;
+        }
+      }
     }
   }
 

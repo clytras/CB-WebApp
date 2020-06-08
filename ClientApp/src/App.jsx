@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { Route, Switch } from 'react-router';
+import { Button } from 'reactstrap';
 import Layout from '@components/Layout';
+import { spaHeartbeat } from '@data/Spa/Heartbeat';
+import { every } from 'lyxlib/utils/time';
 import { RProgress } from 'rprogress';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import CookieConsent from "react-cookie-consent";
 import { useStoreOf } from '@stores';
 import ApiAuthorizationRoutes from '@components/api-authorization/ApiAuthorizationRoutes';
@@ -13,6 +16,8 @@ import AuthRoleRoute from '@api-auth/AuthRoleRoute';
 import Home from '@components/Home';
 import Contact from '@components/Contact';
 import ContentBody from '@components/common/ContentBody';
+import NotFound from '@components/NotFound';
+import { Strings } from '@i18n';
 
 import {
   Register, Login, Logout,
@@ -49,9 +54,13 @@ function App() {
   const [, setAuthUser] = useStoreOf('authUser', 'setAuthUser');
   const [, setAuthUserProfile] = useStoreOf('authUserProfile', 'setAuthUserProfile');
   const [, setUserBusinessProfile] = useStoreOf('userBusinessProfile', 'setUserBusinessProfile');
+  const [, setNewContactRequests] = useStoreOf('newContactRequests', 'setNewContactRequests');
+  const reloading = useRef(false);
+  const newVersionToastRef = useRef();
 
   useEffect(() => {
     let initialAuthTimerId;
+    let prevNewContactRequests;
 
     const authCheck = async () => {
       clearTimeout(initialAuthTimerId);
@@ -66,6 +75,12 @@ function App() {
         const userBusinessProfile = await getProfileOfUser();
         setUserBusinessProfile(userBusinessProfile);
 
+        const { newContactRequests } = userBusinessProfile || {};
+        if (prevNewContactRequests !== newContactRequests) {
+          setNewContactRequests(newContactRequests);
+          prevNewContactRequests = newContactRequests;
+        }
+
         console.log('App:authCheck', user, userProfile, userBusinessProfile);
       } catch(err) {
         console.warn('App:authCheck FAIL', err);
@@ -78,8 +93,47 @@ function App() {
 
     initialAuthTimerId = setTimeout(authCheck, 1000);
 
+    const heartBeatTimer = every('1m').do(async () => {
+      const { ok, spaVersion, isAuth = false, newContactRequests = 0 } = await spaHeartbeat();
+  
+      // const { spaVersion } = checkHeartbeat(heartbeat, { user });
+      // setNeedsRelogin(needsRelogin);
+
+      // const { version } = heartbeat || {};
+      // setNewVersion(hasNewVersion ? version : {});
+
+      if (ok) {
+        if (prevNewContactRequests !== newContactRequests) {
+          setNewContactRequests(newContactRequests);
+          prevNewContactRequests = newContactRequests;
+        }
+
+        if (spaVersion !== window.__SpaVersion) {
+          newVersionToastRef.current = toast.info(
+            <>
+              <div className="mb-2">{Strings.messages.AppNewVersion}</div>
+              <Button color="light" onClick={handleReloadClick}>{Strings.titles.ReloadPage}</Button>
+            </>,
+            { autoClose: false, toastId: 'new-app-version' }
+          );
+        } else if (newVersionToastRef.current) {
+          toast.dismiss(newVersionToastRef.current);
+          newVersionToastRef.current = null;
+        }
+      }
+    });
+
+    const handleReloadClick = () => {
+      if (!reloading.current) {
+        reloading.current = true;
+        heartBeatTimer.stop();
+        window.location.reload();
+      }
+    }
+
     return () => {
       authSubscription && AuthService.unsubscribe(authSubscription);
+      heartBeatTimer.stop();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -117,6 +171,7 @@ function App() {
           {/* <Route path="/debug/ajax-auth" component={AjaxAuth} />
           <Route path="/debug/csrf-post" component={CSRFPost} /> */}
         </Layout>
+        
       </Switch>
       <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
       <CookieConsent sameSite="lax"
