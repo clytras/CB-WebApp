@@ -1,0 +1,14 @@
+@using Utils;
+@using ViewModels.Business
+@model ContactRequestViewModel
+
+@{
+  Layout = "_LayoutText";
+  ViewContext.ViewData["EmailTitle"] = "New Contact Request";
+}
+
+You have a new contact request from "@Model.ContactRequest.From.CompanyName".
+
+Visit the link bellow to open their profile page on @Constants.AppTitle platform:
+
+@Model.ProfileLink

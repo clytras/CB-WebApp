@@ -1,0 +1,15 @@
+@using Utils;
+@using ViewModels
+@using ViewModels.Business
+@model ContactRequestViewModel
+
+@{
+  Layout = "_LayoutHtml";
+  ViewContext.ViewData["EmailTitle"] = "New Contact Request";
+}
+
+<h3>You have a new contact request from "@Model.ContactRequest.From.CompanyName"</h3>
+
+<p>Click the button bellow to open their profile page on @Constants.AppTitle platform</p>
+
+@await Html.PartialAsync("_Button", new ButtonViewModel("Open Profile Page", Model.ProfileLink))

@@ -4,8 +4,6 @@ import { Strings } from '@i18n';
 
 
 export default function InformationBlock({ profile }) {
-  
-
   const {
     companyLocation,
     contactPerson

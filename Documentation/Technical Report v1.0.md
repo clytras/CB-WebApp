@@ -157,7 +157,7 @@ Expand *Security* ➜ *Logins* (*not on the database, but under server*), right-
    Open Windows PowerShell (*as Administrator*), go to the application directory and run the application DLL with the `--Migrate all` CLI argument to apply initial migrations:
    ```powershell
    Set-Location -Path C:\inetpub\CERTHB2B\
-   dotnet run CERTHB2B.dll --Migrate all
+   dotnet CERTHB2B.dll --Migrate all
    ```
 
 <a id="installation-production-identity--server--certificate"></a>
@@ -168,9 +168,10 @@ Use [Microsoft Management Console][12] (*MMC*) to import the Identity Server Cer
 1. Select **Run** from the **Start** menu, and then enter `certlm.msc`
 1. Navigate to *Personal* ➜ *Certificates* pane, right click within the *Certificates* panel and click *All Tasks* ➜ *Import...* to start the Certificate Import Wizard
 1. Follow the Wizard and select the `PFX` certificate file that will be provided
-1. Enter or copy/paste the certificate password provided when asked
+1. Enter or copy/paste the certificate password provided when asked and **make sure to check** *Mark this key as exportable. This will allow you to back up or transport your keys at a later time.*
 1. When asked for *Certificate Store*, select *Place all certificates in the following store* with store name set to `Personal`
 1. Click *Next* and *Finish* and you should get a successful message indicating the certificate is now imported. You can check the certificate under *Personal* ➜ *Certificates* with the `CN` subject set to `CERTHB2BIdentityServerSPA`
+1. Right click to the certificate *All Tasks* ➜ *Manage Private Keys...* and add *IIS_IUSRS* with *Full control* and *Read* permissions
 
 <div class="page-break"/>
 

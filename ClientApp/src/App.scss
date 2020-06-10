@@ -228,6 +228,14 @@ html {
     > .container {
       padding-top: .5em;
     }
+
+    // .rdt_TableRow, .rdt_TableHead .rdt_TableCol, .rdt_Pagination {
+    //   font-size: 1rem;
+    // }
+
+    .rdt_TableHead .rdt_TableCol {
+      font-size: 1rem;
+    }
   }
 
   .http-status {

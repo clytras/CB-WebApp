@@ -14,6 +14,8 @@ using CERTHB2B.Models.Requests;
 using CERTHB2B.CustomResults;
 using X.PagedList;
 using CERTHB2B.Utils;
+using CERTHB2B.Services;
+using CERTHB2B.ViewModels.Business;
 
 namespace CERTHB2B.Controllers.Api
 {
@@ -23,18 +25,26 @@ namespace CERTHB2B.Controllers.Api
     {
         private UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext context;
+        private readonly IRazorViewToStringRenderer razorRenderer;
+        private readonly CERTHB2B.Services.IAppEmailSender appEmailSender;
 
-        public BusinessProfileController(UserManager<ApplicationUser> userMgr, ApplicationDbContext dbContext)
+        public BusinessProfileController(
+            UserManager<ApplicationUser> userMgr,
+            ApplicationDbContext dbContext,
+            CERTHB2B.Services.IAppEmailSender appEmailSndr,
+            IRazorViewToStringRenderer razorRndr)
         {
             userManager = userMgr;
             context = dbContext;
+            appEmailSender = appEmailSndr;
+            razorRenderer = razorRndr;
         }
     
         [HttpGet("{profileId}")]
         [Authorize]
         public async Task<IActionResult> Index(long profileId)
         {
-            var result = GetProfileData(profileId: profileId);
+            var result = await GetProfileData(profileId: profileId, withLastContactRequestSend: true);
             var profileFound = await result.FirstOrDefaultAsync();
 
             return profileFound != null ? 
@@ -52,13 +62,14 @@ namespace CERTHB2B.Controllers.Api
             if (String.IsNullOrEmpty(userId))
             {
                 // var user = await userManager.GetUserAsync(User);
-                var user = await userManager.FindByEmailAsync(User.Identity.Name);
+                // var user = await userManager.FindByEmailAsync(User.Identity.Name);
+                var user = await GetCurrentUserAsync();
 
                 if (user != null)
-                    result = GetProfileData(user.Id, withNewContactRequestsCounter: true);
+                    result = await GetProfileData(user.Id, withNewContactRequestsCounter: true);
             }
             else
-                result = GetProfileData(userId);
+                result = await GetProfileData(userId);
 
             if (result != null)
                 profileFound = await result.FirstOrDefaultAsync();
@@ -73,7 +84,8 @@ namespace CERTHB2B.Controllers.Api
         [Authorize]
         public async Task<IActionResult> OnGetListing(BusinessProfileListingRequest listingRequest)
         {
-            var user = await userManager.FindByEmailAsync(User.Identity.Name);
+            // var user = await userManager.FindByEmailAsync(User.Identity.Name);
+            var user = await GetCurrentUserAsync();
 
             if (user != null) {
 
@@ -140,7 +152,8 @@ namespace CERTHB2B.Controllers.Api
                 // businessProfilePutRequest.Profile.Activities = activities;
                 
                 // var user = await userManager.GetUserAsync(User);
-                var user = await userManager.FindByEmailAsync(User.Identity.Name);
+                // var user = await userManager.FindByEmailAsync(User.Identity.Name);
+                var user = await GetCurrentUserAsync();
 
                 if (user != null)
                 {
@@ -174,7 +187,8 @@ namespace CERTHB2B.Controllers.Api
                     try
                     {
                         await context.SaveChangesAsync();
-                        return Ok(await GetProfileData(user.Id).FirstOrDefaultAsync());
+                        var profileData = await GetProfileData(user.Id);
+                        return Ok(await profileData.FirstOrDefaultAsync());
                     }
                     catch
                     {
@@ -338,7 +352,8 @@ namespace CERTHB2B.Controllers.Api
         {
             if (ModelState.IsValid)
             {
-                var user = await userManager.FindByEmailAsync(User.Identity.Name);
+                // var user = await userManager.FindByEmailAsync(User.Identity.Name);
+                var user = await GetCurrentUserAsync();
 
                 if (user != null)
                 {
@@ -350,25 +365,53 @@ namespace CERTHB2B.Controllers.Api
                     {
                         Console.WriteLine("Own profile found");
                         var toProfile = await context.BusinessProfiles
+                            .Include(p => p.User)
                             .Include(p => p.ContactRequests)
                             .FirstOrDefaultAsync(p => p.ProfileId == contactRequest.ToProfileId);
                         
                         if (toProfile != null)
                         {
-                            Console.WriteLine("To profile found");
-                            context.Add(new BusinessProfileRequests
+                            var lastRequestSend = (
+                                from requests in profile.ContactRequests
+                                where requests.ToId == contactRequest.ToProfileId && requests.Date > DateTime.UtcNow.AddDays(-7)
+                                select requests
+                            ).FirstOrDefault();
+
+                            if (lastRequestSend != null)
+                            {
+                                return new BadRequestJsonResult("HasSentRecently");
+                            }
+
+                            var newContactRequest = new BusinessProfileRequests
                             {
                                 From = profile,
                                 ToId = toProfile.ProfileId,
                                 Date = DateTime.Now.ToUniversalTime(),
                                 IsOpened = false
-                            });
+                            };
+
+                            context.Add(newContactRequest);
 
                             try
                             {
-                                Console.WriteLine("profile SaveChangesAsync");
                                 await context.SaveChangesAsync();
-                                return Ok();
+
+                                const string view = "/Pages/Templates/Email/Business/ContactRequest";
+                                string email = toProfile.Email ?? toProfile.User.Email;
+                                string ProfileLink = $"{Request.Scheme}://{Request.Host.Value}/discover/profile/{profile.ProfileId}";
+
+                                var model = new ContactRequestViewModel
+                                {
+                                    ContactRequest = newContactRequest,
+                                    ProfileLink = ProfileLink
+                                };
+
+                                var htmlBody = await razorRenderer.RenderViewToStringAsync($"{view}Html.cshtml", model);
+                                var textBody = await razorRenderer.RenderViewToStringAsync($"{view}Text.cshtml", model);
+
+                                await appEmailSender.SendEmailAsync(email, Constants.WithAppTitle("New Contact Request"), htmlBody, textBody);
+
+                                return Ok(new { newContactRequest.RequestId, newContactRequest.Date });
                             }
                             catch(Exception err)
                             {
@@ -389,6 +432,64 @@ namespace CERTHB2B.Controllers.Api
             return BadRequest(ModelState);
         }
 
+        [HttpGet("ContactRequests/{page?}/{perPage?}")]
+        public async Task<IActionResult> ContactRequests(int page = 1, int perPage = 10)
+        {
+            var user = await userManager.FindByEmailAsync(User.Identity.Name);
+
+            if (user != null)
+            {
+                var profile = await context.BusinessProfiles
+                    .FirstOrDefaultAsync(p => p.User.Id == user.Id);
+
+                if (profile != null)
+                {
+                    var requests = (
+                        from req in context.BusinessContactRequests
+                        where req.FromId == profile.ProfileId || req.ToId == profile.ProfileId
+                        orderby req.Date descending
+                        select new {
+                            req.RequestId,
+                            req.Date,
+                            req.IsOpened,
+                            req.FromId,
+                            req.ToId,
+                            ConnectionCompanyName = (req.FromId == profile.ProfileId) ? 
+                                context.BusinessProfiles.FirstOrDefault(r => r.ProfileId == req.ToId).CompanyName :
+                                context.BusinessProfiles.FirstOrDefault(r => r.ProfileId == req.FromId).CompanyName
+                        }
+                    );
+
+                    var data = requests.ToPagedList(page, perPage);
+                    var total = requests.Count();
+
+                    foreach(var req in data.Where(r => r.ToId == profile.ProfileId))
+                    {
+                        var request = context.BusinessContactRequests.Find(req.RequestId);
+                        request.IsOpened = true;
+                    }
+
+                    try
+                    {
+                        await context.SaveChangesAsync();
+                    }
+                    catch {}
+
+                    var newContactRequests = (
+                        from req in context.BusinessContactRequests
+                        where req.ToId == profile.ProfileId && req.IsOpened == false
+                        select req
+                    ).ToList().Count();
+
+                    return Ok(new { data, total, newContactRequests });
+                }
+
+                return new BadRequestJsonResult("NoOwnProfile");
+            }
+
+            return NotFound(new { userNotFound = User.Identity.Name });
+        }
+
         private Dictionary<string, object> GetActivitiesOptions()
         {
             return new CollectionToDictionary<BusinessActivitiesOptions>(
@@ -396,7 +497,13 @@ namespace CERTHB2B.Controllers.Api
             ).Convert(i => i.ActivityId.ToString(), i => i.ActivityOptionAlias);
         }
 
-        private IQueryable<dynamic> GetProfileData(string userId = null, long profileId = 0, bool withNewContactRequestsCounter = false)
+        private Task<ApplicationUser> GetCurrentUserAsync() => userManager.GetUserAsync(HttpContext.User);
+
+        private async Task<IQueryable<dynamic>> GetProfileData(
+            string userId = null, 
+            long profileId = 0, 
+            bool withNewContactRequestsCounter = false,
+            bool withLastContactRequestSend = false)
         {
             var OtherActivitiesList = (
                 from profile in context.BusinessProfiles
@@ -406,20 +513,38 @@ namespace CERTHB2B.Controllers.Api
 
             var OtherActivities = new CollectionToDictionary<BusinessProfileOtherActivities>(OtherActivitiesList)
                 .Convert(i => i.ActivityAlias, i => i.OtherText);
-            
-            // dynamic ContactRequests = null;
 
-            // if (withContactRequests == true)
-            // {
-            //     ContactRequests = context.BusinessContactRequests
-            // }
+            var currentUser = await GetCurrentUserAsync();
+            long currentUserProfileId = 0;
+            if (currentUser != null)
+            {
+                var currentUserProfile = context.BusinessProfiles.Where(p => p.UserId == currentUser.Id).FirstOrDefault();
+                if (currentUserProfile != null)
+                    currentUserProfileId = currentUserProfile.ProfileId;
+
+
+
+                var contsend = (
+                    from requests in context.BusinessContactRequests
+                    where requests.FromId == currentUserProfileId && requests.ToId == profileId
+                    orderby requests.Date descending
+                    select new {
+                        requests.FromId,
+                        requests.ToId,
+                        requests.Date
+                    }
+                ).FirstOrDefault();
+
+                Console.Write("contsend: {0} {1} ", currentUserProfileId, profileId);
+                Console.WriteLine(ObjectDumper.Dump(contsend));
+            }
 
             return
                 from profile in context.BusinessProfiles
                     .Include(p => p.ContactPerson)
                     .Include(p => p.CompanyLocation)
                     .Include(p => p.OtherActivities)
-                    .Include(p => p.ContactRequests)
+                    // .Include(p => p.ContactRequests)
                     .Include(p => p.User)
                 where profile.User.Id == userId || profile.ProfileId == profileId
                 select new {
@@ -442,7 +567,17 @@ namespace CERTHB2B.Controllers.Api
                         from requests in context.BusinessContactRequests
                         where requests.ToId == profile.ProfileId && requests.IsOpened == false
                         select requests
-                    ).Count() : 0
+                    ).Count() : 0,
+                    LastContactRequestSend = withLastContactRequestSend == true && currentUserProfileId != 0 ? (
+                        from requests in context.BusinessContactRequests
+                        where requests.FromId == currentUserProfileId && requests.ToId == profile.ProfileId
+                        orderby requests.Date descending
+                        select new {
+                            requests.FromId,
+                            requests.ToId,
+                            requests.Date
+                        }
+                    ).FirstOrDefault() : null
                 };
         }
 

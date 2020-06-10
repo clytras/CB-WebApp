@@ -7,16 +7,20 @@ import LoadingOverlay from './LoadingOverlay';
 import { Strings } from '@i18n';
 
 
-export default function DataTable(props) {
+export default function DataTable({
+  customStyles = {},
+  ...rest
+}) {
   return (
-    <ReactDataTable {...props}
+    <ReactDataTable {...rest}
       progressComponent={<LoadingOverlay/>}
       customStyles={{
         tableWrapper: {
           style: {
             height: 'auto'
           }
-        }
+        },
+        ...customStyles
       }}
     />
   );

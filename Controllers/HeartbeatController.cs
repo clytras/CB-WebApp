@@ -63,10 +63,6 @@ namespace CERTHB2B.Controllers.Api
                     {
                         newContactRequests = contactRequests.FirstOrDefault().Count();
                     }
-
-                    Console.WriteLine(ObjectDumper.Dump(contactRequests));
-
-                    Console.WriteLine("newContactRequests {0}", newContactRequests);
                 }
             }
 

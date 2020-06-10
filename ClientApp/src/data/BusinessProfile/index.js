@@ -76,6 +76,10 @@ export class BusinessProfile  {
   get newContactRequests() {
     return this._profile && this._profile.newContactRequests;
   }
+
+  get lastContactRequestSend() {
+    return this._profile && this._profile.lastContactRequestSend;
+  }
 }
 
 export function fetchProfile(profileId) {

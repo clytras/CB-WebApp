@@ -13,7 +13,15 @@ export default {
   euroSign: '€',
 
   titles: {
+    Status: 'Status',
+    Date: 'Date',
+    DateSlashTime: 'Date/Time',
+    FromSlashTo: 'From/To',
     Requests: 'Requests',
+    Summary: 'Summary',
+    Profile: 'Profile',
+    Settings: 'Settings',
+    ContactRequests: 'Contact requests',
     Actions: 'Actions',
     LastLogin: 'Last login',
     Registration: 'Registration',
@@ -195,6 +203,10 @@ export default {
     EntryDeleted: 'Entry deleted successfully',
     TypeYourPassword: 'You must type your password',
     AppNewVersion: '🚀 There is a new application version.\nMake sure to save all unsaved data and reload the page.',
+    ProfileHasBeenDeleted: 'Profile has been deleted',
+    ContactRequestHasBeenSent: 'You have sent a contact request at {datetime}',
+    YouCantSendAnotherContectRequestUntil: 'You cannot send another contact request until {datetime}',
+    ContactRequestHasSent: 'Contact request has been sent successfully',
 
     Confirms: {
       UnlockAccount: 'Do you want to unlock user\'s "{email}" account?',

@@ -1,6 +1,6 @@
 {
   "name": "CERTHB2B",
-  "version": "0.1.8",
+  "version": "0.1.10",
   "private": true,
   "dependencies": {
     "@hot-loader/react-dom": "^16.13.0",
@@ -29,7 +29,7 @@
     "react": "^16.13.1",
     "react-app-polyfill": "^1.0.6",
     "react-cookie-consent": "^5.0.0",
-    "react-data-table-component": "git+https://github.com/clytras/react-data-table-component.git",
+    "react-data-table-component": "^6.9.3",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.21",
     "react-icons": "^3.10.0",

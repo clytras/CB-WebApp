@@ -12,7 +12,7 @@ import { lockoutAccount } from '@api-auth/AuthorizeService';
 import { FaEye, FaEyeSlash, FaLock, FaLockOpen } from 'react-icons/fa';
 import MsgBox from '@components/common/MsgBox';
 import { toast } from 'react-toastify';
-import { Strings, translateResponseMessage, translateRequestError } from '@i18n';
+import { Strings, translateResponseMessage, translateRequestError, httpRejectedError } from '@i18n';
 import clsx from 'clsx';
 
 
@@ -182,7 +182,7 @@ export default function Users() {
                 const index = prev.findIndex(i => i.userId === userId);
                 if (index > -1) {
                   const updated = [...prev];
-                  updated[index].isProfileVisible = !isProfileVisible;
+                  updated[index] = { ...updated[index], isProfileVisible: !isProfileVisible };
                   return updated;
                 }
                 return prev;

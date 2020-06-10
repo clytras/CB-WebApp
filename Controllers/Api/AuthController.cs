@@ -18,6 +18,7 @@ using CERTHB2B.Data;
 using CERTHB2B.Services;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Antiforgery;
+using CERTHB2B.Utils;
 
 namespace CERTHB2B.Controllers.Api
 {
@@ -369,7 +370,7 @@ namespace CERTHB2B.Controllers.Api
             var htmlBody = await razorRenderer.RenderViewToStringAsync($"{view}Html.cshtml", model);
             var textBody = await razorRenderer.RenderViewToStringAsync($"{view}Text.cshtml", model);
 
-            await appEmailSender.SendEmailAsync(email, "Reset your password", htmlBody, textBody);
+            await appEmailSender.SendEmailAsync(email, Constants.WithAppTitle("Reset your password"), htmlBody, textBody);
         }
 
         private async Task sendConfirmationMail(ApplicationUser user, string email)
@@ -395,7 +396,7 @@ namespace CERTHB2B.Controllers.Api
             var htmlBody = await razorRenderer.RenderViewToStringAsync($"{view}Html.cshtml", model);
             var textBody = await razorRenderer.RenderViewToStringAsync($"{view}Text.cshtml", model);
 
-            await appEmailSender.SendEmailAsync(email, "Confirm your email", htmlBody, textBody);
+            await appEmailSender.SendEmailAsync(email, Constants.WithAppTitle("Confirm your email"), htmlBody, textBody);
         }
     }
 }
