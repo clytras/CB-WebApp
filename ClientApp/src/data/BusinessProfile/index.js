@@ -127,12 +127,19 @@ export async function getProfileOfUser(userId) {
 }
 
 export function getProfilesListing({
+  page,
+  perPage,
   returnActivitiesOptions = false,
   searchTermCompanyName,
   searchTermCountries,
   searchTermActivities
 }) {
-  return apiPost('/api/BusinessProfile/Listing', {
+  let url = '/api/BusinessProfile/Listing';
+
+  if (page !== undefined) url = `${url}/${page}`;
+  if (perPage !== undefined) url = `${url}/${perPage}`;
+
+  return apiPost(url, {
     addAuth: true,
     params: {
       returnActivitiesOptions,

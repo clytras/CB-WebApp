@@ -5,6 +5,7 @@ import { getProfilesListing } from '@data/BusinessProfile';
 import { toast } from 'react-toastify';
 import { useStoreOf } from '@stores';
 import Masonry from 'react-masonry-component';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import LoadingOverlay from '@components/common/LoadingOverlay';
 import { getActivitiesForSelect } from '@data/BusinessProfile/Lists';
 import FeedbackMessage from '@components/common/FeedbackMessage';
@@ -25,6 +26,8 @@ export default function Profiles() {
   const [totalActivitiesOptions, setTotalActivitiesOptions] = useState(0);
   const [profiles, setProfiles] = useState();
   const [totalResults, setTotalResults] = useState(0);
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(12);
   const [actionError, setActionError] = useState();
   const [updater, setUpdater] = useState(0);
 
@@ -42,6 +45,7 @@ export default function Profiles() {
       } = searchTerms;
 
       getProfilesListing({
+        page, perPage,
         returnActivitiesOptions: updater === 0,
         searchTermCompanyName,
         searchTermCountries,
@@ -50,15 +54,14 @@ export default function Profiles() {
       .then(async resp => {
         if (resp.ok) {
           const result = await resp.json();
-
-          const { total, profiles, activitiesOptions } = result || {};
+          const { total, data, activitiesOptions } = result || {};
 
           if (activitiesOptions) {
             setTotalActivitiesOptions(Object.keys(activitiesOptions).length);
           }
 
           setTotalResults(total);
-          setProfiles(profiles);
+          setProfiles(prev => (prev || []).concat(data));
         } else {
           setActionError(Strings.messages.CouldNotLoadDataReloadPage);
         }
@@ -75,10 +78,17 @@ export default function Profiles() {
   const handleSearchClick = ({ companyName, countries, activities } = {}) => {
     setLoading(true);
     setProfiles([]);
+    setPage(1);
     setSearchTerms({ companyName, countries, activities });
     setUpdater(utsj());
   }
   const handleClearClick = () => handleSearchClick();
+  const handleInfiniteScoll = () => {
+    console.log('handleInfiniteScoll');
+
+    setPage(prev => ++prev);
+    setUpdater(utsj());
+  }
 
   function renderProfile(profile) {
     const { profileId, companyName, city, region, country, activities, matchingActivities } = profile;
@@ -143,14 +153,22 @@ export default function Profiles() {
       {renderResultsFound()}
       <div className="reset-font-size">
         <BusinessProfileNotice>
-          {profiles && profiles.length > 0 && (
-            <Row className="profiles">
-              <div style={{ width: '100%' }}>
-                <Masonry option={{ transitionDuration: 0 }}>{profiles.map(renderProfile)}</Masonry>
-              </div>
-            </Row>
-          )}
-          {loading && <LoadingOverlay/>}
+          {profiles ? (
+            <InfiniteScroll style={{ overflow: 'initial' }}
+              dataLength={profiles.length}
+              next={handleInfiniteScoll}
+              hasMore={profiles.length < totalResults}
+              loader={<LoadingOverlay/>}
+            >
+              {profiles && profiles.length > 0 && (
+                <Row className="profiles">
+                  <div style={{ width: '100%' }}>
+                    <Masonry option={{ transitionDuration: 0 }}>{profiles.map(renderProfile)}</Masonry>
+                  </div>
+                </Row>
+              )}
+            </InfiniteScroll>
+          ) : <LoadingOverlay/>}
           {actionError && <FeedbackMessage className="mt-3" color="warning"
             columnSize={8} message={actionError} onRetry={handleRetryClick} />}
         </BusinessProfileNotice>

@@ -80,10 +80,9 @@ namespace CERTHB2B.Controllers.Api
                 NotFound();
         }
 
-        [HttpPost("Listing")]
-        // [HttpGet("Listing")]
+        [HttpPost("Listing/{page?}/{perPage?}")]
         [Authorize]
-        public async Task<IActionResult> OnGetListing(BusinessProfileListingRequest listingRequest)
+        public async Task<IActionResult> OnGetListing([FromBody]BusinessProfileListingRequest listingRequest, int page = 1, int perPage = 12)
         {
             // var user = await userManager.FindByEmailAsync(User.Identity.Name);
             var user = await GetCurrentUserAsync();
@@ -138,14 +137,15 @@ namespace CERTHB2B.Controllers.Api
                 ).AsEnumerable().OrderByDescending(p => p.MatchingActivities.Count);
 
                 var total = profiles.Count();
+                var data = profiles.ToPagedList(page, perPage);
 
                 if (listingRequest.ReturnActivitiesOptions)
                 {
                     var ActivitiesOptions = GetActivitiesOptions();
-                    return Ok(new { total, profiles, ActivitiesOptions });
+                    return Ok(new { total, data, ActivitiesOptions });
                 }
 
-                return Ok(new { total, profiles });
+                return Ok(new { total, data });
 
             }
 

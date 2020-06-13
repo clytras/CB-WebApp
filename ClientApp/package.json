@@ -34,6 +34,7 @@
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.21",
     "react-icons": "^3.10.0",
+    "react-infinite-scroll-component": "^5.0.5",
     "react-localization": "^1.0.15",
     "react-markdown": "^4.3.1",
     "react-markdown-editor-lite": "^1.1.2",
