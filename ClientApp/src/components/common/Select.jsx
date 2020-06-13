@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import ReactSelect from 'react-select';
+import chroma from 'chroma-js';
 
 
 export default function Select({
@@ -22,6 +23,7 @@ const bsBoxShadowError = '0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important';
 const bsBackgroundOption = '#f8f9fa';
 const bsBackgroundOptionSelected = '#eeeeee';
 const bsControlTextColor = '#555555';
+const bsTextMuted = '#6c757d';
 const bsControlPlaceholderColor = '#999999';
 
 const selectStyles = ({ invalid }) => ({
@@ -99,11 +101,38 @@ const selectStyles = ({ invalid }) => ({
     //     //     color: bsControlTextColor,
     //     // },
     // }),
-    option: (base, state) => ({
+    // option: (base, { data, isDisabled, isFocused, isSelected }) => ({
+    //     ...base,
+    //     color: bsControlTextColor,
+    //     backgroundColor: isSelected
+    //         ? bsBackgroundOptionSelected
+    //         : isFocused ? bsBackgroundOption : white,
+    // }),
+    option: (base, { data: { color }, isDisabled, isFocused, isSelected }) => {
+      const useColor = chroma(color || bsControlTextColor);
+
+      return {
         ...base,
-        color: bsControlTextColor,
-        backgroundColor: state.isSelected
-            ? bsBackgroundOptionSelected
-            : state.isFocused ? bsBackgroundOption : white,
-    }),
+        backgroundColor: isDisabled
+          ? null
+          : isSelected
+          ? useColor.css()
+          : isFocused
+          ? useColor.alpha(0.1).css()
+          : null,
+        color: isDisabled
+          ? bsTextMuted
+          : isSelected
+          ? chroma.contrast(useColor, 'white') > 2
+            ? 'white'
+            : 'black'
+          : useColor.css(),
+        cursor: isDisabled ? 'not-allowed' : 'default',
+        // borderTop: headerOption ? `1px dotted ${bsBorderGrey}` : 'none',
+        ':active': {
+          ...base[':active'],
+          backgroundColor: !isDisabled && (isSelected ? useColor.css() : useColor.alpha(0.3).css())
+        }
+      }
+    },
 });

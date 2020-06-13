@@ -174,3 +174,36 @@ export function getAllActivitiesEntryNames() {
   recurse(BusinessActivities);
   return names;
 }
+
+export function getActivitiesForSelect(baseAlias) {
+  const entries = Object.entries(BusinessActivities[baseAlias]);
+  const groups = [];
+  const directGroup = [];
+
+  for (const [alias, children] of entries) {
+    if (children === '$') {
+      directGroup.push({
+        label: Strings.Business.Lists[alias],
+        value: `${baseAlias}.$${alias}`
+      })
+    } else if (typeof(children) === 'object') {
+      const options = [];
+      for (const option of children.$) {
+        options.push({
+          label: Strings.Business.Lists[option],
+          value: `${baseAlias}.${alias}.$${option}`
+        });
+      }
+
+      if (options.length) {
+        groups.push({ label: Strings.Business.Lists[alias], options });
+      }
+    }
+  }
+
+  if (directGroup.length) {
+    groups.push({ label: Strings.Business.Lists[baseAlias], options: directGroup });
+  }
+
+  return groups;
+}

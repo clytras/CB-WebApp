@@ -13,6 +13,9 @@ export default {
   euroSign: '€',
 
   titles: {
+    Open: 'Open',
+    Search: 'Search',
+    Clear: 'Clear',
     Status: 'Status',
     Date: 'Date',
     DateSlashTime: 'Date/Time',
@@ -53,6 +56,7 @@ export default {
     StateRegionProvince: 'State / Region / Province',
     PostalCode: 'Postal code',
     Country: 'Country',
+    Countries: 'Countries',
     OtherText: 'Other',
     Save: 'Save',
     Undo: 'Undo',
@@ -102,6 +106,9 @@ export default {
   },
   placeholders: {
     ThisFieldIsRequired: 'This field is required',
+    CountriesFilter: 'Filter by Countries',
+    CompanyNameFilter: 'Filter by Company Name',
+    ActivitiesFilter: 'Filter by Activities'
   },
   fields: {
     duration: {
@@ -141,6 +148,15 @@ export default {
     seconds: {
       singular: 'second',
       plural: 'seconds'
+    }
+  },
+  ui: {
+    blocks: {
+      ProfileMasonry: {
+        ActivitiesMatchingWith: 'Activities matching with you',
+        Activities: 'activities',
+        MatchOf: 'match of'
+      }
     }
   },
   messages: {
@@ -207,6 +223,10 @@ export default {
     ContactRequestHasBeenSent: 'You have sent a contact request at {datetime}',
     YouCantSendAnotherContectRequestUntil: 'You cannot send another contact request until {datetime}',
     ContactRequestHasSent: 'Contact request has been sent successfully',
+    NoMatchesFound: 'No matches found',
+    NoMatchesFoundUsingTerms: 'No matches found using {terms} search terms',
+    MatchesFound: 'Found {total} matches',
+    MatchesFoundUsingTerms: 'Found {total} matches using {terms} search terms',
 
     Confirms: {
       UnlockAccount: 'Do you want to unlock user\'s "{email}" account?',

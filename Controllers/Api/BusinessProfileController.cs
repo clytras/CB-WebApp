@@ -16,6 +16,7 @@ using X.PagedList;
 using CERTHB2B.Utils;
 using CERTHB2B.Services;
 using CERTHB2B.ViewModels.Business;
+using System.Text.RegularExpressions;
 
 namespace CERTHB2B.Controllers.Api
 {
@@ -95,12 +96,25 @@ namespace CERTHB2B.Controllers.Api
 
                 var lookupActivities = profile != null ? profile.Activities.Select(a => a.ActivityId).ToList() : new List<long>();
 
+                bool hasTermCompanyName = listingRequest.SearchTermCompanyName?.Length > 0;
+                bool hasTermCountries = listingRequest.SearchTermCountries?.Count() > 0;
+                bool hasTermActivities = listingRequest.SearchTermActivities?.Count() > 0;
+
+                var termActivitiesIds = hasTermActivities ? (
+                    from a in context.BusinessActivitiesOptions
+                    where listingRequest.SearchTermActivities.Contains(a.ActivityOptionAlias)
+                    select a.ActivityId
+                ).ToList() : new List<long>();
+
                 var profiles = (
                     from p in context.BusinessProfiles
                         .Include(p => p.Activities)
                         .Include(p => p.User)
                         .Include(p => p.CompanyLocation)
                     where p.IsProfileVisible == true && p.User.Id != user.Id
+                    where !hasTermCompanyName || EF.Functions.Like(p.CompanyName, $"%{listingRequest.SearchTermCompanyName}%")
+                    where !hasTermCountries || listingRequest.SearchTermCountries.Contains(p.CompanyLocation.Country)
+                    where !hasTermActivities || p.Activities.Where(a => termActivitiesIds.Contains(a.ActivityId)).Count() == termActivitiesIds.Count()
                     select new
                     {
                         p.ProfileId,
@@ -123,13 +137,15 @@ namespace CERTHB2B.Controllers.Api
                     }
                 ).AsEnumerable().OrderByDescending(p => p.MatchingActivities.Count);
 
+                var total = profiles.Count();
+
                 if (listingRequest.ReturnActivitiesOptions)
                 {
                     var ActivitiesOptions = GetActivitiesOptions();
-                    return Ok(new { profiles, ActivitiesOptions });
+                    return Ok(new { total, profiles, ActivitiesOptions });
                 }
 
-                return Ok(profiles);
+                return Ok(new { total, profiles });
 
             }
 
@@ -415,7 +431,6 @@ namespace CERTHB2B.Controllers.Api
                             }
                             catch(Exception err)
                             {
-                                Console.WriteLine("profile err", err.ToString());
                                 throw;
                             }
                         }
