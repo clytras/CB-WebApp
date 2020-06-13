@@ -2,7 +2,8 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { NavItem, NavLink, Nav } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { FaUserAlt, FaNewspaper } from "react-icons/fa";
+import { FaUserAlt, FaNewspaper } from 'react-icons/fa';
+import { MdDashboard } from 'react-icons/md';
 import clsx from 'clsx';
 
 export default function SideBar() {
@@ -33,6 +34,11 @@ export default function SideBar() {
         <Nav vertical className="list-unstyled pb-3">
           <p>Admin Panel</p>
           {/* <SubMenu title="Home" icon={faHome} items={submenus[0]}/> */}
+          <NavItem className={clsx(/\/admin\/?$/.test(location.pathname) && 'selected')}>
+            <NavLink tag={Link} to={'/admin'}>
+              <MdDashboard/> Dashboard
+            </NavLink>
+          </NavItem>
           <NavItem className={clsx(isSelectedClass('users'))}>
             <NavLink tag={Link} to={'/admin/users'}>
               <FaUserAlt/> Users

@@ -19,6 +19,7 @@ function MsgBox({
   className,
   disableButtons = '',
   hideButtons = '',
+  size = 'md',
   children
 }, ref) {
   const [isOpen, setIsOpen] = useState(false);
@@ -80,7 +81,7 @@ function MsgBox({
   const body = children || message;
 
   return (
-    <Modal isOpen={isOpen} toggle={dismiss} className={className}>
+    <Modal isOpen={isOpen} size={size} toggle={dismiss} className={className}>
       {title && <ModalHeader toggle={dismiss}>{title}</ModalHeader>}
       <ModalBody className={clsx(color && `alert-${color}`, css(styles.messageTextWhiteSpace))}>
         {typeof(body) === 'function' ? body(renderProps) : body}

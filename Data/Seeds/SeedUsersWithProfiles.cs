@@ -35,6 +35,7 @@ namespace CERTHB2B.Data.Seeds
             string defaultUserPassword = "Ideacom2020$";
 
             var faker = new Faker("en");
+            var profileIds = new List<long>(); // For storing created profile IDs
 
             for (int count = 1; count <= howMany; count++)
             {
@@ -66,52 +67,44 @@ namespace CERTHB2B.Data.Seeds
                         UserId = user.Id
                     };
 
-                    // // 80% To have a CompanyLocation
-                    // if (faker.Random.Int(1, 100) < 85)
-                    // {
-                        var location = new BusinessAddress()
-                        {
-                            StreetAddress = faker.Address.StreetAddress(),
-                            City = faker.Address.City(),
-                            PostalCode = faker.Address.ZipCode(),
-                            Country = faker.Address.CountryCode(Iso3166Format.Alpha3)
-                        };
+                    var location = new BusinessAddress()
+                    {
+                        StreetAddress = faker.Address.StreetAddress(),
+                        City = faker.Address.City(),
+                        PostalCode = faker.Address.ZipCode(),
+                        Country = faker.Address.CountryCode(Iso3166Format.Alpha3)
+                    };
 
-                        // 40% To have a AddressLine2
-                        if (faker.Random.Int(1, 100) < 40)
-                            location.AddressLine2 = faker.Address.SecondaryAddress();
+                    // 40% To have a AddressLine2
+                    if (faker.Random.Int(1, 100) < 40)
+                        location.AddressLine2 = faker.Address.SecondaryAddress();
 
-                        // 60% To have a Region
+                    // 60% To have a Region
+                    if (faker.Random.Int(1, 100) < 60)
+                        location.Region = faker.Address.County();
+
+                    profile.CompanyLocation = location;
+
+                    var contactGender = faker.PickRandom<Gender>();
+                    var contactFullname = faker.Name.FullName(contactGender);
+                    var lastName = faker.Name.LastName(contactGender);
+
+                    var contact = new BusinessContact()
+                    {
+                        Name = contactFullname
+                    };
+
+                    // 80% To have a Email and Phone
+                    if (faker.Random.Int(1, 100) < 80)
+                    {
+                        contact.Email = faker.Internet.Email(contactFullname);
+
+                        // 60% To have a Phone
                         if (faker.Random.Int(1, 100) < 60)
-                            location.Region = faker.Address.County();
+                            contact.Telephone = faker.Phone.PhoneNumber();
+                    }
 
-                        profile.CompanyLocation = location;
-                    // }
-
-                    // // 85% To have a ContactPerson
-                    // if (faker.Random.Int(1, 100) < 85)
-                    // {
-                        var contactGender = faker.PickRandom<Gender>();
-                        var contactFullname = faker.Name.FullName(contactGender);
-                        var lastName = faker.Name.LastName(contactGender);
-
-                        var contact = new BusinessContact()
-                        {
-                            Name = contactFullname
-                        };
-
-                        // 80% To have a Email and Phone
-                        if (faker.Random.Int(1, 100) < 80)
-                        {
-                            contact.Email = faker.Internet.Email(contactFullname);
-
-                            // 60% To have a Phone
-                            if (faker.Random.Int(1, 100) < 60)
-                                contact.Telephone = faker.Phone.PhoneNumber();
-                        }
-
-                        profile.ContactPerson = contact;
-                    // }
+                    profile.ContactPerson = contact;
 
                     var activities = faker.Random.ListItems(BusinessProfileDataInitializer.ActivitiesOptions);
                     profile.Activities = (
@@ -123,6 +116,8 @@ namespace CERTHB2B.Data.Seeds
 
                     context.BusinessProfiles.Add(profile);
                     await context.SaveChangesAsync();
+
+                    profileIds.Add(profile.ProfileId);
 
                     var otherHeads = faker.Random.ListItems(new List<string>() { "TopicsOfInterest", "Offer", "Request" }, faker.Random.Int(0, 3));
 
@@ -146,6 +141,32 @@ namespace CERTHB2B.Data.Seeds
                     Console.WriteLine("Could not create fake user with '{0}'", userEmail);
                 }
             }
+
+            // Contact requests
+
+            foreach(long profileId in profileIds)
+            {
+                // 80% To have sent contact requests
+                if (faker.Random.Int(1, 100) < 80)
+                {
+                    var totalRequests = faker.Random.Int(1, Math.Min(5, profileIds.Count));
+
+                    var sendToIds = faker.Random.ListItems(profileIds.Where(id => id != profileId).ToList());
+
+                    foreach(long toId in sendToIds)
+                    {
+                        context.BusinessContactRequests.Add(new BusinessProfileRequests()
+                        {
+                            FromId = profileId,
+                            ToId = toId,
+                            IsOpened = faker.Random.Bool(),
+                            Date = faker.Date.Soon(faker.Random.Int(-4, 10))
+                        });
+                    }
+                }
+            }
+
+            await context.SaveChangesAsync();
 
             Console.WriteLine("Accounts generation finished.");
         }
