@@ -20,6 +20,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Logging;
 using System;
 using System.Threading.Tasks;
+using CERTHB2B.Utils;
+using Microsoft.Extensions.Options;
 
 namespace CERTHB2B
 {
@@ -126,7 +128,13 @@ namespace CERTHB2B
                               UserManager<ApplicationUser> userManager, 
                               RoleManager<IdentityRole> roleManager)
         {
-            if (HandleInitialSeeds(app, appLifetime, userManager, roleManager)) {
+            if (HandleInitialSeeds(app, appLifetime, userManager, roleManager))
+            {
+                return;
+            }
+
+            if (HandleTestingCommands(app, appLifetime))
+            {
                 return;
             }
 
@@ -214,7 +222,6 @@ namespace CERTHB2B
 
             var migrate = Configuration.GetValue<string>("Migrate");
 
-
             if (!String.IsNullOrEmpty(migrate) && migrate.Equals("all", StringComparison.CurrentCultureIgnoreCase))
             {
                 Console.WriteLine("Applying database migrations.");
@@ -228,6 +235,50 @@ namespace CERTHB2B
                 }
 
                 Console.WriteLine("Migrations complete. Exiting application.");
+                appLifetime.StopApplication();
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool HandleTestingCommands(
+            IApplicationBuilder app,
+            IHostApplicationLifetime appLifetime)
+        {
+            var sendTestEmailTo = Configuration.GetValue<string>("SendTestMail");
+
+            if (!String.IsNullOrWhiteSpace(sendTestEmailTo))
+            {
+                Console.WriteLine("Sending test email to '{0}'.", sendTestEmailTo);
+
+                using (var serviceScope = app.ApplicationServices.CreateScope())
+                {
+                    var services = serviceScope.ServiceProvider;
+                    // var appEmailSender = services.GetService<AppEmailSender>();
+
+                    var options = Options.Create<AuthMessageSenderOptions>(Configuration.Get<AuthMessageSenderOptions>()); // Configuration.Get<IOptions<AuthMessageSenderOptions>>();
+                    var appEmailSend = new AppEmailSender(options);
+
+                    var opts = options.Value;
+                    
+
+                    Console.WriteLine("SendGridUser: '{0}'", opts.SendGridUser);
+                    Console.WriteLine("SendGridKey: '{0}'", opts.SendGridKey);
+                    Console.WriteLine("EmailSendFrom: '{0}'", opts.EmailSendFrom);
+                    Console.WriteLine("EmailSendAs: '{0}'", opts.EmailSendAs);
+
+                    string htmlBody = @"<h2>Sednind this try information from B2B platform<h2>";
+                    string textBody = @"Sednind this try information from B2B platform";
+
+                    var sendMailTask = appEmailSend.SendEmailAsync(sendTestEmailTo, Constants.WithAppTitle("Trying sending from B2B"), htmlBody, textBody);
+
+                    sendMailTask.Wait();
+
+                    Console.WriteLine("SendMail response: ({0}), {1}", sendMailTask.Result.StatusCode, sendMailTask.Result.Body.ReadAsStringAsync().Result);
+                }
+
+                Console.WriteLine("Email has been sent.");
                 appLifetime.StopApplication();
                 return true;
             }

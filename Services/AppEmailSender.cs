@@ -8,7 +8,7 @@ namespace CERTHB2B.Services
     // Code from: https://github.com/aspnet/Entropy/blob/dev/samples/Mvc.RenderViewToString/RazorViewToStringRenderer.cs
     public interface IAppEmailSender
     {
-        Task SendEmailAsync(string email, string subject, string htmlContent, string textContent);
+        Task<Response> SendEmailAsync(string email, string subject, string htmlContent, string textContent);
     }
 
     public class AppEmailSender : IAppEmailSender
@@ -19,12 +19,12 @@ namespace CERTHB2B.Services
         {
             Options = options.Value;
         }
-        public Task SendEmailAsync(string email, string subject, string htmlContent, string textContent)
+        public Task<Response> SendEmailAsync(string email, string subject, string htmlContent, string textContent)
         {
             var client = new SendGridClient(Options.SendGridKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("noreply@nekya.com", Options.SendGridUser),
+                From = new EmailAddress(Options.EmailSendFrom, Options.EmailSendAs),
                 Subject = subject,
                 PlainTextContent = textContent,
                 HtmlContent = htmlContent

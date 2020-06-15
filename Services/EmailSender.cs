@@ -25,7 +25,7 @@ namespace CERTHB2B.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("noreply@nekya.com", Options.SendGridUser),
+                From = new EmailAddress(Options.EmailSendFrom, Options.EmailSendAs),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
