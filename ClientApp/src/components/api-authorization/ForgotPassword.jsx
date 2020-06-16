@@ -6,7 +6,8 @@ import { apiPost } from '@utils/net';
 import LoadingButton from '@components/common/LoadingButton';
 import InlineMessage from '@components/common/InlineMessage';
 import FrontContentBase from '@components/common/FrontContentBase';
-import { Strings, translateRequestError } from '@i18n';
+import HttpStatus from 'http-status-codes';
+import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
 
 export default function ForgotPassword() {
   const [inputEmail, setInputEmail] = useState('');
@@ -30,11 +31,17 @@ export default function ForgotPassword() {
         params: {
           Email: inputEmail
         }
-      }).then(({ ok }) => {
-        if(ok) {
+      }).then(async resp => {
+        if(resp.ok) {
           setActionSuccess(Strings.messages.Auth.PasswordResetRequestSent);
         } else {
-          setActionError(Strings.messages.Auth.CouldNotSendPasswordRequest);
+          let errorCode;
+
+          try {
+            ({ errorCode } = await resp.json());
+          } catch(err) {}
+  
+          setActionError(translateCodeMessage(errorCode || 'CouldNotSendPasswordRequest', `${HttpStatus.getStatusText(resp.status)} (${resp.status})`));
         }
       }).catch(err => {
         setRequestError(translateRequestError(err));

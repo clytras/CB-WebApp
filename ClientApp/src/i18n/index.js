@@ -58,6 +58,7 @@ export function translateCodeMessage(code, defCode) {
     case 'RegistrationError': return Strings.messages.Auth.RegistrationError;
     case 'EmailNotMatchRequest': return Strings.messages.Auth.EmailNotMatchRequest;
     case 'NoProfile': return Strings.messages.UserHasNoProfile;
+    case 'CheckAccount': return Strings.messages.Auth.AccountNotFound;
     default: return defCode === undefined ? code : defCode;
   }
 }

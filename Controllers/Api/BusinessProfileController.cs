@@ -429,7 +429,7 @@ namespace CERTHB2B.Controllers.Api
 
                                 return Ok(new { newContactRequest.RequestId, newContactRequest.Date });
                             }
-                            catch(Exception err)
+                            catch
                             {
                                 throw;
                             }
@@ -536,22 +536,6 @@ namespace CERTHB2B.Controllers.Api
                 var currentUserProfile = context.BusinessProfiles.Where(p => p.UserId == currentUser.Id).FirstOrDefault();
                 if (currentUserProfile != null)
                     currentUserProfileId = currentUserProfile.ProfileId;
-
-
-
-                var contsend = (
-                    from requests in context.BusinessContactRequests
-                    where requests.FromId == currentUserProfileId && requests.ToId == profileId
-                    orderby requests.Date descending
-                    select new {
-                        requests.FromId,
-                        requests.ToId,
-                        requests.Date
-                    }
-                ).FirstOrDefault();
-
-                Console.Write("contsend: {0} {1} ", currentUserProfileId, profileId);
-                Console.WriteLine(ObjectDumper.Dump(contsend));
             }
 
             return

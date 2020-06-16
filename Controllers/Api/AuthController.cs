@@ -152,10 +152,16 @@ namespace CERTHB2B.Controllers.Api
                 var user = await userManager.FindByEmailAsync(emailRequest.Email);
                 if (user != null)
                 {
+                    if (user.LockoutEnabled && user.LockoutEnd.GetValueOrDefault() != null && user.LockoutEnd?.Date > DateTime.Now.ToUniversalTime())
+                    {
+                        return new UnauthorizedJsonResult("AccountLocked", user.LockoutEnd?.ToUniversalTime());
+                    }
+
                     await sendPasswordResetMail(user, emailRequest.Email);
+                    return Ok();
                 }
 
-                return Ok();
+                return new BadRequestJsonResult("CheckAccount");
             }
 
             return BadRequest(ModelState);

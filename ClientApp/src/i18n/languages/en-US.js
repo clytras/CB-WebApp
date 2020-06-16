@@ -161,6 +161,7 @@ export default {
   },
   messages: {
     Auth: {
+      AccountNotFound: 'No account found using given credentials',
       AccountLocked: 'Account is locked until {lockedUntil}',
       Account2FA: 'Account requires two factor authentication',
       LoginFail: 'Check you email and password',
