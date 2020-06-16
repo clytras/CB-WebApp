@@ -7,7 +7,7 @@ export default function Markdown({
   paragraphAsBlock = false,
   ...rest
 }) {
-  return <ReactMarkdown {...rest} renderers={{ link: MarkdownLink }} />;
+  return <ReactMarkdown {...rest} escapeHtml={false} renderers={{ link: MarkdownLink }} />;
 }
 
 function MarkdownLink({ href, children }) {

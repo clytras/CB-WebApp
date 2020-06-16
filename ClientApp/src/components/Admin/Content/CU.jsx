@@ -13,7 +13,7 @@ import { apiGet, apiSave } from '@utils/net';
 import { Strings, translateRequestError, httpRejectedError } from '@i18n';
 
 
-const mdParser = new MarkdownIt();
+const mdParser = new MarkdownIt({ html: true });
 
 export default function CU({
   match: {
@@ -88,6 +88,9 @@ export default function CU({
     }).then(resp => {
       if(resp.ok) {
         if(itemId) {
+          if (window.__StaticContent && itemBindToContent in window.__StaticContent) {
+            window.__StaticContent[itemBindToContent] = itemContent;
+          }
           toast.success(Strings.messages.EntryUpdated);
         } else {
           toast.success(Strings.messages.EntryCreated);
