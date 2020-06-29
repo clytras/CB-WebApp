@@ -15,6 +15,8 @@ import AuthRoute from '@api-auth/AuthRoute';
 import AuthRoleRoute from '@api-auth/AuthRoleRoute';
 import Home from '@components/Home';
 import Contact from '@components/Contact';
+import PrivacyPolicy from '@components/PrivacyPolicy';
+import TermsAndConditions from '@components/TermsAndConditions';
 import ContentBody from '@components/common/ContentBody';
 import { Strings } from '@i18n';
 
@@ -145,14 +147,16 @@ function App() {
         </AuthRoute>
         <Layout>
           <Route exact path={[
-            '/', '/contact', 
+            '/', '/contact', '/privacy-policy', '/terms-and-conditions',
             '/account/login', '/account/logout', '/account/register',
             '/account/confirm-email', '/account/forgot-password', '/account/reset-password'
           ]}>
-            <ContentBody>
+            <ContentBody withStatic>
               <Switch>
                 <Route exact path="/" component={Home} />
                 <Route path="/contact" component={Contact} />
+                <Route path="/privacy-policy" component={PrivacyPolicy} />
+                <Route path="/terms-and-conditions" component={TermsAndConditions} />
                 <Route path="/account/login" component={Login} />
                 <Route path="/account/logout" component={Logout} />
                 <Route path="/account/register" component={Register} />

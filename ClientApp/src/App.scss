@@ -199,8 +199,16 @@ html {
   .content {
     font-size: 1.1em;
 
+    &.static {
+      padding: 6% 9% !important;
+    }
+
     h2 {
       margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      font-size: 1.3em;
     }
   }
 

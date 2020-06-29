@@ -15,8 +15,8 @@ export default function Footer() {
             <a href="https://www.imet.gr/index.php/en" target="_blank" rel="noopener noreferrer"><img src="/assets/HIT-Logo_en.png" alt="HIT Logo"/></a>
           </Col>
           <Col className="links">
-            <p><Link to="/">Privacy Policy</Link></p>
-            <p><Link to="/">Terms of Service</Link></p>
+            <p><Link to="/privacy-policy">{Strings.titles.PrivacyPolicy}</Link></p>
+            <p><Link to="/terms-and-conditions">{Strings.titles.TermsAndConditions}</Link></p>
           </Col>
         </Row>
       </Container>

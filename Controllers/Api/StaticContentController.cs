@@ -31,7 +31,9 @@ namespace CERTHB2B.Controllers.Api
         {
             string[] bindsTo = new string[] {
                 "Welcome",
-                "Contact"
+                "Contact",
+                "PrivacyPolicy",
+                "TermsAndConditions"
             };
 
             var results = context.ContentBlock

@@ -52,7 +52,7 @@ export default function ContactRequestsStats() {
                 value: 'Requests sent per day',
                 angle: -90,
                 offset: 0,
-                position: { x: 0, y: '20%' }
+                position: { x: 0, y: 60 }
               }} />
             <Tooltip
               wrapperStyle={{

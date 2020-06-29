@@ -13,6 +13,8 @@ export default {
   euroSign: '€',
 
   titles: {
+    PrivacyPolicy: 'Privacy Policy',
+    TermsAndConditions: 'Terms and Conditions',
     Open: 'Open',
     Search: 'Search',
     Clear: 'Clear',

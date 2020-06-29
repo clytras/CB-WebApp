@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import { Row, Col, Label, FormText } from 'reactstrap';
 import AuthService from '@api-auth/AuthorizeService';
 import InlineMessage from '@components/common/InlineMessage';

@@ -1,9 +1,11 @@
 import React from 'react';
 import { Container } from 'reactstrap';
+import clsx from 'clsx';
 
 
 export default function ContentBody({
   withBackground = true,
+  withStatic = false,
   children
 }) {
 
@@ -17,7 +19,7 @@ export default function ContentBody({
 
   return render(
     <Container>
-      <div className="content">{children}</div>
+      <div className={clsx('content', withStatic && 'static')}>{children}</div>
     </Container>
   );
 }
