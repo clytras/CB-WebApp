@@ -36,8 +36,6 @@ export default function ConfirmEmail() {
           ConfirmationCode: confirmationCode
         }
       }).then(async ({ ok }) => {
-        console.log('Ajax confirm email resp', ok);
-
         if(ok) {
           try {
             const userProfile = await AuthorizeService.getUserProfile();

@@ -9,8 +9,6 @@ export default function LoginMenu({ pathname }) {
   const [authUserProfile] = useStoreOf('authUserProfile');
   const [newContactRequests] = useStoreOf('newContactRequests');
 
-  console.log('LoginMenu:newContactRequests', newContactRequests);
-
   function renderAdminPanelLink() {
     const { isEditorRole, isAdminRole } = authUserProfile;
 

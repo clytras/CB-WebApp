@@ -17,6 +17,7 @@ using CERTHB2B.Utils;
 using CERTHB2B.Services;
 using CERTHB2B.ViewModels.Business;
 using System.Text.RegularExpressions;
+using Microsoft.Data.SqlClient;
 
 namespace CERTHB2B.Controllers.Api
 {
@@ -87,57 +88,69 @@ namespace CERTHB2B.Controllers.Api
             // var user = await userManager.FindByEmailAsync(User.Identity.Name);
             var user = await GetCurrentUserAsync();
 
-            if (user != null) {
-
+            if (user != null)
+            {
                 var profile = await context.BusinessProfiles
                     .Include(p => p.Activities)
                     .FirstOrDefaultAsync(p => p.User.Id == user.Id);
-
+                
                 var lookupActivities = profile != null ? profile.Activities.Select(a => a.ActivityId).ToList() : new List<long>();
 
-                bool hasTermCompanyName = listingRequest.SearchTermCompanyName?.Length > 0;
-                bool hasTermCountries = listingRequest.SearchTermCountries?.Count() > 0;
-                bool hasTermActivities = listingRequest.SearchTermActivities?.Count() > 0;
+                if (lookupActivities.Count == 0)
+                    lookupActivities.Add(0);
 
-                var termActivitiesIds = hasTermActivities ? (
+                var lookupActivitiesIds = String.Join(',', lookupActivities.Select(id => id.ToString()));
+
+                var termCompanyName = new SqlParameter("@termCompanyName", listingRequest.SearchTermCompanyName ?? "");
+                var hasTermCountries = listingRequest.SearchTermCountries?.Count() > 0;
+                var hasTermCountriesSql = new SqlParameter("@hasTermCountries", hasTermCountries);
+                var termCountries = listingRequest.SearchTermCountries?.Count() > 0 ?
+                    String.Join(',', listingRequest.SearchTermCountries?.Where(v => v.Length == 3)?.Select(iso3 => $"'{iso3}'")) :
+                    "''";
+                var termCountriesSql = new SqlParameter("@termCountries", termCountries.Length > 0 ? termCountries : "''");
+                
+                bool hasTermActivities = listingRequest.SearchTermActivities?.Count() > 0;
+                var hasTermActivitiesSql = new SqlParameter("@hasTermActivities", hasTermActivities);
+                var termActivities = hasTermActivities ? (
                     from a in context.BusinessActivitiesOptions
                     where listingRequest.SearchTermActivities.Contains(a.ActivityOptionAlias)
                     select a.ActivityId
-                ).ToList() : new List<long>();
+                ).ToList() : new List<long> { 0 };
+                var termActivitiesIds = String.Join(',', termActivities);
 
-                var profiles = (
-                    from p in context.BusinessProfiles
-                        .Include(p => p.Activities)
-                        .Include(p => p.User)
-                        .Include(p => p.CompanyLocation)
-                    where p.IsProfileVisible == true && p.User.Id != user.Id
-                    where !hasTermCompanyName || EF.Functions.Like(p.CompanyName, $"%{listingRequest.SearchTermCompanyName}%")
-                    where !hasTermCountries || listingRequest.SearchTermCountries.Contains(p.CompanyLocation.Country)
-                    where !hasTermActivities || p.Activities.Where(a => termActivitiesIds.Contains(a.ActivityId)).Count() == termActivitiesIds.Count()
-                    select new
-                    {
-                        p.ProfileId,
-                        Email = p.Email ?? p.User.Email,
-                        p.CompanyName,
-                        p.CompanyLocation.City,
-                        p.CompanyLocation.Country,
-                        p.CompanyLocation.Region,
-                        Activities = (
-                            from pa in p.Activities
-                            join bao in context.BusinessActivitiesOptions on pa.ActivityId equals bao.ActivityId
-                            select bao.ActivityId
-                        ).ToList(),
-                        MatchingActivities = (
-                            // p.Activities.Count(a => toMatch.Contains(a.ActivityId))
-                            from m in p.Activities
-                            where lookupActivities.Contains(m.ActivityId)
-                            select m.ActivityId
-                        ).ToList()
-                    }
-                ).AsEnumerable().OrderByDescending(p => p.MatchingActivities.Count);
+                // Building a custom query and not using LINQ because of EF Core "group by" limitations
+                // https://github.com/dotnet/efcore/issues/17376
+                var profiles = context.BusinessProfilesDiscoverResults.FromSqlRaw($@"
+SELECT 
+    [p].[ProfileId],
+    [p].[CompanyName],
+    COALESCE([p].[Email], [u].[Email]) AS [Email],
+    [addr].[City],
+    [addr].[Region],
+    [addr].[Country],
+    COUNT([pa].[ProfileId]) AS [MatchingActivities]
+FROM [BusinessProfiles] AS [p]
+LEFT JOIN [AspNetUsers] AS [u] ON [p].[UserId] = [u].[Id]
+LEFT JOIN [BusinessAddress] AS [addr] ON [p].[ProfileId] = [addr].[ProfileId]
+LEFT JOIN [BusinessProfileActivities] AS [pa] ON [p].[ProfileId] = [pa].[ProfileId] AND [pa].[ActivityId] IN ({lookupActivitiesIds})
+WHERE 
+    [p].[UserId] <> @p0 AND 
+    [p].[CompanyName] LIKE '%' + @termCompanyName + '%' AND 
+    (@hasTermCountries = 0 OR [addr].[Country] IN ({termCountriesSql.SqlValue})) AND
+    (@hasTermActivities = 0 OR [pa].[ActivityId] IN ({termActivitiesIds}))
+GROUP BY [p].[ProfileId], [p].[CompanyName], [p].[Email], [u].[Email], [addr].[City], [addr].[Region], [addr].[Country]
+HAVING @hasTermActivities = 0 OR COUNT([pa].[ActivityId]) = {termActivities.Count()}
+",
+                    user.Id,
+                    termCompanyName,
+                    hasTermCountriesSql,
+                    hasTermActivitiesSql);
 
-                var total = profiles.Count();
-                var data = profiles.ToPagedList(page, perPage);
+                int? total = page == 1 ? (int?)profiles.Count() : null;
+
+                // We're doing an OrderByDescending here instead of inside the query, because of 0x80131904 SQL error.
+                // This will have the query to be called twice so it needs further optimization
+                var data = profiles.AsEnumerable().OrderByDescending(p => p.MatchingActivities).ToPagedList(page, perPage);
 
                 if (listingRequest.ReturnActivitiesOptions)
                 {
@@ -146,12 +159,82 @@ namespace CERTHB2B.Controllers.Api
                 }
 
                 return Ok(new { total, data });
-
             }
 
             return BadRequest();
         }
 
+        // To delete
+        // [HttpPost("ListingOld/{page?}/{perPage?}")]
+        // [Authorize]
+        // public async Task<IActionResult> OnGetListingOld([FromBody]BusinessProfileListingRequest listingRequest, int page = 1, int perPage = 12)
+        // {
+        //     // var user = await userManager.FindByEmailAsync(User.Identity.Name);
+        //     var user = await GetCurrentUserAsync();
+
+        //     if (user != null)
+        //     {
+        //         var profile = await context.BusinessProfiles
+        //             .Include(p => p.Activities)
+        //             .FirstOrDefaultAsync(p => p.User.Id == user.Id);
+
+        //         var lookupActivities = profile != null ? profile.Activities.Select(a => a.ActivityId).ToList() : new List<long>();
+
+        //         bool hasTermCompanyName = listingRequest.SearchTermCompanyName?.Length > 0;
+        //         bool hasTermCountries = listingRequest.SearchTermCountries?.Count() > 0;
+        //         bool hasTermActivities = listingRequest.SearchTermActivities?.Count() > 0;
+
+        //         var termActivitiesIds = hasTermActivities ? (
+        //             from a in context.BusinessActivitiesOptions
+        //             where listingRequest.SearchTermActivities.Contains(a.ActivityOptionAlias)
+        //             select a.ActivityId
+        //         ).ToList() : new List<long>();
+
+        //         var profiles = (
+        //             from p in context.BusinessProfiles
+        //                 .Include(p => p.Activities)
+        //                 .Include(p => p.User)
+        //                 .Include(p => p.CompanyLocation)
+        //             where p.IsProfileVisible == true && p.User.Id != user.Id
+        //             where !hasTermCompanyName || EF.Functions.Like(p.CompanyName, $"%{listingRequest.SearchTermCompanyName}%")
+        //             where !hasTermCountries || listingRequest.SearchTermCountries.Contains(p.CompanyLocation.Country)
+        //             where !hasTermActivities || p.Activities.Where(a => termActivitiesIds.Contains(a.ActivityId)).Count() == termActivitiesIds.Count()
+        //             select new
+        //             {
+        //                 p.ProfileId,
+        //                 Email = p.Email ?? p.User.Email,
+        //                 p.CompanyName,
+        //                 p.CompanyLocation.City,
+        //                 p.CompanyLocation.Country,
+        //                 p.CompanyLocation.Region,
+        //                 Activities = (                              // REMOVE
+        //                     from pa in p.Activities
+        //                     join bao in context.BusinessActivitiesOptions on pa.ActivityId equals bao.ActivityId
+        //                     select bao.ActivityId
+        //                 ).ToList(),
+        //                 MatchingActivities = (
+        //                     // p.Activities.Count(a => toMatch.Contains(a.ActivityId))
+        //                     from m in p.Activities
+        //                     where lookupActivities.Contains(m.ActivityId)
+        //                     select m.ActivityId
+        //                 ).ToList()
+        //             }
+        //         ).AsEnumerable().OrderByDescending(p => p.MatchingActivities.Count);
+
+        //         var total = profiles.Count();
+        //         var data = profiles.ToPagedList(page, perPage);
+
+        //         if (listingRequest.ReturnActivitiesOptions)
+        //         {
+        //             var ActivitiesOptions = GetActivitiesOptions();
+        //             return Ok(new { total, data, ActivitiesOptions });
+        //         }
+
+        //         return Ok(new { total, data });
+        //     }
+
+        //     return BadRequest();
+        // }
 
         [HttpPut("Information")]
         [Authorize]
@@ -368,7 +451,7 @@ namespace CERTHB2B.Controllers.Api
         {
             if (ModelState.IsValid)
             {
-                // var user = await userManager.FindByEmailAsync(User.Identity.Name);
+                // var user = await userManager.FindByEmailAsync("admin@nekya.com");
                 var user = await GetCurrentUserAsync();
 
                 if (user != null)

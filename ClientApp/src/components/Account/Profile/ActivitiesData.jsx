@@ -23,8 +23,6 @@ export default function ActivitiesData() {
   const { hasProfile = false } = userBusinessProfile || {};
 
   useEffect(() => {
-    // console.log('ActivitiesData', userBusinessProfile);
-
     countersRef.current = getActivitiesFlatList(null, {
       withCounters: true,
       withSelectedCounters: true,
@@ -125,7 +123,7 @@ export default function ActivitiesData() {
   []);
 
   function renderSubActivities(head, sub, options) {
-    if (!options || !'$' in options || options.$.length === 0) {
+    if (!options || !('$' in options) || options.$.length === 0) {
       return null;
     }
 
@@ -166,10 +164,11 @@ export default function ActivitiesData() {
             {Object.entries(subs).map(([sub, options]) => {
               if (options === '$') {
                 own.$.push(sub);
-                return null;
               } else if (options !== '_selected') {
                 return renderSubActivities(head, sub, options);
               }
+
+              return null;
             })}
             {own.length !== 0 && renderSubActivities(head, null, own)}
             <ListGroup className="mb-4">

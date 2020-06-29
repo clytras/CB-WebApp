@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { Route, Switch } from 'react-router';
 import { Button } from 'reactstrap';
@@ -16,7 +16,6 @@ import AuthRoleRoute from '@api-auth/AuthRoleRoute';
 import Home from '@components/Home';
 import Contact from '@components/Contact';
 import ContentBody from '@components/common/ContentBody';
-import NotFound from '@components/NotFound';
 import { Strings } from '@i18n';
 
 import {
@@ -81,7 +80,7 @@ function App() {
           prevNewContactRequests = newContactRequests;
         }
 
-        console.log('App:authCheck', user, userProfile, userBusinessProfile);
+        // console.log('App:authCheck', user, userProfile, userBusinessProfile);
       } catch(err) {
         console.warn('App:authCheck FAIL', err);
       } finally {
@@ -94,7 +93,7 @@ function App() {
     initialAuthTimerId = setTimeout(authCheck, 1000);
 
     const heartBeatTimer = every('1m').do(async () => {
-      const { ok, spaVersion, isAuth = false, newContactRequests = 0 } = await spaHeartbeat();
+      const { ok, spaVersion, /*isAuth = false,*/ newContactRequests = 0 } = await spaHeartbeat();
   
       // const { spaVersion } = checkHeartbeat(heartbeat, { user });
       // setNeedsRelogin(needsRelogin);

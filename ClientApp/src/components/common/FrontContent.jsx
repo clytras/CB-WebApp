@@ -5,7 +5,6 @@ import { getStaticContent } from '@data/StaticContent';
 import HttpStatus from 'http-status-codes';
 import Markdown from './Markdown';
 import FeedbackMessage from './FeedbackMessage';
-import ContentBody from './ContentBody';
 import { utsj } from 'lyxlib/utils/time';
 
 

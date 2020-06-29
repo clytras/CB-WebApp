@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import DateTime from 'luxon/src/datetime';
 import { useStoreOf } from '@stores';
 import { BsBoxArrowInDownRight, BsBoxArrowUpRight, BsFillEnvelopeFill, BsFillEnvelopeOpenFill } from 'react-icons/bs';
-import DataTable, { rebuildTooltip } from '@components/common/DataTable';
+import DataTable from '@components/common/DataTable';
 import EmailVerificationNotice from '../EmailVerificationNotice';
 import BusinessProfileNotice from '../BusinessProfileNotice';
 import { apiGet } from '@utils/net';
-import MsgBox from '@components/common/MsgBox';
 import { toast } from 'react-toastify';
 import { Strings, translateResponseMessage, translateRequestError } from '@i18n';
 import clsx from 'clsx';
@@ -43,7 +42,7 @@ export default function Requests() {
       name: Strings.titles.DateSlashTime,
       cell: ({ date }) => <span>{DateTime.fromISO(date, { setZone: 'utc' }).toLocaleString(DateTime.DATETIME_SHORT)}</span>
     }
-  ], []);
+  ], [profileId]);
 
   useEffect(() => {
     fetchRequests(page, perPage);

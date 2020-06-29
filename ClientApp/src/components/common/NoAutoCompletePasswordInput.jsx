@@ -26,7 +26,7 @@ export default function NoAutoCompletePasswordInput({ onChange, ...props }) {
     if (!hasPrefilled && onChange) {
       onChange(password);
     }
-  }, [password, hasPrefilled]);
+  }, [password, hasPrefilled, onChange]);
 
   // We accept either typing or pasting the password,
   // never both actions combined

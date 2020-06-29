@@ -143,6 +143,7 @@ namespace CERTHB2B.Data.Seeds
             }
 
             // Contact requests
+            var loader = new ConsoleLoader("Generating contact requests", maxLoaderChars: 5);
 
             foreach(long profileId in profileIds)
             {
@@ -162,9 +163,15 @@ namespace CERTHB2B.Data.Seeds
                             IsOpened = faker.Random.Bool(),
                             Date = faker.Date.Soon(faker.Random.Int(-4, 10))
                         });
+
+                        loader.Tick();
                     }
                 }
+
+                loader.Tick();
             }
+
+            loader.End("done");
 
             await context.SaveChangesAsync();
 

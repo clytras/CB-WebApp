@@ -1,6 +1,6 @@
 {
   "name": "CERTHB2B",
-  "version": "0.1.12",
+  "version": "0.1.17",
   "private": true,
   "dependencies": {
     "@hot-loader/react-dom": "^16.13.0",

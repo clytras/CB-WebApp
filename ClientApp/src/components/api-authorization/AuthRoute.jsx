@@ -16,8 +16,6 @@ export default function AuthRoute({
   const [authUserProfile] = useStoreOf('authUserProfile');
   const { hasUser = false } = authUserProfile || {};
 
-  console.log('AuthRoute', authReady, hasUser);
-
   if (!authReady) {
     return (
       <Flexed>

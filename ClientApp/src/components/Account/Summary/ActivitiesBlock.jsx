@@ -1,6 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
 import { Row, Col, ListGroup, ListGroupItem, Badge } from 'reactstrap';
-import { useStoreOf } from '@stores';
 import { getActivitiesListWithCounters } from '@data/BusinessProfile/Lists';
 import { MdDone } from 'react-icons/md';
 import { Strings } from '@i18n';
@@ -10,8 +9,6 @@ import clsx from 'clsx';
 export default function ActivitiesBlock({ profile }) {
   // const [userBusinessProfile] = useStoreOf('userBusinessProfile');
   const activities = useMemo(() => {
-    console.log('ActivitiesBlock', profile);
-
     return getActivitiesListWithCounters(null, profile.activities);
   }, [profile]);
 
@@ -35,8 +32,6 @@ export default function ActivitiesBlock({ profile }) {
       return <li key={`activity-${alias}`} className={clsx('option', className, selected ? 'selected' : 'unselected')}><MdDone className="mr-1 mb-1" size="1.2em"/>{Strings.Business.Lists[option]}</li>;
     }
 
-    console.log('renderActivities', head, subs, Object.entries(subs));
-
     return (
       <ListGroup className={`display-group mb-4 list-activities-head-${head}`}>
         <ListGroupItem color="success">
@@ -47,7 +42,6 @@ export default function ActivitiesBlock({ profile }) {
             {Object.entries(subs).map(([sub, options]) => {
               if (options === '$') {
                 own.push(sub);
-                return null;
               } else if (sub !== '_select' && sub !== '_count') {
                 // return renderSubActivities(head, sub, options);
                 return (
@@ -56,6 +50,8 @@ export default function ActivitiesBlock({ profile }) {
                   </li>
                 );
               }
+
+              return null;
             })}
           </ul>
           {own.length > 0 && own.map(option => renderItem(head, null, option))}

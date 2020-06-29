@@ -27,7 +27,6 @@ export function protoGetSafeCurrentLocale(defaultLocale = 'en') {
 export function protoSetSafeLanguage(language, defaultLocale = 'en') {
   const languages = this.getAvailableLanguages();
   if(languages.indexOf(language) >= 0) {
-    console.log('SETTING LANG', language);
     this.setLanguage(language);
   } else if(defaultLocale) {
     this.setLanguage(defaultLocale);

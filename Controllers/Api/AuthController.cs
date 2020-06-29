@@ -169,6 +169,50 @@ namespace CERTHB2B.Controllers.Api
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAccount(DeleteAccountRequest deleteAccountRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                
+                var user = await userManager.GetUserAsync(HttpContext.User);
+                if (user != null)
+                {
+                    var result = userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, deleteAccountRequest.Password);
+                    if (result == PasswordVerificationResult.Success)
+                    {
+                        var profile = context.BusinessProfiles.Where(p => p.UserId == user.Id).FirstOrDefault();
+                        if (profile != null)
+                        {
+                            var sendToContactRequeests = context.BusinessContactRequests.Where(r => r.ToId == profile.ProfileId).ToList();
+                            sendToContactRequeests.ForEach(r => r.ToId = null);
+
+                            context.BusinessContactRequests.UpdateRange(sendToContactRequeests);
+                            context.BusinessProfiles.Remove(profile);
+
+                            try
+                            {
+                                await context.SaveChangesAsync();
+                            }
+                            catch
+                            {
+                                throw;
+                            }
+                        }
+    
+                        var deleteAccountResult = await userManager.DeleteAsync(user);
+
+                        return Ok();
+                    }
+                }
+
+                return new BadRequestJsonResult("CheckAccount");
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest resetPasswordRequest)
         {
             if (ModelState.IsValid)

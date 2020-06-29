@@ -14,7 +14,7 @@ import { getCountriesForSelect } from '@data/Countries';
 import Select from '@components/common/Select';
 import { utsj } from 'lyxlib/utils/time';
 import styled from 'styled-components';
-import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
+import { Strings, translateRequestError } from '@i18n';
 
 
 export default function Profiles() {
@@ -27,7 +27,7 @@ export default function Profiles() {
   const [profiles, setProfiles] = useState();
   const [totalResults, setTotalResults] = useState(0);
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(12);
+  const [perPage /*, setPerPage*/] = useState(12);
   const [actionError, setActionError] = useState();
   const [updater, setUpdater] = useState(0);
 
@@ -60,7 +60,9 @@ export default function Profiles() {
             setTotalActivitiesOptions(Object.keys(activitiesOptions).length);
           }
 
-          setTotalResults(total);
+          if (total !== null) {
+            setTotalResults(total);
+          }
           setProfiles(prev => (prev || []).concat(data));
         } else {
           setActionError(Strings.messages.CouldNotLoadDataReloadPage);
@@ -84,17 +86,15 @@ export default function Profiles() {
   }
   const handleClearClick = () => handleSearchClick();
   const handleInfiniteScoll = () => {
-    console.log('handleInfiniteScoll');
-
     setPage(prev => ++prev);
     setUpdater(utsj());
   }
 
   function renderProfile(profile) {
-    const { profileId, companyName, city, region, country, activities, matchingActivities } = profile;
+    const { profileId, companyName, city, region, country, /*activities,*/ matchingActivities } = profile;
     const countryText = country in Strings.Collections.Countries ? Strings.Collections.Countries[country] : country;
     const address = region ? [city, region, countryText] : [city, countryText];
-    const percentMatch = Math.round((matchingActivities.length /  totalActivitiesOptions) * 100);
+    const percentMatch = Math.round((matchingActivities /  totalActivitiesOptions) * 100);
 
     return (
       <Col key={`profile-card-${profileId}`} xl={4} lg={4} md={6} sm={12} xs={12}>
@@ -104,7 +104,7 @@ export default function Profiles() {
             <div className="activities mt-2">
               <div className="title text-secondary">{Strings.ui.blocks.ProfileMasonry.ActivitiesMatchingWith}</div>
               <div className="stats">
-                <div className="count">{matchingActivities.length} <span className="text-secondary">{Strings.ui.blocks.ProfileMasonry.Activities}</span></div>
+                <div className="count">{matchingActivities} <span className="text-secondary">{Strings.ui.blocks.ProfileMasonry.Activities}</span></div>
                 <div className="percent"><span className="text-secondary">{Strings.ui.blocks.ProfileMasonry.MatchOf}</span> {percentMatch}%</div>
               </div>
             </div>
@@ -195,7 +195,7 @@ const SearchTermsActionButton = styled(Button)`
   min-width: 20%;
 `;
 
-const SearchToggleButton = styled(Button)`
+const SearchToggleButton = styled(({ isOpen, ...rest}) => <Button {...rest} />)`
   margin: 0 auto;
   display: block;
   position: relative;
@@ -222,21 +222,21 @@ export function SearchFilters({ loading, onSearch, onClear }) {
   const [selectedActivities, setSelectedActivities] = useState({ TopicsOfInterest: [], Offer: [], Request: [] });
   const [profileCountriesSelected, setProfileCountriesSelected] = useState([]);
   const [profileCompanyName, setProfileCompanyName] = useState('');
-  const [isDirty, setIsDirty] = useState(false);
+  // const [isDirty, setIsDirty] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
   const handleCountryChange = (values) => {
     setProfileCountriesSelected(values);
-    setIsDirty(true);
+    // setIsDirty(true);
   }
   const handleCompanyNameChange = ({ currentTarget: { value }}) => {
     setProfileCompanyName(value);
-    setIsDirty(true);
+    // setIsDirty(true);
   }
   const handleActivitiesChange = head => values => {
     setSelectedActivities(prev => ({ ...prev, [head]: values }));
-    setIsDirty(true);
+    // setIsDirty(true);
   }
 
   const handleSearchClick = () => {

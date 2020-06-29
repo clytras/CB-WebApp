@@ -39,6 +39,7 @@ export default {
     CurrentPassword: 'Current password',
     NewPassword: 'New password',
     ConfirmPassword: 'Confirm password',
+    WrongPassword: 'Wrong password',
     Administrator: 'Administrator',
     MyProfile: 'My Profile',
     Information: 'Information',
@@ -178,11 +179,13 @@ export default {
       PasswordResetRequestSent: 'A password reset link has been sent to your email.  \nPlease check your email inbox and follow the reset link to reset your password.',
       PasswordResetSuccess: 'Your password has been reset',
       CouldNotSendPasswordRequest: 'Could not send password request email',
+      CouldNotDeleteAccount: 'Could not delete account',
       ActionOnlyForAuth: 'Only logged in accounts can perform this action',
       EmailVerificationSent: 'Email verification sent successfully',
       EmailVerificationNotSent: 'Email verification not sent',
       EmailVerificationSentVisitMail: 'A verification link has now been sent to your email.\nPlease check your email inbox and follow the verification link to verify your email address.',
       CheckCurrentPasswordRetry: 'Check your current password and retry',
+      WrongPasswordForDeleteAccount: 'The password you have entrered is wrong.  \nCheck your password and try again.',
       EmailIsVerified: 'Your email address is already verified',
       NoVerifiedEmail: 'Your email address has not been verified.  \nYou need to verify your email address to complete you profile.\n\nPlease check your email inbox and follow the verification link to verify your email address.\n\nVisit your [profile settings](/account/settings) and use the resend email verification action to resend the verification email.',
       // YourEmailConfirmed: 'Your email address is now confirmed.'
@@ -238,6 +241,7 @@ export default {
       HideProfileFromSearch: 'Do you want to hide user\'s "{email}" profile from search results?',
       QuestingDeleteContentBlock: 'Delete Content Block Id#{id}',
       QuestionDelete: 'Are you sure you want to delete {for}?',
+      DeleteAccount: 'Delete account?',
       for: {
         ContentBlock: 'the content block'
       }

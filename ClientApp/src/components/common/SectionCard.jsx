@@ -41,11 +41,8 @@ export default function SectionCard({
   const toggleSection = () => setShowSection(prev => !prev);
   const Icon = icon && icon in Icons && Icons[icon];
 
-  console.log('SectionCard', opened, resetOpened);
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    console.log('effect', opened, resetOpened);
     setShowSection(opened);
    }, [opened, resetOpened]);
 

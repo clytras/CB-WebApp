@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import isEmail from 'validator/lib/isEmail';
+import DateTime from 'luxon/src/datetime';
 import { RProgressApi } from 'rprogress';
 import { apiPost } from '@utils/net';
 import LoadingButton from '@components/common/LoadingButton';
 import InlineMessage from '@components/common/InlineMessage';
 import FrontContentBase from '@components/common/FrontContentBase';
-import HttpStatus from 'http-status-codes';
 import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
 
 export default function ForgotPassword() {
@@ -35,13 +35,22 @@ export default function ForgotPassword() {
         if(resp.ok) {
           setActionSuccess(Strings.messages.Auth.PasswordResetRequestSent);
         } else {
-          let errorCode;
+          let errorCode, content;
 
           try {
-            ({ errorCode } = await resp.json());
+            ({ errorCode, content } = await resp.json());
           } catch(err) {}
   
-          setActionError(translateCodeMessage(errorCode || 'CouldNotSendPasswordRequest', `${HttpStatus.getStatusText(resp.status)} (${resp.status})`));
+          // setActionError(translateCodeMessage(errorCode || 'CouldNotSendPasswordRequest', `${HttpStatus.getStatusText(resp.status)} (${resp.status})`));
+
+          let message = translateCodeMessage(errorCode, 'CouldNotSendPasswordRequest');
+
+          if (errorCode === 'AccountLocked' && content) {
+            const lockedUntil = DateTime.fromISO(content).toLocaleString(DateTime.DATETIME_SHORT);
+            message = Strings.formatString(message, { lockedUntil });
+          }
+
+          setActionError(message);
         }
       }).catch(err => {
         setRequestError(translateRequestError(err));

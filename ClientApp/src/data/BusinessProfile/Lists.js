@@ -107,7 +107,7 @@ export function getActivitiesFlatList(path, {
             result[item] = children._count;
           }
           
-          result = {...result, ...recurse(children, item) };
+          result = { ...result, ...recurse(children, item) };
         } else {
           result.push(item);
           result = result.concat(recurse(children, item));

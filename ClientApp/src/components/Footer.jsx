@@ -11,8 +11,8 @@ export default function Footer() {
       <Container>
         <Row className="footer-nav">
           <Col className="info">
-            <a href="https://www.certh.gr" target="_blank"><img src="/assets/Certh-Logo_en_alpha.png" alt="CeRTH Logo"/></a>
-            <a href="https://www.imet.gr/index.php/en" target="_blank"><img src="/assets/HIT-Logo_en.png" alt="HIT Logo"/></a>
+            <a href="https://www.certh.gr" target="_blank" rel="noopener noreferrer"><img src="/assets/Certh-Logo_en_alpha.png" alt="CeRTH Logo"/></a>
+            <a href="https://www.imet.gr/index.php/en" target="_blank" rel="noopener noreferrer"><img src="/assets/HIT-Logo_en.png" alt="HIT Logo"/></a>
           </Col>
           <Col className="links">
             <p><Link to="/">Privacy Policy</Link></p>

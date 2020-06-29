@@ -147,7 +147,7 @@ export default function Users() {
         onProfileVisibilityClick={handleVisibilityClick} 
         onAccountLockClick={handleLockClick} />
     }
-  ], []);
+  ], [tooltipId]);
 
   const lockoutDurations = useMemo(() => [[
     [{ hours: 6 }, 'Hours'],

@@ -114,14 +114,10 @@ export async function getProfileOfUser(userId) {
   try {
     const resp = await fetchProfileOfUser(userId);
 
-    console.log('GetProfileOfUser:resp', resp);
-
     if (resp.ok) {
       result = await resp.json();
     }
   } catch(err) {}
-
-  console.log('GetProfileOfUser:result', result);
 
   return new BusinessProfile(result);
 }

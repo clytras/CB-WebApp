@@ -1,6 +1,6 @@
 import React from 'react';
 import { Col } from 'reactstrap';
-import { StyleSheet, css } from 'aphrodite/no-important';
+import { StyleSheet/*, css*/ } from 'aphrodite/no-important';
 import clsx from 'clsx';
 
 

@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useStoreOf } from '@stores';
-import styled from 'styled-components';
 import LoadingOverlay from '@components/common/LoadingOverlay';
 import InlineMessage from '@components/common/InlineMessage';
-import InformationBlock from '@components/Account/Summary/InformationBlock';
 import ProfileSummary from '@components/Account/Summary/ProfileSummary';
-
+import { translateRequestError } from '@i18n';
 import { BusinessProfile, fetchProfile } from '@data/BusinessProfile';
-import { MdPhone, MdMail } from 'react-icons/md';
-import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
 
 
 // const Header = styled.div`
@@ -49,7 +44,7 @@ export default function OpenProfile({
     }).finally(() => {
       setLoading(false);
     });
-  }, []);
+  }, [profileId]);
 
 
   if (loading) {

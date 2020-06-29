@@ -20,7 +20,6 @@ export default function Content() {
   const msgboxRef = useRef();
 
   const handleEditClick = ({ target }) => {
-    console.log('Edit', target.dataset.id);
     setDoEditId(target.dataset.id);
   }
   const handleDeleteClick = ({ target }) => {
@@ -34,8 +33,6 @@ export default function Content() {
         color: 'danger',
         buttons: 'delete,cancel',
         onConfirm: async () => {
-          console.log('deleting', id);
-
           target.parentNode.classList.add('disabled');
 
           try {

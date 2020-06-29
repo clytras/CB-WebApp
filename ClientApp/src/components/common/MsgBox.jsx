@@ -76,8 +76,6 @@ function MsgBox({
     close: ['light', closeText, dismiss],
   };
 
-  // console.log('MsgBox', title, disableButtons, disabled, hidden, renderProps);
-
   const body = children || message;
 
   return (

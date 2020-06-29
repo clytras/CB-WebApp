@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import AuthService from '@api-auth/AuthorizeService';
 import FrontContentBase from '@components/common/FrontContentBase';
 import styled from 'styled-components';
@@ -31,8 +31,6 @@ export default function Logout() {
   const renderBase = content => <FrontContentBase className="reset-font-size" centered>{content}</FrontContentBase>;
 
   const handleLogoutClick = () => {
-    console.log("Logging out");
-
     setIsProcessing(true);
     setRequestError(null);
 
@@ -41,10 +39,7 @@ export default function Logout() {
       mode: 'cors',
       credentials: 'same-origin'
     }).then(async resp => {
-      console.log('logout resp', resp);
-
       if (resp.ok) {
-        console.log('calling ajaxSignOut');
         await AuthService.ajaxSignOut();
         setRedirect('/');
       }

@@ -45,6 +45,10 @@ namespace CERTHB2B.Data
 
             modelBuilder.Entity<BusinessActivitiesOptions>()
                 .HasAlternateKey(a => a.ActivityOptionAlias);
+            
+            modelBuilder.Entity<BusinessProfilesDiscoverResults>()
+                .HasNoKey()
+                .ToView(null);
 
             // modelBuilder.Entity<BusinessProfileContactRequests>()
             //     .HasKey(e => new { e.ProfileId, e.SentToProfileId });
@@ -186,11 +190,13 @@ namespace CERTHB2B.Data
         public DbSet<BusinessContact> BusinessContact { get; set; }
         public DbSet<BusinessAddress> BusinessAddress { get; set; }
         public DbSet<BusinessProfileOtherActivities> BusinessProfileOtherActivities { get; set; }
-        // public DbSet<BusinessProfileActivities> BusinessProfileActivities { get; set; }
+        public DbSet<BusinessProfileActivities> BusinessProfileActivities { get; set; }
         // public DbSet<BusinessContactRequestsSent> BusinessRequestsSent { get; set; }
         // public DbSet<BusinessContactRequestsReceived> BusinessRequestsReceived { get; set; }
 
         // public DbSet<BusinessProfileRequests> BusinessRequests { get; set; }
         public DbSet<BusinessProfileRequests> BusinessContactRequests { get; set; }
+
+        public DbSet<BusinessProfilesDiscoverResults> BusinessProfilesDiscoverResults { get; set; }
     }
 }

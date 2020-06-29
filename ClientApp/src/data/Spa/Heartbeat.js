@@ -11,7 +11,8 @@ export function spaHeartbeat() {
     apiGet(uri)
     .then(response => {
       // console.log(`${uri} -> response`, response);
-      if(ok = response.ok) {
+      ok = response.ok
+      if (ok) {
         heartbeatFailures = 0;
       }
       return response.json();

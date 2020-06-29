@@ -36,8 +36,6 @@ export default function SectionBar() {
     // const [, sectionSegment] = location.pathname.match(/\/admin\/([a-z0-9-]+)/i) || [];
     const [, adminSection] = location.pathname.match(/\/admin\/(.*)/i) || [];
 
-    console.log('SectionBar:effect', adminSection, location.pathname, location.pathname.match(/\/admin\/([a-z0-9-]+)\//i))
-
     if(adminSection) {
       const segmentsSections = adminSection.split('/').map(s => s in Strings.titles.Nav.Sections ? Strings.titles.Nav.Sections[s] : s);
 
@@ -46,8 +44,6 @@ export default function SectionBar() {
       setSections([Strings.titles.Nav.Sections.dashboard]);
     }
   }, [location]);
-
-  console.log('SectionBar', location);
 
   return (
     <div className="section-bar">

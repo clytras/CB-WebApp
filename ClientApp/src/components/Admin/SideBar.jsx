@@ -9,8 +9,6 @@ import clsx from 'clsx';
 export default function SideBar() {
   const location = useLocation();
 
-  console.log('SideBar', location);
-
   // function isSelected(subRoute) {
   //   const re = new RegExp(`/admin/${subRoute}`);
   //   return re.test(location.pathname);

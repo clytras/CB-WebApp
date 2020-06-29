@@ -42,6 +42,7 @@ export default function ResetPassword() {
     event.preventDefault();
 
     setActionSuccess();
+    RProgressApi.start();
 
     if(validateForm()) {
       apiPost('/api/Auth/ResetPassword', {

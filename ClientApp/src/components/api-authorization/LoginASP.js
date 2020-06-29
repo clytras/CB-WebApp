@@ -20,8 +20,6 @@ export class Login extends Component {
   componentDidMount() {
     const action = this.props.action;
 
-    console.log('LoginASP:componentDidMount', action);
-
     switch (action) {
       case LoginActions.Login:
         this.login(this.getReturnUrl());
@@ -86,8 +84,6 @@ export class Login extends Component {
   async processLoginCallback() {
     const url = window.location.href;
     const result = await authService.completeSignIn(url);
-
-    console.log('LoginASP:processLoginCallback', result);
 
     switch (result.status) {
       case AuthenticationResultStatus.Redirect:

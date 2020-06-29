@@ -53,8 +53,6 @@ export default function ProfileSummary({
       buttons: 'yes,cancel',
       yesText: Strings.titles.Send,
       onConfirm: () => {
-        console.log('sending');
-
         sendContactRequest(profileId).then(async resp => {
           if (resp.ok) {
             const { date: dateSent } = await resp.json();
@@ -77,8 +75,6 @@ export default function ProfileSummary({
       let { lastContactRequestSend } = profile;
       let canSend = true;
 
-      console.log('lastContactRequestSend', lastContactRequestSend, profile);
-
       if (lastContactRequestSend || hasSent) {
         // const { date: dateSend } = lastContactRequestSend;
         const dateSend = hasSent || lastContactRequestSend.date;
@@ -86,11 +82,6 @@ export default function ProfileSummary({
         const dtSent = DateTime.fromISO(dateSend, { zone: 'utc' }).toLocal();
         const datetime = dtSent.toLocaleString(DateTime.DATETIME_SHORT);
         const diff = DateTime.local().diff(dtSent);
-
-        console.log('dateSend', dateSend, datetime);
-
-        console.log('diff', diff.as('days'));
-        console.log('diff date', DateTime.local().plus(diff).toLocaleString(DateTime.DATETIME_SHORT));
 
         canSend = diff.as('days') >= 7;
         const cantSendUntil = !canSend && Strings.formatString(

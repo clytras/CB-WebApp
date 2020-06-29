@@ -141,6 +141,7 @@ Internet Explorer has major flows and standard CSS supporting issues. It also ne
 
 - Add a new IIS Application Pool and name it `CERTHB2B` with latest *.NET CLR version* and *Managed pipeline mode* set to `Integrated`
 - Create an IIS site with name `CERTHB2B`, application pool the pool you created at the previous step, physical path `C:\inetpub\CERTHB2B` and binding for both HTTP (*port 80*) and HTTPS (*port 443*) ports
+- Select the IIS site and open *Modules*; find and remove *WebDAVModule*
 
 <a id="installation-production-sql--server--database"></a>
 #### SQL Server database

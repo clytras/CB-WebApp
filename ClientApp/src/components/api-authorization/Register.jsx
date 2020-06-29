@@ -32,8 +32,6 @@ export default function Register() {
   const [successContent, setSuccessContent] = useState();
   const [preventAutoComplete, setPreventAutoComplete] = useState(true);
 
-  console.log('Register', authUser, isFetching);
-
   useEffect(() => {
     setIsFetching(true);
     (async () => {
@@ -62,9 +60,7 @@ export default function Register() {
           Password: inputPassword,
           ConfirmPassword: inputConfirmPassword
         }
-      }).then(async resp => {
-        console.log('Ajax register resp', resp);
-  
+      }).then(async resp => { 
         if(resp.ok) {
           let content;
   
@@ -85,8 +81,6 @@ export default function Register() {
           try {
             responseData = await resp.json();
           } catch(err) {}
-
-          console.log('responseData', responseData);
 
           if (Array.isArray(responseData)) {
             setRegisterError(responseData);

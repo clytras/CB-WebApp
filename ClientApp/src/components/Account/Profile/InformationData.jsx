@@ -4,21 +4,17 @@ import InlineMessage from '@components/common/InlineMessage';
 import LoadingButton from '@components/common/LoadingButton';
 import isEmpty from 'validator/es/lib/isEmpty';
 import isEmail from 'validator/es/lib/isEmail';
-import isLength from 'validator/es/lib/isLength';
 import isPostalCode from 'validator/es/lib/isPostalCode';
-import { isPhoneNumber, ifString, isString } from '@utils/validators';
-import CheckBox, { OptionsGroup } from '@components/common/CheckBox';
+import { isPhoneNumber, isString } from '@utils/validators';
+import CheckBox from '@components/common/CheckBox';
 import { useStoreOf } from '@stores';
-import { apiPost } from '@utils/net';
 import { RProgressApi } from 'rprogress';
-import { toast } from 'react-toastify';
 import HttpStatus from 'http-status-codes';
 import { Strings, translateCodeMessage, translateRequestError } from '@i18n';
 import { BusinessProfile, saveProfileInformation }  from '@data/BusinessProfile';
 import SectionCard from '@components/common/SectionCard';
 import Select from '@components/common/Select';
 import { getCountriesForSelect } from '@data/Countries';
-import clsx from 'clsx';
 
 
 export default function InformationData() {
@@ -51,8 +47,6 @@ export default function InformationData() {
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
-    // console.log('InfoData', authUserProfile, userBusinessProfile, countriesOptions);
-
     if (userBusinessProfile.hasProfile) {
       let {
         companyName: CompanyName = '',
@@ -91,7 +85,7 @@ export default function InformationData() {
         ContactName, ContactEmail, ContactPhone
       });
     }
-  }, [userBusinessProfile]);
+  }, [userBusinessProfile, countriesOptions]);
 
   useEffect(() => {
     if (!useAccountEmail) {
@@ -116,7 +110,6 @@ export default function InformationData() {
   }
 
   const handleCountryChange = ({ value, label }) => {
-    console.log('handleCountryChange', value, label);
     setProfileCountryValue({ value, label });
     setIsDirty(true);
     setValidationError();

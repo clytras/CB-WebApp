@@ -4,7 +4,7 @@ import { statsOfContactRequests } from '@data/Stats';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import LoadingOverlay from '@components/common/LoadingOverlay';
-import { Strings, translateResponseMessage, translateRequestError, httpRejectedError } from '@i18n';
+import { translateResponseMessage, translateRequestError } from '@i18n';
 
 
 const Container = styled.div``;

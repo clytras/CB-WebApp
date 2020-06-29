@@ -12,7 +12,7 @@ export default function Select({
   return <ReactSelect styles={styles} maxMenuHeight={maxMenuHeight} {...rest} />;
 }
 
-const white = '#ffffff';
+// const white = '#ffffff';
 const bsBorderBlue = '#66afe9';
 const bsBorderGrey = '#cccccc';
 const bsBorderError = '#dc3545 !important';
@@ -20,8 +20,8 @@ const bsBoxShadowBlue = '0 0 0 0.2rem rgba(0, 123, 255, 0.25)';
 const bsBoxShadowGrey = ''; // 'inset 0 1px 1px rgba(0,0,0,.075);';
 const bsBoxShadowError = '0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important';
 // const bsBackgroundGrey = '#eeeeee';
-const bsBackgroundOption = '#f8f9fa';
-const bsBackgroundOptionSelected = '#eeeeee';
+// const bsBackgroundOption = '#f8f9fa';
+// const bsBackgroundOptionSelected = '#eeeeee';
 const bsControlTextColor = '#555555';
 const bsTextMuted = '#6c757d';
 const bsControlPlaceholderColor = '#999999';

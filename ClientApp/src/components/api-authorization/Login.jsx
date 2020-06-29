@@ -48,9 +48,7 @@ export default function Login() {
     apiPost('/api/Auth/Logout', {
       addCsrf: true
     }).then(async resp => {
-      console.log('Ajax logout resp', resp);
-
-      if(resp.ok) {
+      if (resp.ok) {
         await authService.ajaxSignOut();
       }
     }).catch(err => {
@@ -77,13 +75,10 @@ export default function Login() {
         RememberMe: inputRememberMe
       }
     }).then(async resp => {
-      console.log('Ajax login resp', resp);
-
-      if(resp.ok) {
+      if (resp.ok) {
         const { status, message } = await authService.ajaxSignIn();
-        console.log('ajaxSignIn', status, message);
 
-        if(status === AuthenticationResultStatus.Fail) {
+        if (status === AuthenticationResultStatus.Fail) {
           if (message) {
             setLoginError(message);
           } else {

@@ -24,6 +24,7 @@ export default function CU({
 }) {
   const [itemBindToContent, setItemBindToContent] = useState('');
   const [itemContent, setItemContent] = useState('');
+  const [itemLocked, setItemLocked] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [fetchError, setFetchError] = useState();
@@ -39,10 +40,11 @@ export default function CU({
 
       apiGet(`/api/Content/${itemId}`).then(async resp => {
         if(resp.ok) {
-          const { bindToContent, content } = await resp.json() || {};
+          const { bindToContent, content, locked = false } = await resp.json() || {};
 
           setItemBindToContent(bindToContent);
           setItemContent(content);
+          setItemLocked(locked);
           setShowForm(true);
         } else {
           setFetchError(httpRejectedError(resp.status));
@@ -71,8 +73,6 @@ export default function CU({
   }
   const handleItemFormSubmit = event => {
     event.preventDefault();
-
-    console.log('submitting');
 
     RProgressApi.start();
     setSaveError();
@@ -137,7 +137,7 @@ export default function CU({
                       <Input type="text" required name="Item.BindToContent" id="Item.BindToContent" 
                         value={itemBindToContent} 
                         onChange={handleBindToContentChange}
-                        disabled={isSaving}
+                        disabled={itemLocked || isSaving}
                       />
                     </FormGroup>
                   </Col>
