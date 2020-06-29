@@ -192,7 +192,8 @@ export default {
       NoVerifiedEmail: 'Your email address has not been verified.  \nYou need to verify your email address to complete you profile.\n\nPlease check your email inbox and follow the verification link to verify your email address.\n\nVisit your [profile settings](/account/settings) and use the resend email verification action to resend the verification email.',
       // YourEmailConfirmed: 'Your email address is now confirmed.'
       DeleteAccountAndData: 'Delete your account and all of your data.  \n\nThis action cannot be undone.',
-      DeleteAccountConfirm: 'Are you sure you want to **delete your account** and all your data?  \n\nAll of your data stored to this platform will be deleted.  \n\nThis action is **final** and **cannot be undone**.  \n\n*Please type your password to continue with the account deletion.*'
+      DeleteAccountConfirm: 'Are you sure you want to **delete your account** and all your data?  \n\nAll of your data stored to this platform will be deleted.  \n\nThis action is **final** and **cannot be undone**.  \n\n*Please type your password to continue with the account deletion.*',
+      RegisterAgreement: 'I agree to the platform [Terms and Conditions](/terms-and-conditions) and [Privacy Policy](/privacy-policy)'
     },
     Business: {
       BusinessProfileUnvisible: 'Your profile is not visible by others.  \nPlease [contact support](/contact) to request your profile visibility.',

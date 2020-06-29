@@ -24,6 +24,7 @@ export default function Register() {
   const [inputPassword, setInputPassword] = useState('');
   const [inputConfirmPassword, setInputConfirmPassword] = useState('');
   const [inputPasswordScore, setInputPasswordScore] = useState(0);
+  const [inputPrivacyPolicyAgree, setInputPrivacyPolicyAgree] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [registerError, setRegisterError] = useState();
@@ -45,6 +46,7 @@ export default function Register() {
   const handlePasswordChange = ({ currentTarget: { value }}) => setInputPassword(value);
   const handleConfirmPasswordChange = ({ currentTarget: { value }}) => setInputConfirmPassword(value);
   const handlePasswordScoreChange = score => setInputPasswordScore(score);
+  const handlePrivacyPolicyAgreeChange = ({ currentTarget: { checked }}) => setInputPrivacyPolicyAgree(checked);
 
   const handleRegisterFormSubmit = event => {
     event.preventDefault();
@@ -211,8 +213,18 @@ export default function Register() {
             />
           </FormGroup>
 
+          <FormGroup check>
+            <Label check>
+              <Input type="checkbox" 
+                checked={inputPrivacyPolicyAgree} 
+                onChange={handlePrivacyPolicyAgreeChange}
+                disabled={isProcessing}
+              />{' '}<Markdown source={Strings.messages.Auth.RegisterAgreement} />
+            </Label>
+          </FormGroup>
+
           <FormGroup>
-            <LoadingButton loading={isProcessing}>Register</LoadingButton>
+            <LoadingButton loading={isProcessing} disabled={!inputPrivacyPolicyAgree}>Register</LoadingButton>
           </FormGroup>
 
           <FormGroup>
