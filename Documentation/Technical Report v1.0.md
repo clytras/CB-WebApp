@@ -30,8 +30,10 @@
       1. [IIS Site Creation](#installation-production-iis--site--creation)
       1. [SQL Server Database](#installation-production-sql--server--database)
       1. [Identity Server Certificate](#installation-production-identity--server--certificate)
+      1. [Outgoing Emails](#installation--outgoing-mails)
    1. [Development](#installation-development)
       1. [User Secrets](#installation-development-usersecrets)
+1. [Updates](#updates)
 
 :::
 
@@ -77,7 +79,6 @@ The application is compatible with the following minimum major browser versions
 - Safari 10
 - Edge 14
 - Edge Chromium 80
-- Internet Explorer 11 (*partially*)
 
 Internet Explorer has major flows and standard CSS supporting issues. It also needs polypills to support ES6 standard features. For old browsers, there will be a warning message and if the application detects browsers that cannot be run into, there will be a notice to let final users know that their browser is old, insecure and propose upgrading to the latest secure versions.
 
@@ -155,6 +156,12 @@ Expand *Security* ➜ *Logins* (*not on the database, but under server*), right-
    ::: alert warning
    The login name `CERTHB2B` in `IIS APPPOOL\CERTHB2B` **must be the same** as the IIS site name we created in the previous step.
    :::
+1. Add connection string inside application root `appsettings.Production.json` file (*create the file if it does not exist*):
+   ```json
+   "ConnectionStrings": {
+     "DefaultConnection": "Server=GREENMINDB2B;Database=CERTHB2B;Trusted_Connection=True;MultipleActiveResultSets=true"
+   },
+   ```
 1. Initial Migrations
    Open Windows PowerShell (*as Administrator*), go to the application directory and run the application DLL with the `--Migrate all` CLI argument to apply initial migrations:
    ```powershell
@@ -177,6 +184,24 @@ Use [Microsoft Management Console][12] (*MMC*) to import the Identity Server Cer
 
 <div class="page-break"/>
 
+<a id="installation--outgoing-mails"></a>
+#### Outgoing Emails
+
+The application is using [SendGrid][14] cloud API to send emails regarding:
+
+- New user's registrations email confirmation
+- User's reset password confirmation
+- Profile to profile contact requests
+
+Email settings are configured inside application root `appsettings.Production.json` file with the following properties:
+
+- `SendGridUser`: The username of the [SendGrid][14] account
+- `SendGridKey`: The API key created in [SendGrid][14] panel for the application
+- `EmailSendFrom`: The email that users will see as *"From email"* field (*noreply@b2bplatform.imet.gr*)
+- `EmailSendAs`: The name that users will see as *"From name"* field (*IMET B2B*)
+
+<div class="page-break"/>
+
 <a id="installation-development"></a>
 ### Development
 
@@ -193,7 +218,25 @@ Use [Microsoft Management Console][12] (*MMC*) to import the Identity Server Cer
 1. List items in users secrets
 `dotnet user-secrets list`
 
+<div class="page-break"/>
+<div class="reset-lvl-counters"/>
 
+## Updates
+
+Updates are applied using the release `CERTHB2BPublish` repository after new commits.
+
+1. Open IIS manager and stop the web site
+1. Open Git bash and pull new commits to `C:\inetpub\CERTHB2B` using the following commands:
+   ```bash
+   cd /c/initpub/CERTHB2B
+   git pull
+   ```
+1. Open `powershell`, navigate to `C:\inetpub\CERTHB2B` and apply any new migrations:
+   ```powershell
+   PS C:\Users\Administrator> cd C:\inetpub\CERTHB2B
+   PS C:\inetpub\CERTHB2B> dotnet CERTHB2B.dll --Migrate all
+   ```
+1. Finally start the site again inside IIS manager
 
 [1]: https://get.asp.net/
 [2]: https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx
@@ -208,5 +251,6 @@ Use [Microsoft Management Console][12] (*MMC*) to import the Identity Server Cer
 [11]: https://identityserver.github.io/Documentation/docsv2/configuration/crypto.html
 [12]: https://support.microsoft.com/en-au/help/962457/what-is-mmc
 [13]: https://docs.microsoft.com/en-us/dotnet/framework/wcf/feature-details/how-to-view-certificates-with-the-mmc-snap-in
+[14]: https://sendgrid.com/
 
 [Asset-SSMSAddLogin]: :[SSMSAddLogin](assets/SSMS_AddLogin.b64)

@@ -35,6 +35,15 @@ entity "BusinessContact  " as bc {
   Telephone : Text (10-15)
 }
 
+entity "BusinessContactRequests  " as bcr {
+  * RequestId : <<PK>>
+  * FromId : <<FK>>
+  * ToId : <<FK>>
+  --
+  Date : DateTime
+  IsOpened : Boolean
+}
+
 entity "BusinessAddress  " as ba {
   * AddressId : <<PK>>
   * ProfileId : <<FK>>
@@ -72,6 +81,7 @@ bpa }o.|| bao
 bpa }o..|| bp
 bc ||.|| bp
 bp ||.o{ bpoa
+bp ||..|| bcr
 bp ||..|| ba
 bp |o..|| anu
 
