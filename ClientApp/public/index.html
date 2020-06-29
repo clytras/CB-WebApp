@@ -21,22 +21,57 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>CERTHB2B</title>
+    <script type="text/javascript">
+      function detectIEEdge() {
+          var ua = window.navigator.userAgent;
+
+          var msie = ua.indexOf('MSIE ');
+          if (msie >= 0) {
+              // IE 10 or older => return version number
+              return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+          }
+
+          var trident = ua.indexOf('Trident/');
+          if (trident >= 0) {
+              // IE 11 => return version number
+              var rv = ua.indexOf('rv:');
+              return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+          }
+
+          var edge = ua.indexOf('Edge/');
+          if (edge >= 0) {
+            // Edge => return version number
+            return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+          }
+
+          return false;
+      }
+
+      function checkSupported() {
+        if (detectIEEdge()) {
+          document.getElementById("not-supported").style.display = "block";
+        }
+      }
+    </script>
   </head>
-  <body>
+  <body onload="checkSupported()">
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <div id="not-supported" style="display: none; padding: 20px; text-align: center;">
+      <h1>IMET B2B</h1>
+      <hr/>
+      <h2>Browser is not supported</h2>
+      <p>Your browser is out of date and is not supported by this application.</p>
+      <p>Consider installing a modern browser:</p>
+      <p>
+        <a href="https://www.google.com/chrome/">Google Chrome</a> | 
+        <a href="https://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a> | 
+        <a href="https://www.microsoft.com/edge">Edge Chromium</a> | 
+        <a href="https://www.opera.com/">Opera</a>
+      </p>
+    </div>
     <script src="/static/initial.js"></script>
   </body>
 </html>

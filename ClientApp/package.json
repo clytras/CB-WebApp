@@ -1,6 +1,6 @@
 {
   "name": "CERTHB2B",
-  "version": "0.1.17",
+  "version": "1.0.2",
   "private": true,
   "dependencies": {
     "@hot-loader/react-dom": "^16.13.0",
@@ -31,6 +31,7 @@
     "react-app-polyfill": "^1.0.6",
     "react-cookie-consent": "^5.0.0",
     "react-data-table-component": "^6.9.3",
+    "react-device-detect": "^1.13.1",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.21",
     "react-icons": "^3.10.0",
