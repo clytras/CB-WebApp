@@ -1,4 +1,4 @@
-# CE.R.T.H. Greenmind B2B
+# CB Web App
 
 This application is built with:
 
